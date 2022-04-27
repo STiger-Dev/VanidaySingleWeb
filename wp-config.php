@@ -23,13 +23,13 @@
 define( 'DB_NAME', 'vaniday_signle' );
 
 /** Database username */
-define( 'DB_USER', 'vaniday' );
+define( 'DB_USER', 'root' );
 
 /** Database password */
-define( 'DB_PASSWORD', 'StrongTiger1234%' );
+define( 'DB_PASSWORD', '' );
 
 /** Database hostname */
-define( 'DB_HOST', '54.255.78.162' );
+define( 'DB_HOST', '127.0.0.1' );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8mb4' );

@@ -235,8 +235,6 @@
 	position: relative;
 	overflow: hidden;
 	min-width: 980px;
-	width: 980px;
-	height: 600px;
 	background-color: #F5F7FA;
 
 	-webkit-box-shadow: 0 5px 40px 5px rgba(112,119,125,0.25);
