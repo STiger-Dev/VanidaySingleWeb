@@ -3075,3 +3075,37 @@
 	position: relative;
 	padding-bottom: 15px;
 }
+
+.booknetic_appointment .form-row .vaccinate_comment{
+    justify-content: space-between;
+	display: flex;
+	flex-direction: column;
+}
+
+.booknetic_appointment .form-row .gray_border_box
+{
+	border: 1px solid #e3eaf3;
+	padding: 13px 5px;
+	width: 100%;
+	line-height: 26px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	color: #8b97a1;
+	font-size: 14px;
+}
+
+.booknetic_appointment .form-row .gray_border_box .item 
+{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.booknetic_appointment .form-row .gray_border_box label {
+	height: 100% !important;
+	line-height: 18px !important;
+	margin: 0px 0px !important;
+	padding: 0px 10px !important;
+	width: 80%;
+}
