@@ -18,6 +18,7 @@ use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Math;
 use BookneticApp\Providers\Common\PaymentGatewayService;
 use BookneticApp\Providers\Core\Permission;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
 /**
  * Class AppointmentRequestData
@@ -455,6 +456,16 @@ class AppointmentRequestData
 				'email'			=>	$this->customerData['email'],
 				'created_at'	=>	date('Y-m-d'),
 			] );
+
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->addCustomer(
+				[
+					'id'		=>	DB::lastInsertedId(),
+					'first_name'	=>	$this->customerData['first_name'],
+					'last_name'		=>	$this->customerData['last_name'],
+					'email'			=>	$this->customerData['email'],
+				]
+			);
 
 			$this->newCustomerPass    =  isset( $newCustomerPass ) ? $newCustomerPass : '';
 

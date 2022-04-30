@@ -12,6 +12,7 @@ use BookneticApp\Providers\Helpers\Date;
 use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Math;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
 class AppointmentService
 {
@@ -52,6 +53,19 @@ class AppointmentService
 				Appointment::insert( $appointmentInsertData );
 
 				$appointmentId = DB::lastInsertedId();
+
+				$dexRequestObject = new DexRequestObject();
+				$dexRequestObject->addAppointment(
+					[
+						'id'		=>	$appointmentId,
+						'staff_id'	=>	$appointmentData->staffId,
+						'product_id'		=>	$appointmentData->serviceId,
+						'booked_date'			=>	$appointmentDate,
+						"slot_time"		=> $appointmentTime,
+						"seller_id"		=> $appointmentData->locationId,
+						"slot_duration"	=> (int) $appointmentData->serviceInf->duration,
+					]
+				);
 			}
 
 			$appointmentData->createdAppointments[ $appointmentId ] = [];

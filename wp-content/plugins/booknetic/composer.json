@@ -4,7 +4,8 @@
 		"google/apiclient": "^2.0",
 		"a5hleyrich/wp-background-processing": "^1.0",
 		"gettext/gettext": "^4.8",
-		"guzzlehttp/guzzle": "^6.5.4"
+		"guzzlehttp/guzzle": "^6.5.4",
+		"zendframework/zendframework": "^3.0"
 	},
 
 	"autoload": {
