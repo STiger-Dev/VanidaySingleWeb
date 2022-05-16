@@ -457,6 +457,7 @@ class AppointmentRequestData
 				'created_at'	=>	date('Y-m-d'),
 			] );
 
+			//Request of add customer from booknetic to DEX.
 			$dexRequestObject = new DexRequestObject();
 			$dexRequestObject->addCustomer(
 				[
@@ -464,6 +465,7 @@ class AppointmentRequestData
 					'first_name'	=>	$this->customerData['first_name'],
 					'last_name'		=>	$this->customerData['last_name'],
 					'email'			=>	$this->customerData['email'],
+					'phone_number'	=>	$this->customerData['phone']
 				]
 			);
 

@@ -53,7 +53,7 @@ class DexRequestObject
     public function deleteAppointment($id)
     {
         try {
-            $reqDeleteUrl = $this->API_REQUEST_URI . "/vaniday/appointments/{$id}";
+            $reqDeleteUrl = $this->API_REQUEST_URI . "/web/appointments/{$id}";
             $response = $this->doDeleteRequest($reqDeleteUrl);
         } catch (\Exception $e) {
             
@@ -88,7 +88,7 @@ class DexRequestObject
     public function updateCustomer($id, $params)
     {
         try {
-            $reqGetUrl = $this->API_REQUEST_URI . "/vaniday/customers/{$id}";
+            $reqGetUrl = $this->API_REQUEST_URI . "/web/customers/{$id}";
 
             $response = $this->doPatchRequest($reqGetUrl, $params);
         } catch (\Exception $e) {
@@ -105,7 +105,7 @@ class DexRequestObject
     public function deleteCustomer($id)
     {
         try {
-            $reqDeleteUrl = $this->API_REQUEST_URI . "/vaniday/customers/{$id}";
+            $reqDeleteUrl = $this->API_REQUEST_URI . "/web/customers/{$id}";
 
             $response = $this->doDeleteRequest($reqDeleteUrl);
         } catch (\Exception $e) {
@@ -122,7 +122,7 @@ class DexRequestObject
     public function addSales($params)
     {
         try {
-            $reqGetUrl = $this->API_REQUEST_URI . "/vaniday/sales";
+            $reqGetUrl = $this->API_REQUEST_URI . "/web/sales";
 
             $response = $this->doPostRequest($reqGetUrl, $params);
         } catch (\Exception $e) {

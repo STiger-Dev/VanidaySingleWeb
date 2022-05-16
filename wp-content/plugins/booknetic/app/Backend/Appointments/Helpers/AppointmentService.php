@@ -22,6 +22,7 @@ class AppointmentService
 	public static function createAppointment( AppointmentRequestData $appointmentData )
 	{
         $uniqueRecurringId = uniqid();
+		$dexRequestObject = new DexRequestObject();
 
 		foreach ( $appointmentData->getAllAppointments() AS $appointment )
 		{
@@ -53,19 +54,6 @@ class AppointmentService
 				Appointment::insert( $appointmentInsertData );
 
 				$appointmentId = DB::lastInsertedId();
-
-				$dexRequestObject = new DexRequestObject();
-				$dexRequestObject->addAppointment(
-					[
-						'id'		=>	$appointmentId,
-						'staff_id'	=>	$appointmentData->staffId,
-						'product_id'		=>	$appointmentData->serviceId,
-						'booked_date'			=>	$appointmentDate,
-						"slot_time"		=> $appointmentTime,
-						"seller_id"		=> $appointmentData->locationId,
-						"slot_duration"	=> (int) $appointmentData->serviceInf->duration,
-					]
-				);
 			}
 
 			$appointmentData->createdAppointments[ $appointmentId ] = [];
@@ -152,6 +140,21 @@ class AppointmentService
 				do_action( 'bkntc_appointment_customer_added', $appointmentCustomerId, $appointmentData );
 
 				$appointmentData->createdAppointments[ $appointmentId ][] = $appointmentCustomerId;
+
+				$dexRequestObject->addSales(
+					[
+						'id'		=>	strval($appointmentId),
+						'location_id'	=>	strval($appointmentData->locationId),
+						'customer_id'	=>	strval($customerId),
+						"status"	=>	 $customer['status'],
+						"sales_item"	=>	[
+							array(
+								"product_id"	=>	strval($appointmentData->serviceId),
+								"qty"	=>	1
+							)
+						]
+					]
+				);
 			}
 
 			if( $isExistingAppointment )

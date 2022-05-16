@@ -58,12 +58,6 @@ use BookneticApp\Providers\Helpers\Date;
 	</div>
 </div>
 <div class="form-row">
-	<div class="form-group col-md-12">
-		<label for="bkntc_input_company"><?php echo bkntc__('Company name(optional)')?></label>
-		<input type="text" id="bkntc_input_company" placeholder="Company" class="form-control" name="company" value="<?php echo htmlspecialchars($parameters['company_name'])?>" <?php echo !empty($parameters['company_name']) ? "disabled" : "" ?>>
-	</div>
-</div>
-<div class="form-row">
 	<div class="form-group col-md-6">
 		<label for="bkntc_input_vaccinate_confirm"><?php echo bkntc__('Kindly acknowledge and confirm you have been fully vaccinated prior to making this shave appointment.')?></label>
 		<textarea id="bkntc_input_vaccinate_confirm" class="form-control" name="bkntc_input_vaccinate_confirm" value="<?php echo htmlspecialchars($parameters['vaccinate_confirm'])?>" <?php echo !empty($parameters['vaccinate_confirm']) ? "disabled" : "" ?>>
