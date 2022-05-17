@@ -2,6 +2,7 @@
 
 namespace BookneticApp\Backend\Settings;
 
+use BookneticApp\Models\Appointment;
 use BookneticApp\Models\Holiday;
 use BookneticApp\Models\Timesheet;
 use BookneticApp\Backend\Settings\Helpers\BackupService;
@@ -39,7 +40,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
 		$paramaters = [];
 
-		$getConfirmationNumber = DB::DB()->get_row('SELECT `AUTO_INCREMENT` FROM  `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA`=database() AND `TABLE_NAME`=\''.DB::table('appointment_customers').'\'', ARRAY_A);
+		$getConfirmationNumber = DB::DB()->get_row('SELECT `AUTO_INCREMENT` FROM  `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA`=database() AND `TABLE_NAME`=\''.DB::table(Appointment::getTableName() ).'\'', ARRAY_A);
 		$paramaters['confirmation_number'] = (int)$getConfirmationNumber['AUTO_INCREMENT'];
 
 		return $this->modalView( 'booking_panel_steps_settings', $paramaters );
@@ -108,8 +109,6 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 			// select placeholders
 			'Select...'                                         => bkntc__('Select...'),
 
-			'Add coupon'                                        => bkntc__('Add coupon'),
-
 			// messages
 			'Please select location.'                           => bkntc__('Please select location.'),
 			'Please select staff.'                              => bkntc__('Please select staff.'),
@@ -163,6 +162,8 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 			'm'                                              	=> bkntc__('m'),
 			's'                                              	=> bkntc__('s'),
 		];
+
+        $paramaters = apply_filters('bkntc_labels_settings_translates' , $paramaters );
 
 		return $this->modalView( 'booking_panel_labels_settings', $paramaters );
 	}
@@ -351,6 +352,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		$show_step_service					= Helper::_post('show_step_service', 'on', 'string', ['on', 'off']);
 		$show_step_service_extras			= Helper::_post('show_step_service_extras', 'on', 'string', ['on', 'off']);
 		$show_step_information				= Helper::_post('show_step_information', 'on', 'string', ['on', 'off']);
+		$show_step_cart			            = Helper::_post('show_step_cart', 'on', 'string', ['on', 'off']);
 		$show_step_confirm_details			= Helper::_post('show_step_confirm_details', 'on', 'string', ['on', 'off']);
 		$hide_confirmation_number			= Helper::_post('hide_confirmation_number', 'off', 'string', ['on', 'off']);
 		$confirmation_number				= Helper::_post('confirmation_number', '', 'int');
@@ -422,14 +424,14 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 			}
 			else if( $confirmation_number > 0 )
 			{
-				$getConfirmationNumber = DB::DB()->get_row('SELECT `AUTO_INCREMENT` FROM  `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA`=database() AND `TABLE_NAME`=\''.DB::table('appointment_customers').'\'', ARRAY_A);
+				$getConfirmationNumber = DB::DB()->get_row('SELECT `AUTO_INCREMENT` FROM  `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA`=database() AND `TABLE_NAME`=\''.DB::table( Appointment::getTableName() ).'\'', ARRAY_A);
 
 				if( (int)$getConfirmationNumber['AUTO_INCREMENT'] > $confirmation_number )
 				{
 					return $this->response( false, bkntc__('Confirmation number is invalid!') );
 				}
 
-				DB::DB()->query("ALTER TABLE `".DB::table('appointment_customers')."` AUTO_INCREMENT=" . (int)$confirmation_number);
+				DB::DB()->query("ALTER TABLE `". DB::table( Appointment::getTableName() ) ."` AUTO_INCREMENT=" . (int)$confirmation_number);
 			}
 		}
 
@@ -470,6 +472,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		Helper::setOption('show_step_service', $show_step_service);
 		Helper::setOption('show_step_service_extras', $show_step_service_extras);
 		Helper::setOption('show_step_information', $show_step_information);
+		Helper::setOption('show_step_cart', $show_step_cart);
 		Helper::setOption('show_step_confirm_details', $show_step_confirm_details);
 		Helper::setOption('hide_confirmation_number', $hide_confirmation_number);
 
@@ -506,6 +509,9 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		{
 			return $this->response( false );
 		}
+		$translates = apply_filters( 'bkntc_save_booking_labels_settings' , $translates ,$language   );
+
+        $translates = apply_filters( 'bkntc_save_booking_labels_settings' , $translates ,$language );
 
 		LocalizationService::saveFiles( $language, $translates );
 

@@ -48,11 +48,4 @@ class ExtrasService
 		return $extrasDuration;
 	}
 
-    public static function updateAppointmentExtrasDuration($appointmentId)
-    {
-        $busyStatuses = "'" . implode( "','", Helper::getBusyAppointmentStatuses() ) . "'";
-
-        DB::DB()->query( DB::DB()->prepare('UPDATE `'.DB::table('appointments').'` SET extras_duration=(SELECT MAX(duration*quantity) FROM `'.DB::table('appointment_extras').'` WHERE appointment_customer_id IN (SELECT id from ' . DB::table('appointment_customers') .  ' where appointment_id = %d and status in (' . $busyStatuses . '))) WHERE id=%d', $appointmentId, $appointmentId) );
-    }
-
 }

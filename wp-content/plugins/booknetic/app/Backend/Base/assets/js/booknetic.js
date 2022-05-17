@@ -635,7 +635,6 @@ var booknetic =
 			'appointments.info': '800px',
 			'payments.edit_payment': '800px',
 			'payments.info': '800px',
-			'appointments.group_payments_info': '800px',
 			'services.add_new': '800px',
 			'staff.add_new': '800px'
 		};

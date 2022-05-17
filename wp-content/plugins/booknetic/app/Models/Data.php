@@ -12,11 +12,10 @@ class Data extends Model
 	protected static $tableName = 'data';
 
 	public static $relations = [
-		'appointments'          => [ Appointment::class, 'row_id', 'id' ],
-		'appointment_customers' => [ AppointmentCustomer::class, 'row_id', 'id' ],
-		'location'              => [ Location::class, 'row_id', 'id' ],
-		'service'               => [ Service::class, 'row_id', 'id' ],
-		'staff'                 => [ Staff::class, 'row_id', 'id' ],
-		'customers'             => [ Customer::class, 'row_id', 'id' ]
+		'appointments'          => [ Appointment::class, 'id', 'row_id' ],
+		'location'              => [ Location::class, 'id', 'row_id' ],
+		'service'               => [ Service::class, 'id', 'row_id' ],
+		'staff'                 => [ Staff::class, 'id', 'row_id' ],
+		'customers'             => [ Customer::class, 'id', 'row_id' ]
 	];
 }

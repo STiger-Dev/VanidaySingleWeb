@@ -4,7 +4,7 @@ namespace BookneticApp\Backend\Dashboard;
 
 
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
+use BookneticApp\Models\AppointmentPrice;
 use BookneticApp\Models\Customer;
 use BookneticApp\Providers\Core\Capabilities;
 use BookneticApp\Providers\Core\Controller;
@@ -28,61 +28,62 @@ class Ajax extends Controller
 		{
 
 			case 'today':
-				$start = Date::dateSQL();
-				$end = Date::dateSQL();
+				$start = Date::epoch('today');
+				$end = Date::epoch( 'today' , '+1 day');
 				break;
 
 			case 'yesterday':
-				$start = Date::dateSQL( 'yesterday' );
-				$end = Date::dateSQL('yesterday' );
+				$start = Date::epoch( 'yesterday' );
+				$end = Date::epoch('today' );
 				break;
 
 			case 'tomorrow':
-				$start = Date::dateSQL('tomorrow' );
-				$end = Date::dateSQL('tomorrow' );
+				$start = Date::epoch('tomorrow' );
+				$end = Date::epoch('tomorrow', '+1 day' );
 				break;
 
 			case 'this_week':
-				$start = Date::dateSQL('monday this week' );
-				$end = Date::dateSQL('sunday this week' );
+				$start = Date::epoch('monday this week' );
+				$end = Date::epoch('monday next week'  );
 				break;
 
 			case 'last_week':
-				$start = Date::dateSQL('monday previous week' );
-				$end = Date::dateSQL('sunday previous week' );
+				$start = Date::epoch('monday previous week' );
+				$end = Date::epoch('monday this week');
 				break;
 
 			case 'this_month':
-				$start = Date::format( 'Y-m-01' );
-				$end = Date::format( 'Y-m-t' );
+				$start = Date::epoch( Date::format( 'Y-m-01' ) );
+				$end = Date::epoch( Date::format( 'Y-m-t' ) );
 				break;
 
 			case 'this_year':
-				$start = Date::format( 'Y-01-01' );
-				$end = Date::format( 'Y-12-31' );
+				$start = Date::epoch( Date::format( 'Y-01-01' ) );
+				$end = Date::epoch( Date::format( 'Y-12-31' ) );
 				break;
 
 			case 'custom':
-				$start = Date::dateSQL( Date::reformatDateFromCustomFormat( $start ) );
-				$end = Date::dateSQL( Date::reformatDateFromCustomFormat( $end ) );
+				$start = Date::epoch( Date::reformatDateFromCustomFormat( $start ) );
+				$end = Date::epoch( Date::reformatDateFromCustomFormat( $end ) ,'+1 day' );
 				break;
 
 		}
 
-        $result = Appointment::select( [
-            'count(0) AS appointments',
-            'sum( (SELECT sum(`price`*`negative_or_positive`) FROM `' . DB::table( 'appointment_customer_prices' ) . '` WHERE `appointment_customer_id`=' . AppointmentCustomer::getField( 'id' ) . ' ) ) AS `revenue`',
-            'sum(' . Appointment::getField( 'duration' ) . ' + ' . Appointment::getField( 'extras_duration' ) . ' ) AS duration',
-        ] )->innerJoin( 'appointment_customers', [] )
-                                     ->where( AppointmentCustomer::getField( 'status' ), 'IN', Helper::getBusyAppointmentStatuses() )
-                                     ->where( Appointment::getField( 'date' ), 'BETWEEN', DB::field( "'$start' and '$end'" ) )
-                                     ->fetch();
+		$result = Appointment::select([
+		    'count(id) as appointments',
+            'sum( (SELECT sum(`price`*`negative_or_positive`) FROM `' . DB::table(AppointmentPrice::getTableName()) . '` WHERE `appointment_id`=' . Appointment::getField( 'id' ) . ' ) ) AS `revenue`',
+        ])
+            ->where( Appointment::getField( 'starts_at' ), '>=', $start )
+            ->where( Appointment::getField( 'ends_at' ), '<=', $end )
+            ->where( Appointment::getField( 'status' ), 'IN', Helper::getBusyAppointmentStatuses() )->fetch();
 
-		$customers = Customer::where(Customer::getField('created_at') , 'BETWEEN' , DB::field("'$start' and '$end'"))->count();
+		$customers = Customer::where( Customer::getField('created_at' ) , '>=' , DB::field(Date::dateSQL($start)))
+            ->where( Customer::getField('created_at' ) , '<' , DB::field( Date::dateSQL( $end ) ) )
+            ->count();
 
-        $totalAccordingToStatus = Appointment::innerJoin('appointment_customers', [])
-            ->select(['count(status) as count' , 'status'] , true )
-            ->where( Appointment::getField('date') , 'between' , DB::field("'$start' and '$end'"))
+        $totalAccordingToStatus = Appointment::select(['count(status) as count' , 'status'] , true )
+            ->where( Appointment::getField( 'starts_at' ), '>=', $start )
+            ->where( Appointment::getField( 'ends_at' ), '<=', $end )
             ->groupBy(['status'])
             ->fetchAll();
 

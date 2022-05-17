@@ -299,10 +299,8 @@ abstract class AbstractDataTableUI
 
         if( empty( $filtersSanitized ) )
         {
-            return [];
+            return;
         }
-
-        $whereFilters = [];
 
         foreach ( $filtersSanitized AS $filter )
         {
@@ -311,19 +309,16 @@ abstract class AbstractDataTableUI
 
             if( !is_string( $filterInf['search_type'] ) && is_callable( $filterInf['search_type'] ) )
             {
-                $whereFilters[] = $filterInf['search_type']( $filterVal );
+                $this->query = $filterInf['search_type']( $filterVal, $this->query );
             }
             else if( in_array( $filterInf['search_type'] , [ '=', '!=', '<>', '>', '<', '>=', '<=', 'like' ] ) )
             {
                 if( $filterInf['search_type'] == 'like' )
                     $filterVal = '%'.$filterVal.'%';
 
-                $whereFilters[] = $filterInf['column_name'] . ' ' . $filterInf['search_type'] . ' "' . $filterVal . '" ';
                 $this->query = $this->query->where($filterInf['column_name'], $filterInf['search_type'], $filterVal);
             }
         }
-
-        return $whereFilters;
     }
 
     private function queryOrderBy()

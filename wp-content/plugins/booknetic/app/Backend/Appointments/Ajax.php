@@ -2,15 +2,15 @@
 
 namespace BookneticApp\Backend\Appointments;
 
+use BookneticApp\Backend\Appointments\Helpers\AppointmentRequests;
 use BookneticApp\Config;
 use BookneticApp\Providers\Common\PaymentGatewayService;
 use BookneticApp\Providers\UI\TabUI;
-use BookneticApp\Backend\Appointments\Helpers\AppointmentCustomerSmartObject;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentSmartObject;
 use BookneticApp\Backend\Appointments\Helpers\AppointmentRequestData;
 use BookneticApp\Backend\Appointments\Helpers\AppointmentService;
 use BookneticApp\Backend\Appointments\Helpers\CalendarService;
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
 use BookneticApp\Models\AppointmentExtra;
 use BookneticApp\Models\Customer;
 use BookneticApp\Models\Location;
@@ -64,36 +64,23 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
         $run_workflows = Helper::_post('run_workflows', 1, 'num');
         Config::getWorkflowEventsManager()->setEnabled($run_workflows === 1);
+        $appointmentRequests = AppointmentRequests::load( true );
 
-		try
-		{
-			$appointmentData = AppointmentRequestData::load( true, true );
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        if( ! $appointmentRequests->validate() )
+        {
+            return $this->response(false,$appointmentRequests->getFirstError());
+        }
+
+        $appointmentData = $appointmentRequests->currentRequest();
 
 		if( $appointmentData->isRecurring() && empty( $appointmentData->recurringAppointmentsList ) )
 		{
 			return $this->response(true, [ 'dates' => AppointmentService::getRecurringDates( $appointmentData ) ]);
 		}
 
-		try
-		{
-			do_action( 'bkntc_before_appointment_created' );
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        AppointmentService::createAppointment( $appointmentRequests );
 
-		AppointmentService::createAppointment( $appointmentData );
-
-        /*doit add_action()*/
-		do_action( 'bkntc_after_appointment_created' , $appointmentData );
-
-        PaymentGatewayService::find('local')->doPayment($appointmentData);
+        PaymentGatewayService::find('local')->doPayment($appointmentRequests);
 
 		return $this->response(true );
 	}
@@ -104,19 +91,21 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
 		$id = Helper::_post( 'id', '0', 'integer' );
 
+		$appointmentSO = AppointmentSmartObject::load( $id );
+
 		$appointmentInfo = Appointment::leftJoin( 'location',   [ 'name' ] )
                                       ->leftJoin( 'service',    [ 'name' ] )
                                       ->leftJoin( 'staff',      [ 'name' ] )
                                       ->where( Appointment::getField( 'id' ), $id )
                                       ->fetch();
 
-		if( ! $appointmentInfo )
+		if( ! $appointmentSO->validate() )
 		{
             return $this->response( false, bkntc__( 'Selected appointment not found!' ) );
 		}
 
 		// get service categories...
-		$serviceInfo = Service::get( $appointmentInfo[ 'service_id' ] );
+		$serviceInfo = $appointmentSO->getServiceInf();
 
 		$categories = [];
 
@@ -135,21 +124,14 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 			}
 		}
 
-		// get customers list and info
-		$getCustomers = DB::DB()->get_results(
-			DB::DB()->prepare( '
-				SELECT 
-					tb1.* , (SELECT CONCAT(`first_name`, \' \', `last_name`) FROM `' . DB::table('customers') . '` WHERE id=tb1.customer_id) AS customer_name
-				FROM ' . DB::table('appointment_customers') . ' tb1
-				WHERE tb1.appointment_id=%d', [ $id ]
-			),
-			ARRAY_A
-		);
-
         TabUI::get( 'appointments_edit' )
              ->item( 'details' )
              ->setTitle( bkntc__( 'Appointment details' ) )
-             ->addView( __DIR__ . '/view/tab/edit_details.php' )
+             ->addView( __DIR__ . '/view/tab/edit_details.php', [
+                 'id'            => $id,
+                 'appointment'   => $appointmentSO,
+                 'categories'    => array_reverse( $categories )
+             ] )
              ->setPriority( 1 );
 
         TabUI::get( 'appointments_edit' )
@@ -158,16 +140,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
              ->addView( __DIR__ . '/view/tab/edit_extras.php' )
              ->setPriority( 2 );
 
-        $data = [
-            'id'            => $id,
-            'service'       => $serviceInfo,
-            'appointment'   => $appointmentInfo,
-            'customers'     => $getCustomers,
-            'categories'    => array_reverse( $categories )
-        ];
-
 		return $this->modalView( 'edit', [
-            'data'           => $data,
 			'id'				=> $id,
 			'service_capacity'	=> $serviceInfo['max_capacity'],
 		] );
@@ -180,20 +153,20 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
         $run_workflows = Helper::_post('run_workflows', 1, 'num');
         Config::getWorkflowEventsManager()->setEnabled($run_workflows === 1);
 
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load( true, true );
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        $appointmentRequests = AppointmentRequests::load( true );
+
+        if( ! $appointmentRequests->validate() )
+        {
+            return $this->response(false,$appointmentRequests->getFirstError());
+        }
+
+        $appointmentObj = $appointmentRequests->currentRequest();
 
 		do_action( 'bkntc_appointment_before_edit', $appointmentObj->appointmentId );
 
 		AppointmentService::editAppointment( $appointmentObj );
 
-		do_action( 'bkntc_appointment_after_edit', $appointmentObj->appointmentId );
+		do_action( 'bkntc_appointment_after_edit', $appointmentObj->appointmentId, $appointmentObj );
 
 		return $this->response(true, ['id' => $appointmentObj->appointmentId]);
 	}
@@ -204,113 +177,41 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
 		$id = Helper::_post('id', '0', 'integer');
 
-		$locationSubQuery = Location::select('name')->where('id', DB::field(DB::table('appointments').'.location_id'));
-		$serviceSubQuery = Service::select('name')->where('id', DB::field(DB::table('appointments').'.service_id'));
-		$appointmentInfo = Appointment::select('*')
-		                              ->selectSubQuery( $locationSubQuery, 'location_name' )
-		                              ->selectSubQuery( $serviceSubQuery, 'service_name' )
-		                              ->leftJoin('staff', ['id', 'name', 'profile_image', 'email', 'phone_number'],DB::table('staff').'.id', DB::table('appointments').'.staff_id')->where(DB::table('appointments').'.id', $id)->fetch();
+		$appointmentInfo = Appointment::leftJoin( 'customer', ['first_name', 'last_name', 'phone_number', 'email', 'profile_image'])
+            ->leftJoin( 'location', ['name'] )
+            ->leftJoin( 'service', ['name'] )
+            ->leftJoin( 'staff', ['name', 'profile_image', 'email', 'phone_number'])
+            ->where( Appointment::getField('id'), $id )->fetch();
 
 		if( !$appointmentInfo )
 		{
 			return $this->response(false, bkntc__('Appointment not found!'));
 		}
 
-		$customers = AppointmentCustomer::where( AppointmentCustomer::getField('appointment_id'), $id )
-		                                ->leftJoin('customers', ['first_name', 'last_name', 'phone_number', 'email', 'profile_image'], AppointmentCustomer::getField('customer_id'), Customer::getField('id'))->fetchAll();
-
-
-		$customersArr = [];
-
-		foreach( $customers AS $customerInfKey => $customerInf )
-		{
-			$customersArr[] = (int)$customerInf['customer_id'];
-
-			$customerBillingData = json_decode(  AppointmentCustomer::getData( $customerInf['id'], 'customer_billing_data', "" ) );
-
-			$billingFirstName = ( empty($customerBillingData->customer_first_name) ? "" :  $customerBillingData->customer_first_name);
-			$billingLastName = ( empty($customerBillingData->customer_last_name) ? "" :  $customerBillingData->customer_last_name);
-			$billingPhone = ( empty($customerBillingData->customer_phone) ? "" :  $customerBillingData->customer_phone);
-
-			if (!empty($billingFirstName) && !empty($billingLastName))
-			{
-				$customers[ $customerInfKey ] ['billing_full_name'] = $billingFirstName . ' ' . $billingLastName;
-			}
-			$customers[ $customerInfKey ] ['billing_phone'] = $billingPhone;
-		}
-
-		$extrasArr = [];
-
-		foreach( $customers AS $customerInfKey => $customerInf )
-		{
-			$customerId = (int)$customerInf['customer_id'];
-
-			$extras = AppointmentExtra::where('appointment_customer_id', $customerInf['id'])
-			                          ->leftJoin(ServiceExtra::class, ['name'], ServiceExtra::getField('id'), AppointmentExtra::getField('extra_id'))
-			                          ->fetchAll();
-
-			if (count($extras) === 0)
-			{
-				continue;
-			}
-
-			$extrasArr[ $customerId ] = [
-				'name'			=>	$customerInf['customers_first_name'] . ' ' . $customerInf['customers_last_name'],
-				'profile_image'	=>	$customerInf['customers_profile_image'],
-				'email'			=>	$customerInf['customers_email'],
-				'phone_number'	=>	$customerInf['customers_phone_number'],
-				'extras'		=>	$extras
-			];
-		}
+		$extrasArr = AppointmentExtra::where('appointment_id', $id)
+            ->leftJoin(ServiceExtra::class, ['name', 'image'], ServiceExtra::getField('id'), AppointmentExtra::getField('extra_id'))
+            ->fetchAll();
 
         TabUI::get( 'appointments_info' )
              ->item( 'details' )
              ->setTitle( bkntc__( 'Appointment details' ) )
-             ->addView( __DIR__ . '/view/tab/info_details.php' )
+             ->addView( __DIR__ . '/view/tab/info_details.php', [
+                 'info' => $appointmentInfo
+             ] )
              ->setPriority( 1 );
 
         TabUI::get( 'appointments_info' )
              ->item( 'extras' )
              ->setTitle( bkntc__( 'Extras' ) )
              ->addView( __DIR__ . '/view/tab/info_extras.php', [
-                 'extras' => $extrasArr
+	             'info'     => $appointmentInfo,
+                 'extras'   => $extrasArr
              ] )
              ->setPriority( 2 );
 
-        $data = [
-            'id'            => $id,
-            'info'          => $appointmentInfo,
-            'customers'     => $customers,
-        ];
-
 		return $this->modalView( 'info', [
-            'data'  => $data,
-			'id'    => $id,
-		] );
-	}
-
-	public function group_payments_info()
-	{
-		Capabilities::must( 'payments' );
-
-		$appointment_id     = Helper::_post('id', '0', 'integer');
-		$appointment        = Appointment::get( $appointment_id );
-
-		if( ! $appointment )
-		{
-			return $this->response(false, bkntc__('Appointment not found or permission denied!'));
-		}
-
-		$appointment_customers = AppointmentCustomer::where('appointment_id', $appointment_id)->fetchAll();
-
-		return $this->modalView( 'group_payments_info', [
-			'appointment' => $appointment,
-			'appointment_customers' => $appointment_customers,
-			'staff_name' => $appointment->staff()->fetch()['name'],
-			'location_name' => $appointment->location()->fetch()['name'],
-			'service_name' => $appointment->service()->fetch()['name'],
-			'info' => AppointmentCustomerSmartObject::load(222)
-		] );
+            'id'            => $id,
+        ] );
 	}
 
 	public function get_services()
@@ -532,7 +433,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 					'id'					=>	$dataInf['start_time'],
 					'text'					=>	$startTime,
 					'max_capacity'			=>	$dataInf['max_capacity'],
-					'number_of_customers'	=>	$dataInf['number_of_customers']
+					'weight'                =>	$dataInf['weight']
 				];
 			}
 		}
@@ -566,14 +467,8 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
 	public function get_day_offs()
 	{
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load();
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        $appointmentRequests = AppointmentRequests::load();
+        $appointmentObj = $appointmentRequests->currentRequest();
 
 		if(
 			! Date::isValid( $appointmentObj->recurringStartDate )
@@ -590,73 +485,23 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		return $this->response( true, $calendarService->getDayOffs() );
 	}
 
-	public function get_customers_list()
-	{
-		$appointment = Helper::_post('appointment', '0', 'integer');
-
-		$checkAppointment = Appointment::get( $appointment );
-		if ( !$checkAppointment )
-		{
-			return $this->response( false );
-		}
-
-		$customers = DB::DB()->get_results(
-			DB::DB()->prepare( 'SELECT tb1.*, CONCAT(tb2.`first_name`, \' \', tb2.`last_name`) AS `customer_name`, tb2.`email`, tb2.`phone_number`, tb2.`profile_image` FROM `' . DB::table('appointment_customers') . '` tb1 LEFT JOIN `' . DB::table('customers') . '` tb2 ON tb2.`id`=tb1.`customer_id` WHERE `appointment_id`=%d', [ $appointment ] ),
-			ARRAY_A
-		);
-
-		foreach ($customers as $i => $customer)
-		{
-			$customerBillingData = json_decode( AppointmentCustomer::getData($customer['id'], 'customer_billing_data') );
-
-			$billingFirstName = ( empty($customerBillingData->customer_first_name) ? "" :  $customerBillingData->customer_first_name);
-			$billingLastName = ( empty($customerBillingData->customer_last_name) ? "" :  $customerBillingData->customer_last_name);
-			$billingPhone = ( empty($customerBillingData->customer_phone) ? "" :  $customerBillingData->customer_last_name);
-
-			if ( $billingFirstName != "" && $billingLastName != "" )
-			{
-				$customers[$i]['billing_full_name'] = $billingFirstName . ' ' . $billingLastName;
-				$customers[$i]['billing_phone'] = $billingPhone;
-			}
-		}
-
-		return $this->modalView('customers_list', [ 'customers' => $customers ]);
-	}
-
 	public function get_service_extras()
 	{
-		$id			= Helper::_post('id', 0, 'integer');
-		$service	= Helper::_post('service', 0, 'integer');
-		$customers	= Helper::_post('customers', [], 'arr');
+		$appointment_id			= Helper::_post('appointment_id', 0, 'integer');
+		$service_id	            = Helper::_post('service_id', 0, 'integer');
 
-		$customersArr = [];
-		$appointment_extras = [];
-		foreach ( $customers AS $custId )
-		{
-			if( is_numeric( $custId ) && $custId > 0 )
-			{
-				$customersArr[] = Customer::get( $custId );
+		$extras = ServiceExtra::where('service_id', $service_id)->fetchAll();
 
-				$ac_id = AppointmentCustomer::where('appointment_id', $id)->where('customer_id', $custId)->select(['id'], true)->fetch();
-				if (!$ac_id)
-				{
-					continue;
-				}
+        $appointmentExtras = AppointmentExtra::where('appointment_id', $appointment_id)->fetchAll();
+        $appointmentExtras = Helper::assocByKey($appointmentExtras, 'extra_id');
 
-				$appointmentExtras = AppointmentExtra::where('appointment_customer_id', $ac_id['id'])->fetchAll();
-				foreach ( $appointmentExtras AS $appointmentExtra )
-				{
-					$appointment_extras[ $custId . '_' . (int)$appointmentExtra['extra_id'] ] = (int)$appointmentExtra['quantity'];
-				}
-			}
-		}
-
-		$extras = ServiceExtra::where('service_id', $service)->fetchAll();
+        foreach ($extras as $extra)
+        {
+            $extra->quantity = array_key_exists($extra->id, $appointmentExtras) ? $appointmentExtras[$extra->id]->quantity : 0;
+        }
 
 		return $this->modalView( 'service_extras', [
-			'customers'				=> $customersArr,
 			'extras'				=> $extras,
-			'appointment_extras'	=> $appointment_extras
 		] );
 	}
 

@@ -8,7 +8,6 @@ use BookneticApp\Providers\Helpers\Helper;
 function customerTpl( $display = false )
 {
     $statuses = Helper::getAppointmentStatuses();
-
     $defaultStatus = Helper::getDefaultAppointmentStatus();
     $defaultStatus = array_key_exists($defaultStatus, $statuses) ? $defaultStatus : array_keys($statuses)[0];
 
@@ -36,13 +35,12 @@ function customerTpl( $display = false )
 			</span>
 
             <div class="number_of_group_customers_span">
-                <button class="btn btn-lg btn-outline-secondary number_of_group_customers" type="button" data-toggle="dropdown"><i class="fa fa-user "></i> <span class="c_number">1</span> <img src="<?php echo Helper::icon('arrow-down-xs.svg')?>"></button>
+                <button class="btn btn-lg btn-outline-secondary number_of_group_customers" type="button" data-toggle="dropdown" disabled>
+                    <i class="fa fa-user "></i> <span class="c_number">1</span>
+                    <img src="<?php echo Helper::icon('arrow-down-xs.svg')?>">
+                </button>
                 <div class="dropdown-menu number_of_group_customers_panel"></div>
             </div>
-
-            <span class="delete-customer-btn">
-				<img src="<?php echo Helper::assets('icons/unsuccess.svg')?>">
-			</span>
         </div>
     </div>
 
@@ -374,11 +372,10 @@ function customerTpl( $display = false )
 
 <div class="form-row">
     <div class="form-group col-md-12">
-        <label><?php echo bkntc__('Customers')?> <span class="required-star">*</span></label>
-
-        <div class="customers_area"></div>
-
-        <div class="add-customer-btn"><img src="<?php echo Helper::icon('add-round.svg')?>" class="mr-1"> <?php echo bkntc__('Add Customer')?></div>
+        <label><?php echo bkntc__('Customer')?> <span class="required-star">*</span></label>
+        <div class="customers_area">
+            <?php echo customerTpl( true ) ?>
+        </div>
     </div>
 </div>
 
@@ -389,4 +386,3 @@ function customerTpl( $display = false )
     </div>
 </div>
 
-<?php echo customerTpl(); ?>

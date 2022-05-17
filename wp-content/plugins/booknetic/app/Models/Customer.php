@@ -44,9 +44,9 @@ class Customer extends Model
 		if( Permission::isAdministrator() || Permission::isSuperAdministrator() )
 			return new static();
 
-		$subQuery = Appointment::leftJoin('appointment_customers')->select('customer_id', true);
+		$subQuery = Appointment::select('customer_id', true);
 
-		return $query = Customer::where(function ( $query ) use ( $subQuery )
+		return Customer::where(function ( $query ) use ( $subQuery )
 		{
 			$query->where('created_by', Permission::userId())->orWhere('id', 'in', $subQuery);
 		});
@@ -61,9 +61,11 @@ class Customer extends Model
             if( ! Permission::isBackEnd() || Permission::isAdministrator() )
                 return;
 
-            $subQuery = Appointment::leftJoin('appointment_customers')->select('customer_id', true);
+            $subQuery = Appointment::select('customer_id', true);
 
-            $builder->where('created_by', Permission::userId())->orWhere('id', 'in', $subQuery);
+            $builder->where( function ( $query ) use ( $subQuery ) {
+                $query->where( 'created_by', Permission::userId() )->orWhere( 'id', 'in', $subQuery );
+            } );
         });
     }
 

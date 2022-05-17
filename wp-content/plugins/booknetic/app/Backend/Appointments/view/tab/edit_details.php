@@ -2,10 +2,22 @@
 
 defined( 'ABSPATH' ) or die();
 
+use BookneticApp\Backend\Appointments\Helpers\AppointmentSmartObject;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Date;
+/**
+ * @var array $parameters
+ */
 
-function customerTpl( $display = false, $cid = 0, $customerId = null, $customerName = null, $status = '', $number_of_customers = 1 )
+
+
+$appointment = $parameters['appointment'];
+
+/**
+ * @var AppointmentSmartObject $appointment
+ */
+
+function customerTpl( $display = false, $cid = 0,  $customerName = null, $status = '', $weight = 1 )
 {
     $statuses = Helper::getAppointmentStatuses();
 
@@ -33,7 +45,7 @@ function customerTpl( $display = false, $cid = 0, $customerId = null, $customerN
             <div class="input-group">
                 <select class="form-control input_customer">
                     <?php
-                    echo is_null($customerId) ? '' : '<option value="' . (int)$customerId . '">' . htmlspecialchars($customerName) . '</option>';
+                    echo is_null($cid) ? '' : '<option value="' . (int)$cid . '">' . htmlspecialchars($customerName) . '</option>';
                     ?>
                 </select>
                 <div class="input-group-prepend">
@@ -55,27 +67,21 @@ function customerTpl( $display = false, $cid = 0, $customerId = null, $customerN
 			</span>
 
             <div class="number_of_group_customers_span">
-                <button class="btn btn-lg btn-outline-secondary number_of_group_customers" type="button" data-toggle="dropdown"><i class="fa fa-user "></i> <span class="c_number"><?php echo $number_of_customers?></span> <img src="<?php echo Helper::icon('arrow-down-xs.svg')?>"></button>
+                <button class="btn btn-lg btn-outline-secondary number_of_group_customers" type="button" data-toggle="dropdown"><i class="fa fa-user "></i> <span class="c_number"><?php echo $weight?></span> <img src="<?php echo Helper::icon('arrow-down-xs.svg')?>"></button>
                 <div class="dropdown-menu number_of_group_customers_panel"></div>
             </div>
-
-            <span class="delete-customer-btn">
-				<img src="<?php echo Helper::assets('icons/unsuccess.svg')?>">
-			</span>
         </div>
     </div>
     <?php
 }
 
-/**
- * @var array $parameters
- */
+
 ?>
 <div class="form-row">
     <div class="form-group col-md-12">
         <label for="input_location"><?php echo bkntc__('Location')?> <span class="required-star">*</span></label>
         <select class="form-control" id="input_location">
-            <option value="<?php echo (int)$parameters['appointment']['location_id']?>" selected><?php echo htmlspecialchars($parameters['appointment']['location_name'])?></option>
+            <option value="<?php echo (int)$appointment->getLocationInf()->id ?>" selected><?php echo htmlspecialchars($appointment->getLocationInf()->name)?></option>
         </select>
     </div>
 </div>
@@ -96,13 +102,13 @@ function customerTpl( $display = false, $cid = 0, $customerId = null, $customerN
     <div class="form-group col-md-6">
         <label for="input_service"><?php echo bkntc__('Service')?> <span class="required-star">*</span></label>
         <select class="form-control" id="input_service">
-            <option value="<?php echo (int)$parameters['appointment']['service_id']?>" selected><?php echo htmlspecialchars($parameters['appointment']['service_name'])?></option>
+            <option value="<?php echo (int)$appointment->getServiceInf()->id ?>" selected><?php echo htmlspecialchars($appointment->getServiceInf()->name)?></option>
         </select>
     </div>
     <div class="form-group col-md-6">
         <label for="input_staff"><?php echo bkntc__('Staff')?> <span class="required-star">*</span></label>
         <select class="form-control" id="input_staff">
-            <option value="<?php echo (int)$parameters['appointment']['staff_id']?>" selected><?php echo htmlspecialchars($parameters['appointment']['staff_name'])?></option>
+            <option value="<?php echo (int)$appointment->getStaffInf()->id ?>" selected><?php echo htmlspecialchars($appointment->getStaffInf()->name)?></option>
         </select>
     </div>
 </div>
@@ -112,7 +118,7 @@ function customerTpl( $display = false, $cid = 0, $customerId = null, $customerN
         <label for="input_date"><?php echo bkntc__('Date')?> <span class="required-star">*</span></label>
         <div class="inner-addon left-addon">
             <i><img src="<?php echo Helper::icon('calendar.svg')?>"/></i>
-            <input class="form-control" id="input_date" placeholder="<?php echo bkntc__('Select...')?>" value="<?php echo Date::format(Helper::getOption('date_format', 'Y-m-d'), $parameters['appointment']['date'] )?>">
+            <input class="form-control" id="input_date" placeholder="<?php echo bkntc__('Select...')?>" value="<?php echo Date::format(Helper::getOption('date_format', 'Y-m-d'), Date::dateSQL( $appointment->getInfo()->starts_at ) )?>">
         </div>
     </div>
     <div class="form-group col-md-6">
@@ -120,7 +126,7 @@ function customerTpl( $display = false, $cid = 0, $customerId = null, $customerN
         <div class="inner-addon left-addon">
             <i><img src="<?php echo Helper::icon('time.svg')?>"/></i>
             <select class="form-control" id="input_time">
-                <option selected><?php echo ! empty( $parameters['appointment']['start_time'] ) ? Date::time( $parameters['appointment']['start_time'] ) : ''; ?></option>
+                <option selected><?php echo ! empty( $appointment->getInfo()->starts_at ) ? Date::time( $appointment->getInfo()->starts_at ) : ''; ?></option>
             </select>
         </div>
     </div>
@@ -128,25 +134,21 @@ function customerTpl( $display = false, $cid = 0, $customerId = null, $customerN
 
 <div class="form-row">
     <div class="form-group col-md-12">
-        <label><?php echo bkntc__('Customers')?> <span class="required-star">*</span></label>
+        <label><?php echo bkntc__('Customer')?> <span class="required-star">*</span></label>
 
         <div class="customers_area">
             <?php
-            foreach ( $parameters['customers'] AS $customer)
-            {
-                customerTpl( true, $customer['id'], $customer['customer_id'], $customer['customer_name'], $customer['status'], $customer['number_of_customers'] );
-            }
+                $customer = $appointment->getCustomerInf();
+                customerTpl( true, $customer->id, "{$customer['first_name']} {$customer['last_name']}", $appointment->getInfo()->status, $appointment->getInfo()->weight );
             ?>
         </div>
-
-        <div class="add-customer-btn"><i class="fas fa-plus-circle"></i> <?php echo bkntc__('Add Customer')?></div>
     </div>
 </div>
 
 <div class="form-row">
     <div class="form-group col-md-12">
         <label><?php echo bkntc__('Note')?> </label>
-        <textarea id='note' class="form-control" name="note" id="" cols="30" rows="10"><?php echo htmlspecialchars($parameters['appointment']->note)?></textarea>
+        <textarea id='note' class="form-control" name="note" id="" cols="30" rows="10"><?php echo htmlspecialchars($appointment->getInfo()->note)?></textarea>
     </div>
 </div>
 

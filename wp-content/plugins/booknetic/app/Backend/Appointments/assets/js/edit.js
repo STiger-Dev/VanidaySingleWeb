@@ -33,14 +33,16 @@
 
 		booknetic.select2Ajax( $(".fs-modal #input_time"), 'appointments.get_available_times', function()
 		{
-			var service	=	$(".fs-modal #input_service").val(),
-				staff	=	$(".fs-modal #input_staff").val(),
-				date	=	$(".fs-modal #input_date").val();
+			var service		=	$(".fs-modal #input_service").val(),
+				location	=	$(".fs-modal #input_location").val(),
+				staff		=	$(".fs-modal #input_staff").val(),
+				date		=	$(".fs-modal #input_date").val();
 
 			return {
 				id: $('#add_new_JS').data('appointment-id'),
 				service: service,
-				service_extras: collectExtras(),
+				location: location,
+				service_extras: JSON.stringify(collectExtras()),
 				staff: staff,
 				date: date
 			}
@@ -81,21 +83,12 @@
 		{
 			$( '#tab_extras' ).empty();
 
-			let service 	= $( '.fs-modal #input_service' ).val();
-			let customers 	= [];
+			let service_id 	= $( '.fs-modal #input_service' ).val();
 
-			$( '.fs-modal .customers_area .input_customer' ).each( function ()
+			booknetic.ajax( 'appointments.get_service_extras', { appointment_id: $( '#add_new_JS' ).data( 'appointment-id' ), service_id }, function ( result )
 			{
-				customers.push( $( this ).val() );
+				$( '#tab_extras' ).html( booknetic.htmlspecialchars_decode( result[ 'html' ] ) )
 			} );
-
-			// if ( service > 0 && customers.length > 0 )
-			// {
-				booknetic.ajax( 'appointments.get_service_extras', { id: $( '#add_new_JS' ).data( 'appointment-id' ), service, customers }, function ( result )
-				{
-					$( '#tab_extras' ).html( booknetic.htmlspecialchars_decode( result[ 'html' ] ) )
-				} );
-			// }
 		}
 
 		function collectExtras()
@@ -104,21 +97,19 @@
 
 			$('.fs-modal #tab_extras div[data-extra-id]').each(function ()
 			{
-				var customer_id	= $(this).closest('[data-customer-id]').data('customer-id'),
-					extra_id	= $(this).data('extra-id'),
+				var extra_id	= $(this).data('extra-id'),
 					quantity	= $(this).find('.extra_quantity').val();
 
 				if( quantity > 0 )
 				{
 					extras.push( {
-						customer: customer_id,
 						extra: extra_id,
 						quantity: quantity
 					} );
 				}
 			});
 
-			return JSON.stringify( extras );
+			return extras;
 		}
 
 
@@ -180,35 +171,6 @@
 
 			$(".fs-modal #input_time").select2('val', false);
 			$(".fs-modal #input_time").trigger('change');
-		}).on('click', '.add-customer-btn', function ()
-		{
-			var tpl = $(".fs-modal .customer-tpl:eq(-1)")[0].outerHTML;
-
-			$(".fs-modal .customers_area").append( tpl );
-
-			$(".fs-modal .customers_area > div:eq(-1)").removeClass('hidden').hide().slideDown(200);
-
-			booknetic.select2Ajax( $(".fs-modal .customers_area > div:eq(-1) .input_customer"), 'appointments.get_customers'  );
-
-			$('.fs-modal .customers_area > div:eq(-1) .number_of_group_customers').on('click', function ()
-			{
-				constructNumbersOfGroup( $(this) );
-			});
-		}).on('change', '.customers_area', function ()
-		{
-			
-			loadServiceExtras();
-
-		}).on( 'click', '.delete-customer-btn', function ()
-		{
-			$( this ).closest( '.customer-tpl' ).slideUp( 200, function()
-			{
-				$(this).remove();
-				
-				loadServiceExtras();
-
-				booknetic.doAction( 'customerRowDeleted' );
-			} );
 		}).on('click', '.number_of_group_customers_panel > a', function ()
 		{
 			var num = $(this).text().trim();
@@ -228,29 +190,15 @@
 				date				=	$("#input_date").val(),
 				time				=	$("#input_time").val(),
 				note				=	$("#note").val(),
-				customers			=	[],
+				customer_id				=	$('.customers_area .input_customer').val(),
+				status					=	$('.customers_area .customer-status-btn > button').attr('data-status'),
+				weight					=	$('.customers_area .c_number').text(),
 				run_workflows		=	$("#input_run_workflows").is(':checked') ? 1 : 0,
 				extras				=	collectExtras();
 
-			$(".fs-modal .customers_area > .customer-tpl").each(function()
-			{
-				var acId		= $(this).data('id'),
-					customer	= $(this).find('.input_customer').val(),
-					status		= $(this).find('.customer-status-btn > button').attr('data-status'),
-					number		= $(this).find('.c_number').text();
 
-				if( customer > 0 )
-				{
-					customers.push( {
-						id: customer,
-						ac_id: acId,
-						status: status,
-						number: number
-					} );
-				}
-			});
 
-			if( staff == '' || service == '' || customers.length == 0 )
+			if( staff == '' || service == '' || customer_id == '' )
 			{
 				booknetic.toast('Please fill all required fields!', 'unsuccess');
 				return;
@@ -258,17 +206,26 @@
 
 
 			var data = new FormData();
+			let obj = {};
 
-			data.append('id', $('#add_new_JS').data('appointment-id'));
-			data.append('location', location);
-			data.append('service', service);
-			data.append('staff', staff);
-			data.append('date', date);
-			data.append('time', booknetic.reformatTimeFromCustomFormat( time ) );
-			data.append('note', note);
-			data.append('customers', JSON.stringify( customers ));
+
+			obj['id']=  $('#add_new_JS').data('appointment-id');
+			obj['location']=  location;
+			obj['service']=  service;
+			obj['staff']=  staff;
+			obj['date']=  date;
+			obj['time']=  booknetic.reformatTimeFromCustomFormat( time ) ;
+			obj['note']=  note;
+			obj['customer_id']=  customer_id ;
+			obj['status']=  status ;
+			obj['weight']=  weight ;
+			obj['service_extras']=  extras;
+
 			data.append('run_workflows', run_workflows);
-			data.append('service_extras', extras);
+			data.append('current' , 0);
+
+			obj = booknetic.doFilter('appointments.save_edited_appointment.cart' , obj, data );
+			data.append('cart' , JSON.stringify([obj]));
 
 			booknetic.ajax( 'appointments.save_edited_appointment', data, function(result)
 			{

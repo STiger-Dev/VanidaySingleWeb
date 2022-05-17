@@ -5,6 +5,7 @@ namespace BookneticApp\Providers\Core;
 use BookneticApp\Backend\Boostore\Helpers\BoostoreHelper;
 use BookneticApp\Backend\Settings\Helpers\LocalizationService;
 use BookneticApp\Providers\DB\DB;
+use BookneticApp\Providers\Helpers\Date;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Curl;
 use BookneticSaaS\Providers\Helpers\Helper as SaasHelper;
@@ -360,6 +361,8 @@ class Backend
 
 		Helper::setOption( 'plugin_version', Helper::getVersion(), false );
 
+        Helper::deleteOption('addons_updates_cache', false);
+
         if ( ! empty( $result[ 'access_token' ] ) )
         {
             Helper::setOption( 'access_token', $result[ 'access_token' ], false );
@@ -402,6 +405,14 @@ class Backend
 
     private static function runMigrations ( $migrations )
     {
+        if (!empty($migrations))
+        {
+            try {
+                $timezone = Date::format( 'P' );
+                DB::DB()->query("set time_zone = '$timezone';");
+            } catch (\Exception $e) {}
+        }
+
         $migrationFiles = [];
 
         foreach ( $migrations as $migrationStep )
@@ -416,7 +427,9 @@ class Backend
 
                     if ( empty( $sqlQueryOne ) ) continue;
 
-                    DB::DB()->query( $sqlQueryOne );
+                    try {
+                        DB::DB()->query( $sqlQueryOne );
+                    } catch (\Exception $e) {}
                 }
             }
             else if  ( $migrationStep[ 'type' ] === 'script' )
@@ -463,18 +476,21 @@ class Backend
          */
         $filterName = class_exists( 'WP_Block_Editor_Context' ) ? 'block_categories_all' : 'block_categories';
 
-		add_filter( $filterName, function( $categories )
-		{
-			return array_merge(
-				$categories,
-				[
-					[
-						'slug' => 'booknetic',
-						'title' => 'Booknetic',
-					],
-				]
-			);
-		}, 10, 2);
+        if ( Route::isAjax() )
+        {
+            add_filter( $filterName, function( $categories )
+            {
+                return array_merge(
+                    $categories,
+                    [
+                        [
+                            'slug' => 'booknetic',
+                            'title' => 'Booknetic',
+                        ],
+                    ]
+                );
+            }, 10, 2);
+        }
 	}
 
 	private static function initPopupBookingGutenbergBlocks()

@@ -3,6 +3,7 @@
 namespace BookneticApp\Providers\Common;
 
 use BookneticApp\Backend\Appointments\Helpers\AppointmentRequestData;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentRequests;
 use BookneticApp\Providers\Core\Backend;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Common\PaymentGatewayService;
@@ -24,18 +25,16 @@ class LocalPayment extends PaymentGatewayService
 		add_action( 'bkntc_appointment_request_data_load', [ self::class, 'appointmentPayableToday' ]);
 	}
 
-	public function when( $status )
+	public function when( $status, $appointmentRequests = null )
 	{
 		if( ! $status )
 		{
-			if( Helper::getOption('hide_confirm_details_step', 'off') == 'on' )
+			if ( Helper::getOption( 'hide_confirm_details_step', 'off' ) == 'on' )
 			{
 				return true;
 			}
 
-			$appointmentData = AppointmentRequestData::getInstance();
-
-			if( ! empty( $appointmentData ) && $appointmentData->getSubTotal( null, true ) <= 0 )
+			if ( ! empty( $appointmentRequests ) && $appointmentRequests->getPayableToday() <= 0 )
 			{
 				return true;
 			}
@@ -45,13 +44,17 @@ class LocalPayment extends PaymentGatewayService
 	}
 
     /**
-     * @param AppointmentRequestData $appointmentObj
+     * @param AppointmentRequests $appointmentRequests
      * @return object
      */
-    public function doPayment( $appointmentObj )
+    public function doPayment( $appointmentRequests )
     {
-        $appointmentCustomerId = $appointmentObj->getFirstAppointmentCustomerId();
-        do_action( 'bkntc_payment_confirmed', $appointmentCustomerId );
+        foreach ($appointmentRequests->appointments as $appointment)
+        {
+            do_action('bkntc_appointment_before_mutation', null);
+            do_action('bkntc_appointment_after_mutation', $appointment->getFirstAppointmentId());
+            do_action('bkntc_payment_confirmed', $appointment->getFirstAppointmentId());
+        }
 
         return (object) [
             'status' => true,

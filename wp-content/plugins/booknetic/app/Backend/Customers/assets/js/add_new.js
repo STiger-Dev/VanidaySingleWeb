@@ -22,6 +22,8 @@
 				note		                = $("#input_note").val(),
 				image		                = $("#input_image")[0].files[0];
 
+
+
 			if( first_name === '' || (last_name === '' && !$("#input_last_name").parent().is('.hidden')) )
 			{
 				booknetic.toast(booknetic.__('fill_all_required'), 'unsuccess');
@@ -31,7 +33,10 @@
 			var data = new FormData();
 
 			data.append('id', $('#add_new_JS').data('customer-id'));
-			data.append('wp_user', wp_user);
+			if ( allow_customer_to_login && wp_user_use_existing == 'yes' )
+			{
+				data.append('wp_user', wp_user);
+			}
 			data.append('first_name', first_name);
 			data.append('last_name', last_name);
 			data.append('gender', gender);

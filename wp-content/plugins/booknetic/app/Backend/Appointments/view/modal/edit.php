@@ -31,7 +31,7 @@ use BookneticApp\Providers\Helpers\Helper;
 
             <div class="tab-content mt-5">
                 <?php foreach ( TabUI::get( 'appointments_edit' )->getSubItems() as $tab ): ?>
-                    <div class="tab-pane" data-tab-content="appointments_edit_<?php echo $tab->getSlug(); ?>" id="tab_<?php echo $tab->getSlug(); ?>"><?php echo $tab->getContent( $parameters[ 'data' ] ); ?></div>
+                    <div class="tab-pane" data-tab-content="appointments_edit_<?php echo $tab->getSlug(); ?>" id="tab_<?php echo $tab->getSlug(); ?>"><?php echo $tab->getContent( $parameters[ 'id' ] ); ?></div>
                 <?php endforeach; ?>
             </div>
 		</form>

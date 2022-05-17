@@ -2,9 +2,10 @@
 
 namespace BookneticApp\Providers\Common;
 
-use BookneticApp\Backend\Appointments\Helpers\AppointmentCustomerSmartObject;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentRequests;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentSmartObject;
 use BookneticApp\Backend\Appointments\Helpers\AppointmentRequestData;
-use BookneticApp\Models\AppointmentCustomer;
+use BookneticApp\Models\Appointment;
 use BookneticApp\Providers\Helpers\Helper;
 
 class PaymentGatewayService
@@ -107,13 +108,34 @@ class PaymentGatewayService
 		include( $view );
 	}
 
-    public function isEnabled()
+    public function isEnabled( $appointmentRequests = null )
     {
     	$enabled = Helper::getOption( $this->slug . '_payment_enabled', 'off') === 'on';
 
+        if ( ! empty( $appointmentRequests ) )
+        {
+            foreach ($appointmentRequests->appointments as $appointmentRequestData)
+            {
+                $serviceCustomPaymentMethods = $appointmentRequestData->serviceInf->getData( 'custom_payment_methods' );
+                $serviceCustomPaymentMethods = json_decode( $serviceCustomPaymentMethods,true );
+                $serviceCustomPaymentMethods = empty( $serviceCustomPaymentMethods ) ? PaymentGatewayService::getEnabledGatewayNames() : $serviceCustomPaymentMethods;
+
+                if ( ! in_array( $this->slug, $serviceCustomPaymentMethods ) )
+                {
+                    $enabled = false;
+
+                    break;
+                }
+                else
+                {
+                    $enabled = true;
+                }
+            }
+        }
+
     	if( method_exists( $this, 'when' ) )
 	    {
-	    	return $this->when( $enabled );
+	    	return $this->when( $enabled, $appointmentRequests );
 	    }
 
         return $enabled;
@@ -126,10 +148,10 @@ class PaymentGatewayService
 
     /**
      * Override this method to accept incoming payment requests
-     * @param AppointmentRequestData $appointmentObj
+     * @param AppointmentRequests $appointmentRequests
      * @return mixed
      */
-    public function doPayment( $appointmentObj )
+    public function doPayment( $appointmentRequests )
     {
         return null;
     }
@@ -218,9 +240,8 @@ class PaymentGatewayService
 	}
 
 
-	public static function confirmPayment( $appointmentCustomerId )
+	public static function confirmPayment( $paymentId )
 	{
-		$info                       =   AppointmentCustomerSmartObject::load( $appointmentCustomerId );
         $successAppointmentStatus   =   Helper::getOption('successful_payment_status');
 
         $updateData  = [ 'payment_status' => 'paid' ];
@@ -230,28 +251,24 @@ class PaymentGatewayService
             $updateData['status'] = $successAppointmentStatus;
         }
 
-        AppointmentCustomer::where('id', $appointmentCustomerId)
-            ->update( $updateData );
+        Appointment::where('payment_id' , $paymentId )
+            ->where('payment_status', 'pending')
+            ->update($updateData);
 
-		if( $info->getServiceInf()->is_recurring == 1 && $info->getInfo()->recurring_payment_type == 'full' )
-		{
-            AppointmentCustomer::where('id', '!=', $appointmentCustomerId)
-                ->where('recurring_id', $info->getInfo()->recurring_id)
-                ->update( $updateData );
-		}
-		else
-		{
-            AppointmentCustomer::where('id', '!=', $appointmentCustomerId)
-                ->where('recurring_id', $info->getInfo()->recurring_id)
-                ->update( [ 'payment_status' => 'pending', 'paid_amount' => 0, 'payment_method' => 'local' ] );
-		}
+        $appointments = Appointment::where('payment_id',$paymentId)
+            ->groupBy(['recurring_id'])
+            ->fetchAll();
 
-		do_action( 'bkntc_payment_confirmed', $appointmentCustomerId );
+        foreach ($appointments as $appointment)
+        {
+            do_action('bkntc_appointment_before_mutation', null);
+            do_action('bkntc_appointment_after_mutation', $appointment->id);
+            do_action('bkntc_payment_confirmed', $appointment->id);
+        }
 	}
 
-	public static function cancelPayment( $appointmentCustomerId )
+	public static function cancelPayment( $paymentId )
 	{
-		$info = AppointmentCustomerSmartObject::load( $appointmentCustomerId );
 
         $updateData = [
             'payment_status'    =>  'canceled'
@@ -263,13 +280,14 @@ class PaymentGatewayService
             $updateData['status'] = $failedStatus;
         }
 
-        AppointmentCustomer::where('recurring_id', $info->getInfo()->recurring_id)
+        Appointment::where('payment_id', $paymentId )
+                           ->where('payment_status' , 'pending')
 		                   ->update($updateData);
 
 		/**
 		 * @doc bkntc_payment_confirmed Trigger events when payment canceled
 		 */
-		do_action( 'bkntc_payment_canceled', $appointmentCustomerId );
+		do_action( 'bkntc_payment_canceled', Appointment::where('payment_id',$paymentId)->fetch()->id );
 	}
 
 }

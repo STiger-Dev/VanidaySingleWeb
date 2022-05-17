@@ -2,7 +2,7 @@
 
 namespace BookneticApp\Backend\Customers;
 
-use BookneticApp\Models\AppointmentCustomer;
+use BookneticApp\Models\Appointment;
 use BookneticApp\Models\Customer;
 use BookneticApp\Providers\UI\DataTableUI;
 use BookneticApp\Providers\Core\Capabilities;
@@ -16,7 +16,7 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 	{
 		Capabilities::must( 'customers' );
 
-        $lastAppDateSubQuery = AppointmentCustomer::innerJoin('appointment', ['date'], null, null, true)->where('customer_id', '=', DB::field('id', 'customers'))->orderBy('created_at desc')->limit(1);
+        $lastAppDateSubQuery = Appointment::where('customer_id', '=', DB::field('id', 'customers'))->select('created_at', true)->orderBy('created_at desc')->limit(1);
 		$dataTable = new DataTableUI( Customer::select('*')->selectSubQuery($lastAppDateSubQuery, 'last_appointment_date') );
 
 		$dataTable->setTitle(bkntc__('Customers'));
@@ -64,7 +64,7 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 		// check if appointment exist
 		foreach ( $ids AS $id )
 		{
-			$checkAppointments = AppointmentCustomer::where('customer_id', $id)->fetch();
+			$checkAppointments = Appointment::where('customer_id', $id)->fetch();
 			if( $checkAppointments )
 			{
 				Helper::response(false, bkntc__('The Customer has been added some Appointments. Firstly remove them!'));
@@ -92,9 +92,9 @@ class Controller extends \BookneticApp\Providers\Core\Controller
                     }
 				}
 			}
-		}
 
-        Customer::where('id', $ids)->delete();
+            Customer::where('id', $id)->delete();
+		}
 	}
 
 }

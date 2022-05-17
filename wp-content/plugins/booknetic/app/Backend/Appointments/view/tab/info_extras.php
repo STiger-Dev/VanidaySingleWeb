@@ -16,31 +16,30 @@ if ( empty( $parameters['extras'] ) )
 }
 else
 {
-	foreach ( $parameters['extras'] AS $customerInf )
+	foreach ( $parameters['extras'] AS $extra )
 	{
+        ?>
 
-		echo '<div class="customer-fields-area dashed-border pb-3">';
-		echo Helper::profileCard( $customerInf['name'] , $customerInf['profile_image'], $customerInf['email'], 'Customers' );
+        <div class="form-row extra_row dashed-border" data-id="3" data-active="1">
+            <div class="form-group col-md-4">
+                <label class="text-primary">Name:</label>
+                <div class="form-control-plaintext" data-tag="name"><?php echo $extra['service_extras_name'] ?></div>
+            </div>
+            <div class="form-group col-md-3">
+                <label>Duration:</label>
+                <div class="form-control-plaintext" data-tag="duration"><?php echo empty($extra['duration'])?'-':Helper::secFormat( $extra['duration'] * 60 )?></div>
+            </div>
+            <div class="form-group col-md-2">
+                <label>Price:</label>
+                <div class="form-control-plaintext" data-tag="price"><?php echo Helper::price( $extra['price'] * $extra['quantity'] )?></div>
+            </div>
+            <div class="form-group col-md-3">
+                <label>Quantity:</label>
+                <div class="form-control-plaintext" data-tag="quantity"><?php echo $extra['quantity'] ?></div>
+            </div>
+        </div>
 
-		echo '<div class="row text-primary"><div class="col-md-4">' . bkntc__('Extra name') . '</div><div class="col-md-3">' . bkntc__('Duration') . '</div><div class="col-md-3">' . bkntc__('Price') . '</div></div>';
-		foreach ( $customerInf['extras'] AS $extra )
-		{
-			?>
-			<div class="row mt-1">
-				<div class="col-md-4">
-					<div class="form-control-plaintext"><?php echo htmlspecialchars($extra['service_extras_name'])?><span class="btn btn-xs btn-light-warning ml-2">x<?php echo (int)$extra['quantity']?></span></div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-control-plaintext"><?php echo empty($extra['duration'])?'-':Helper::secFormat( $extra['duration'] * 60 )?></div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-control-plaintext"><?php echo Helper::price( $extra['price'] * $extra['quantity'] )?></div>
-				</div>
-			</div>
-			<?php
-		}
-
-		echo '</div>';
-	}
+        <?php
+    }
 }
 ?>

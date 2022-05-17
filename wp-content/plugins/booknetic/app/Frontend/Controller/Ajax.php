@@ -2,31 +2,23 @@
 
 namespace BookneticApp\Frontend\Controller;
 
-use BookneticApp\Backend\Appearance\Helpers\Theme;
-use BookneticApp\Backend\Appointments\Helpers\AppointmentCustomerSmartObject;
-use BookneticApp\Backend\Appointments\Helpers\AppointmentRequestData;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentRequests;
 use BookneticApp\Backend\Appointments\Helpers\CalendarService;
 use BookneticApp\Providers\Core\Capabilities;
-use BookneticApp\Providers\Helpers\Math;
 use BookneticApp\Backend\Appointments\Helpers\AppointmentService;
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
 use BookneticApp\Models\Customer;
-use BookneticApp\Models\Location;
 use BookneticApp\Models\Service;
 use BookneticApp\Models\ServiceCategory;
 use BookneticApp\Models\ServiceExtra;
 use BookneticApp\Models\ServiceStaff;
 use BookneticApp\Models\Staff;
-use BookneticApp\Providers\Helpers\Curl;
 use BookneticApp\Providers\Helpers\Date;
 use BookneticApp\Providers\DB\DB;
 use BookneticApp\Frontend;
 use BookneticApp\Providers\Core\FrontendAjax;
 use BookneticApp\Providers\Helpers\Helper;
-use BookneticApp\Providers\Core\Permission;
 use BookneticApp\Providers\Common\PaymentGatewayService;
-use Cassandra\Custom;
 
 class Ajax extends FrontendAjax
 {
@@ -38,46 +30,13 @@ class Ajax extends FrontendAjax
 	}
 
 	// is okay + tested
-	public function get_data_location( $return_as_array = false )
+	public function get_data_location()
 	{
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load();
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+		$appointmentRequests = AppointmentRequests::load();
 
-		$locations      = Location::where('is_active', 1)->orderBy('id');
+        $appointmentObj = $appointmentRequests->currentRequest();
 
-		if( $appointmentObj->staffId > 0 )
-		{
-			$locationsFilter = empty( $appointmentObj->staffInf->locations ) ? [0] : explode( ',', $appointmentObj->staffInf->locations );
-			$locations->where('id', $locationsFilter);
-		}
-		else if( $appointmentObj->serviceId > 0 )
-		{
-			$locationsFilter    = [];
-			$staffList          = ServiceStaff::where('service_id', $appointmentObj->serviceId)->leftJoin( 'staff', ['locations'] )->fetchAll();
-
-			foreach ( $staffList AS $staffInf )
-			{
-				$locationsFilter = array_merge( $locationsFilter, explode(',', $staffInf->staff_locations) );
-			}
-
-			$locationsFilter = array_unique( $locationsFilter );
-			$locationsFilter = empty( $locationsFilter ) ? [0] : $locationsFilter;
-
-			$locations->where('id', $locationsFilter);
-		}
-
-		$locations	= $locations->fetchAll();
-
-		if( $return_as_array )
-		{
-			return $locations;
-		}
+		$locations = $appointmentObj->getAvailableLocations()->fetchAll();
 
 		return $this->view('booking_panel.locations', [
 			'locations'		=>	$locations
@@ -113,14 +72,9 @@ class Ajax extends FrontendAjax
 	// isokay + tested
 	public function get_data_staff()
 	{
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load();
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        $appointmentRequests = AppointmentRequests::load();
+
+        $appointmentObj = $appointmentRequests->currentRequest();
 
 		$staffList      = Staff::where('is_active', 1)->orderBy('id');
 
@@ -160,17 +114,19 @@ class Ajax extends FrontendAjax
 
 		$staffList = $staffList->fetchAll();
 
-		if( $appointmentObj->getAppointmentsCount() > 0 )
+        $this->handleCalendarServiceCartAppointments( $appointmentRequests );
+
+		if( $appointmentObj->getTimeslotsCount() > 0 )
 		{
 			$onlyAvailableStaffList = [];
 
 			foreach ( $staffList AS $staffInf )
 			{
 				$appointmentObj->staffId            = $staffInf->id;
-				$appointmentObj->appointmentList    = null;
+				$appointmentObj->timeslots    = null;
 				$staffIsOkay                        = true;
 
-				foreach ( $appointmentObj->getAllAppointments() AS $timeSlot )
+				foreach ($appointmentObj->getAllTimeslots() AS $timeSlot )
 				{
 					if( ! $timeSlot->isBookable() )
 					{
@@ -183,7 +139,7 @@ class Ajax extends FrontendAjax
 					$onlyAvailableStaffList[] = $staffInf;
 
 				$appointmentObj->staffId = null;
-				$appointmentObj->appointmentList = null;
+				$appointmentObj->timeslots = null;
 			}
 
 			$staffList = $onlyAvailableStaffList;
@@ -196,14 +152,9 @@ class Ajax extends FrontendAjax
 
 	public function get_data_service()
 	{
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load();
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        $appointmentRequests = AppointmentRequests::load();
+
+        $appointmentObj = $appointmentRequests->currentRequest();
 
 		$queryAttrs = [ $appointmentObj->staffId ];
 		if( $appointmentObj->serviceCategoryId > 0 )
@@ -243,14 +194,9 @@ class Ajax extends FrontendAjax
 
 	public function get_data_service_extras()
 	{
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load();
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        $appointmentRequests = AppointmentRequests::load();
+
+        $appointmentObj = $appointmentRequests->currentRequest();
 
 		$extras		    = ServiceExtra::where('service_id', $appointmentObj->serviceId)->where('is_active', 1)->where('max_quantity', '>', 0)->orderBy('id')->fetchAll();
 
@@ -262,19 +208,16 @@ class Ajax extends FrontendAjax
 
 	public function get_data_date_time()
 	{
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load();
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        $appointmentRequests = AppointmentRequests::load();
+
+        $appointmentObj = $appointmentRequests->currentRequest();
 
 		if( ! $appointmentObj->serviceInf )
 		{
 			return $this->response( false, bkntc__('Please fill in all required fields correctly!') );
 		}
+
+        $this->handleCalendarServiceCartAppointments($appointmentRequests);
 
 		$month			= Helper::_post('month', (int)Date::format('m'), 'int', [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ]);
 		$year			= Helper::_post('year', Date::format('Y'), 'int');
@@ -330,14 +273,9 @@ class Ajax extends FrontendAjax
 	// isokay
 	public function get_data_recurring_info()
 	{
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load();
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        $appointmentRequests = AppointmentRequests::load();
+
+        $appointmentObj = $appointmentRequests->currentRequest();
 
 		if( ! $appointmentObj->isRecurring() )
 		{
@@ -368,14 +306,9 @@ class Ajax extends FrontendAjax
 
 	public function get_data_information()
 	{
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load();
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+        $appointmentRequests = AppointmentRequests::load();
+
+        $appointmentObj = $appointmentRequests->currentRequest();
 
 		if( $appointmentObj->serviceId <= 0 )
 		{
@@ -392,9 +325,12 @@ class Ajax extends FrontendAjax
 		$surname	= '';
 		$email		= '';
 		$phone 		= '';
+        $emailDisabled = false;
+
 
 		if( is_user_logged_in() )
 		{
+            $emailDisabled = true;
             $wpUserId = get_current_user_id();
             $checkCustomerExists = Customer::where('user_id', $wpUserId)->fetch();
 
@@ -414,17 +350,31 @@ class Ajax extends FrontendAjax
                 $email		= $userData->user_email;
                 $phone		= get_user_meta( $wpUserId, 'billing_phone', true );
             }
-
+        }
+        else
+        {
+            $appointmentCount = count($appointmentRequests->appointments);
+            if ( $appointmentCount > 1 )
+            {
+                $lastAppointment = $appointmentRequests->appointments[$appointmentCount-2];
+                $name       = isset($lastAppointment->customerData['first_name']) ? $lastAppointment->customerData['first_name'] : '';
+                $surname    = isset($lastAppointment->customerData['last_name']) ? $lastAppointment->customerData['last_name'] : '';
+                $email      = isset($lastAppointment->customerData['email']) ? $lastAppointment->customerData['email'] : '';
+                $phone      = isset($lastAppointment->customerData['phone']) ? $lastAppointment->customerData['phone'] : '';
+            }
         }
 
 		$emailIsRequired = Helper::getOption('set_email_as_required', 'on');
 		$phoneIsRequired = Helper::getOption('set_phone_as_required', 'off');
 
 		$howManyPeopleCanBring = false;
-		foreach ( $appointmentObj->getAllAppointments() AS $appointments )
+
+        $appointmentObj->handleAnyStaffOption();
+
+		foreach ($appointmentObj->getAllTimeslots() AS $appointments )
 		{
 			$timeslotInf = $appointments->getInfo();
-			$availableSpaces = $timeslotInf['max_capacity'] - $timeslotInf['number_of_customers'] - 1;
+			$availableSpaces = $timeslotInf['max_capacity'] - $timeslotInf['weight'] - 1;
 
 			if( $howManyPeopleCanBring === false || $availableSpaces < $howManyPeopleCanBring )
 			{
@@ -442,6 +392,7 @@ class Ajax extends FrontendAjax
 
 			'email_is_required'	        => $emailIsRequired,
 			'phone_is_required'	        => $phoneIsRequired,
+            'email_disabled'            => $emailDisabled,
 
 			'show_only_name'            => Helper::getOption('separate_first_and_last_name', 'on') == 'off',
 
@@ -449,30 +400,56 @@ class Ajax extends FrontendAjax
 		]);
 	}
 
+    public function get_data_cart()
+    {
+        $currentIndex = Helper::_post('current' , 0 ,'int');
+        $appointmentRequests = AppointmentRequests::load();
+
+        return $this->view( 'booking_panel.cart', [
+            'appointmentList'   => $appointmentRequests ,
+            'current_index'     => $currentIndex
+        ] );
+    }
+
 	// isokay
 	public function get_data_confirm_details()
 	{
-		try
-		{
-			$appointmentObj = AppointmentRequestData::load( false, true );
-		}
-		catch ( \Exception $e )
-		{
-			return $this->response( false, $e->getMessage() );
-		}
+
+        $appointmentRequests = AppointmentRequests::load();
+
+        if( ! $appointmentRequests->validate() )
+        {
+            return $this->response(false,['errors'=>$appointmentRequests->getErrors()]);
+        }
+
+        $appointmentObj = $appointmentRequests->currentRequest();
 
 		$hide_confirm_step      = Helper::getOption('hide_confirm_details_step', 'off') == 'on';
 		$hide_price_section	    = Helper::getOption('hide_price_section', 'off');
-		$hideMothodSelecting    = $appointmentObj->getSubTotal( null, true ) <= 0 ? true : Helper::getOption('disable_payment_options', 'off') == 'on';
+		$hideMethodSelecting    = $appointmentRequests->getSubTotal(true) <= 0 || Helper::getOption('disable_payment_options', 'off') == 'on';
+
+        $arr = [
+            PaymentGatewayService::getInstalledGatewayNames()
+        ];
+
+        foreach ($appointmentRequests->appointments as $appointmentRequestData)
+        {
+            $serviceCustomPaymentMethods = $appointmentRequestData->serviceInf->getData( 'custom_payment_methods' );
+            $serviceCustomPaymentMethods = json_decode( $serviceCustomPaymentMethods ,true );
+            $arr[] = empty( $serviceCustomPaymentMethods ) ? PaymentGatewayService::getEnabledGatewayNames() : $serviceCustomPaymentMethods;
+        }
+
+        $allowedPaymentMethods = call_user_func_array('array_intersect' , $arr);
 
 		return $this->view('booking_panel.confirm_details', [
-			'appointmentData'       =>  $appointmentObj,
-
-			'hide_confirm_step'		=>	$hide_confirm_step,
-			'hide_payments'			=>	$hideMothodSelecting,
-			'hide_price_section'    =>  $hide_price_section == 'on',
+			'appointmentData'           =>  $appointmentObj,
+            'custom_payment_methods'    =>  $allowedPaymentMethods,
+            'appointment_requests'      =>  $appointmentRequests,
+			'hide_confirm_step'		    =>	$hide_confirm_step,
+            'hide_payments'			    =>	$hideMethodSelecting,
+            'hide_price_section'        =>  $hide_price_section == 'on',
 		], [
-            'has_deposit'           =>  $appointmentObj->hasDeposit()
+            'has_deposit'               =>  $appointmentObj->hasDeposit()
         ] );
 	}
 
@@ -485,108 +462,107 @@ class Ajax extends FrontendAjax
 		try
 		{
 			AjaxHelper::validateGoogleReCaptcha();
-
-			$appointmentObj = AppointmentRequestData::load( false, true );
 		}
 		catch ( \Exception $e )
 		{
 			return $this->response( false, $e->getMessage() );
 		}
 
-		$appointmentObj->registerNewCustomer();
+        $appointmentRequests = AppointmentRequests::load();
 
-		if( $appointmentObj->isRecurring() && empty( $appointmentObj->recurringAppointmentsList ) )
-		{
-			return $this->response(false, bkntc__('Please fill in all required fields correctly!'));
-		}
-
-		do_action( 'bkntc_booking_step_confirmation_validation', $appointmentObj );
-
-		$paymentGateway = PaymentGatewayService::find( $appointmentObj->paymentMethod );
-
-		if( ( ! $paymentGateway || ! $paymentGateway->isEnabled() ) && $appointmentObj->paymentMethod !== 'local' )
-		{
-			return $this->response(false, bkntc__('Please fill in all required fields correctly!'));
-		}
-
-        if( $appointmentObj->paymentMethod === 'local' && ! in_array( 'local', PaymentGatewayService::getEnabledGatewayNames() ) )
+        if( ! $appointmentRequests->validate() )
         {
-            return $this->response(false, bkntc__('Method is not active'));
+            return $this->response(false,$appointmentRequests->getFirstError());
         }
 
-		try
+        foreach ($appointmentRequests->appointments as $appointment)
+        {
+            if( $appointment->isRecurring() && empty( $appointment->recurringAppointmentsList ) )
+            {
+                return $this->response(false, bkntc__('Please fill in all required fields correctly!'));
+            }
+        }
+
+
+		do_action( 'bkntc_booking_step_confirmation_validation', $appointmentRequests );
+
+		$paymentGateway = PaymentGatewayService::find( $appointmentRequests->paymentMethod );
+
+		if ( ( ! $paymentGateway || ! $paymentGateway->isEnabled( $appointmentRequests ) ) && $appointmentRequests->paymentMethod !== 'local' )
 		{
-			do_action( 'bkntc_before_appointment_created' );
-		}
-		catch ( \Exception $e )
-		{
-			return  $this->response( false, $e->getMessage() );
+			return $this->response( false, bkntc__( 'Payment method is not supported' ) );
 		}
 
-		AppointmentService::createAppointment( $appointmentObj );
+        if ( $appointmentRequests->paymentMethod === 'local' && ! $paymentGateway->isEnabled( $appointmentRequests ) )
+        {
+            return $this->response( false, bkntc__( 'Payment method is not supported' ) );
+        }
 
-        /*doit add_action()*/
-		do_action( 'bkntc_after_appointment_created' , $appointmentObj );
+        foreach ($appointmentRequests->appointments as $appointment)
+        {
+            $appointment->registerNewCustomer();
+        }
 
-		$payment = $paymentGateway->doPayment( $appointmentObj );
+		AppointmentService::createAppointment( $appointmentRequests );
+
+		$payment = $paymentGateway->doPayment( $appointmentRequests );
 
 		$responseStatus = is_bool( $payment->status ) ? $payment->status : false;
 		$responseData   = is_array( $payment->data ) ? $payment->data : [];
 
-		$responseData['id']                     = $appointmentObj->getFirstAppointmentCustomerId();
-		$responseData['google_calendar_url']    = AjaxHelper::addToGoogleCalendarURL( $appointmentObj );
+		$responseData['id']                     = $appointmentRequests->appointments[0]->getFirstAppointmentId();
+		$responseData['google_calendar_url']    = AjaxHelper::addToGoogleCalendarURL( $appointmentRequests->appointments[0] );
 
-        $appointmentTokenArr                    = AppointmentCustomer::get( $responseData['id'] )->toArray();
-        unset($appointmentTokenArr['payment_status']);
-        unset($appointmentTokenArr['status']);
-		$responseData['unique_token']           = md5( json_encode( $appointmentTokenArr ) );
+		$responseData['payment_id']           = Appointment::get( $responseData['id'] )->payment_id;
 
 		return $this->response( $responseStatus, $responseData );
 	}
 
 	public function delete_unpaid_appointment()
 	{
-		$appointmentCustomerId          = Helper::_post('id', 0, 'int');
-		$uniqueToken                    = Helper::_post('unique_token', '', 'string');
-		$appointmentCustomerSmartObject = AppointmentCustomerSmartObject::load( $appointmentCustomerId );
+		$paymentId                    = Helper::_post('payment_id', '', 'string');
+        $appointmentList = Appointment::where('payment_id' , $paymentId )->where('payment_status' ,'<>','paid')->fetchAll();
 
-		if( ! $appointmentCustomerSmartObject->getInfo() )
+		if( empty($appointmentList) )
 		{
 			return $this->response( true );
 		}
 
-		$customerId                     = $appointmentCustomerSmartObject->getInfo()->customer_id;
-
-        $appointmentTokenArr            = AppointmentCustomer::get( $appointmentCustomerId )->toArray();
-        unset($appointmentTokenArr['payment_status']);
-        unset($appointmentTokenArr['status']);
-
-		if( empty( $uniqueToken ) || md5( json_encode( $appointmentTokenArr ) ) != $uniqueToken )
-		{
-			return $this->response( false );
-		}
-
-		foreach ( $appointmentCustomerSmartObject->getAllRecurringAppointmentCustomersId() AS $ac_id )
-		{
-            $a_id = AppointmentCustomerSmartObject::load( $ac_id )->getAppointmentInfo()->id;
-
-            AppointmentService::deleteAppointmentCustomer( $ac_id );
-
-			$checkSlotIsEmpty = AppointmentCustomer::where( 'appointment_id', $a_id )->count();
-
-			if ( $checkSlotIsEmpty == 0 )
-			{
-				AppointmentService::deleteAppointment( $a_id );
-			}
-		}
+        foreach ($appointmentList as $appointment)
+        {
+            AppointmentService::deleteAppointment( $appointment->id );
+        }
 
 		return $this->response( true );
 	}
 
+    // doit: bu evvel backendin ajaxin simulyasiya edirdi, baxaq umumi helpere cixaraq sonda
 	public function get_available_times_all()
 	{
-		$ajax = new \BookneticApp\Backend\Appointments\Ajax();
-		return $ajax->get_available_times_all();
+        $appointmentRequests = AppointmentRequests::load();
+
+        $appointmentObj = $appointmentRequests->currentRequest();
+
+        $search		= Helper::_post('q', '', 'string');
+        $service	= $appointmentObj->serviceId;
+        $location	= $appointmentObj->locationId;
+        $staff		= $appointmentObj->staffId;
+        $dayOfWeek	= Helper::_post('day_number', 1, 'int');
+
+        if( $dayOfWeek != -1 )
+        {
+            $dayOfWeek -= 1;
+        }
+
+        $calendarServ = new CalendarService();
+
+        $calendarServ->setStaffId( $staff )
+            ->setServiceId( $service )
+            ->setLocationId( $location );
+
+        return $this->response(true, [
+            'results' => $calendarServ->getCalendarByDayOfWeek( $dayOfWeek, $search )
+        ]);
 	}
 
 	public function get_available_times()
@@ -595,10 +571,26 @@ class Ajax extends FrontendAjax
         return $ajax->get_available_times( false );
 	}
 
+    // doit: bu evvel backendin ajaxin simulyasiya edirdi, baxaq umumi helpere cixaraq sonda
 	public function get_day_offs()
 	{
-		$ajax = new \BookneticApp\Backend\Appointments\Ajax();
-		return $ajax->get_day_offs();
+        $appointmentRequests = AppointmentRequests::load();
+
+        $appointmentObj = $appointmentRequests->currentRequest();
+
+        if(
+            ! Date::isValid( $appointmentObj->recurringStartDate )
+            || ! Date::isValid( $appointmentObj->recurringEndDate )
+            || $appointmentObj->serviceId <= 0
+        )
+        {
+            return $this->response(false, bkntc__('Please fill in all required fields correctly!'));
+        }
+
+        $calendarService = new CalendarService( $appointmentObj->recurringStartDate, $appointmentObj->recurringEndDate );
+        $calendarService->setDefaultsFrom( $appointmentObj );
+
+        return $this->response( true, $calendarService->getDayOffs() );
 	}
 
 	private function __getServiceCategoryName( $categId )
@@ -628,5 +620,52 @@ class Ajax extends FrontendAjax
 		return implode(' > ', array_reverse($categNames));
 	}
 
+    private function handleCalendarServiceCartAppointments( AppointmentRequests  $appointmentRequests )
+    {
+        add_filter('bkntc_staff_appointments', function ($staffAppointments, CalendarService $calendarService) use ($appointmentRequests)
+        {
+            for ($i = 0; $i < count($appointmentRequests->appointments) - 1; $i++)
+            {
+                $appointmentRequest = $appointmentRequests->appointments[$i];
 
+                // note: anystaff olduqda bütün stafflara əlavə olunur, digər halda staff_id eynidirsə
+                if ($appointmentRequest->staffId != $calendarService->getStaffId() && $appointmentRequest->staffId > 0)
+                    continue;
+
+                foreach ($appointmentRequest->getAllTimeslots() as $timeslot)
+                {
+                    // add or merge $timeslot into $staffAppointments
+                    $merged = false;
+                    foreach ($staffAppointments as $staffAppointment)
+                    {
+                        if (
+                            $staffAppointment->starts_at == $timeslot->getTimestamp() &&
+                            $staffAppointment->service_id == $timeslot->getServiceId() &&
+                            $staffAppointment->location_id == $timeslot->getLocationId()
+                        )
+                        {
+                            $staffAppointment->total_weight += $appointmentRequest->weight;
+                            $merged = true;
+                            break;
+                        }
+                    }
+
+                    if ($merged) continue;
+
+                    $a = new Appointment();
+                    $a->staff_id = $calendarService->getStaffId();
+                    $a->location_id = $timeslot->getLocationId();
+                    $a->service_id = $timeslot->getServiceId();
+                    $a->starts_at = $timeslot->getTimestamp();
+                    $a->ends_at = $timeslot->getTimestamp() + ((int) $appointmentRequest->serviceInf->duration + (int) $appointmentRequest->getExtrasDuration()) * 60;
+                    $a->busy_from = $timeslot->getTimestamp() - ((int) $appointmentRequest->serviceInf->buffer_before) * 60;
+                    $a->busy_to = $timeslot->getTimestamp() + ((int) $appointmentRequest->serviceInf->duration + (int) $appointmentRequest->getExtrasDuration() + (int) $appointmentRequest->serviceInf->buffer_after) * 60;
+                    $a->total_weight = $appointmentRequest->weight;
+                    $staffAppointments[] = $a;
+                }
+            }
+
+            return $staffAppointments;
+        }, 10, 2);
+    }
 }

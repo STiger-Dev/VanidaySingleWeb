@@ -3,8 +3,7 @@
 namespace BookneticApp\Backend\Appointments\Helpers;
 
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
-use BookneticApp\Models\AppointmentCustomerPrice;
+use BookneticApp\Models\AppointmentPrice;
 use BookneticApp\Models\Customer;
 use BookneticApp\Models\Location;
 use BookneticApp\Models\Service;
@@ -13,17 +12,10 @@ use BookneticApp\Models\Staff;
 use BookneticApp\Providers\DB\Collection;
 use BookneticApp\Providers\Helpers\Math;
 
-class AppointmentCustomerSmartObject
+class AppointmentSmartObject
 {
 
-	private static $appointmentCustomerDataById = [];
-
-	private $appointmentCustomerId;
-
-	/**
-	 * @var AppointmentCustomer
-	 */
-	private $appointmentCustomerInf;
+	private $appointmentId;
 
 	/**
 	 * @var Appointment
@@ -56,7 +48,7 @@ class AppointmentCustomerSmartObject
 	private $customerInf;
 
 	/**
-	 * @var AppointmentCustomerPrice[]
+	 * @var AppointmentPrice[]
 	 */
 	private $prices;
 
@@ -65,14 +57,14 @@ class AppointmentCustomerSmartObject
      */
     private $noTenant;
 
-    public function __construct( $appointmentCustomerId, $noTenant = false )
+    public function __construct( $appointmentId, $noTenant = false )
 	{
-		$this->appointmentCustomerId = $appointmentCustomerId;
+		$this->appointmentId = $appointmentId;
         $this->noTenant = $noTenant;
 	}
 
 	/**
-	 * AppointmentCustomer`in movcudlugunu ve
+	 * Appointment`in movcudlugunu ve
 	 * Appointment`e permissionun movcudlugunu validate edir.
 	 * Permission classindan avtomatik olaraq Appointment modeline staff_id`e gore filter elave edilir.
 	 * Bu filterin admine aidiyyati yoxdu. Yalniz staff`lar uchundur ki, bir staff ancaq oz appointmentlerini gore bilsin.
@@ -81,43 +73,35 @@ class AppointmentCustomerSmartObject
 	 */
 	public function validate()
 	{
-		return $this->getInfo() && $this->getAppointmentInfo() ? true : false;
+		return $this->getInfo() ? true : false;
 	}
 
-	public static function load( $appointmentCustomerId, $noTenant = false )
+	public static function load( $appointmentId, $noTenant = false )
 	{
-		/*if( ! isset( self::$appointmentCustomerDataById[ $appointmentCustomerId ] ) )
-		{
-		}
-		*/
-		self::$appointmentCustomerDataById[ $appointmentCustomerId ] = new AppointmentCustomerSmartObject( $appointmentCustomerId, $noTenant );;
-
-		return self::$appointmentCustomerDataById[ $appointmentCustomerId ];
+        return new AppointmentSmartObject( $appointmentId, $noTenant );
 	}
 
 	public function getInfo()
 	{
-		if( is_null( $this->appointmentCustomerInf ) )
+		if( is_null( $this->appointmentInf ) )
 		{
-			$this->appointmentCustomerInf = AppointmentCustomer::get( $this->getId() );
+			$this->appointmentInf = Appointment::where('id', $this->getId())->noTenant($this->noTenant)->fetch();
 		}
 
-		return $this->appointmentCustomerInf;
+		return $this->appointmentInf;
 	}
 
 	public function getId()
 	{
-		return $this->appointmentCustomerId;
+		return $this->appointmentId;
 	}
 
+	/**
+	 * @deprecated
+	 * */
 	public function getAppointmentInfo()
 	{
-		if( is_null( $this->appointmentInf ) )
-		{
-			$this->appointmentInf = $this->getInfo() ? $this->getInfo()->appointment()->noTenant($this->noTenant)->fetch() : false;
-		}
-
-		return $this->appointmentInf;
+		return $this->getInfo();
 	}
 
 	public function getStaffInf()
@@ -200,18 +184,18 @@ class AppointmentCustomerSmartObject
 
         if ( $sumForAllRecurringAppointments )
         {
-            $appointmentCustomers = $this->getAllRecurringAppointmentCustomersId();
+            $appointmentIds = $this->getAllRecurringAppointmentIds();
         }
         else
         {
-            $appointmentCustomers = [ $this->getId() ];
+            $appointmentIds = [ $this->getId() ];
         }
 
-        foreach ( $appointmentCustomers as $appCustomerID )
+        foreach ( $appointmentIds as $appointmentId )
         {
-            $appointmentCustomerSmartObject = AppointmentCustomerSmartObject::load( $appCustomerID, $this->noTenant );
+            $appointmentSmartObject = AppointmentSmartObject::load( $appointmentId, $this->noTenant );
 
-            foreach ( $appointmentCustomerSmartObject->getPrices() AS $priceInf )
+            foreach ( $appointmentSmartObject->getPrices() AS $priceInf )
             {
                 $subTotal += $priceInf->price * $priceInf->negative_or_positive;
             }
@@ -240,36 +224,18 @@ class AppointmentCustomerSmartObject
         if( ! $this->getServiceInf()->is_recurring )
             return [ $this->getInfo()->id ];
 
-        $appointmentCustomers   = AppointmentCustomer::where( 'recurring_id', $this->getInfo()->recurring_id )
-            ->select(['appointment_id'], true)
+        $appointments   = Appointment::where( 'recurring_id', $this->getInfo()->recurring_id )
+            ->select([Appointment::getField('id')], true)
             ->fetchAll();
         $idList         = [];
 
-        foreach ( $appointmentCustomers AS $appointmentCustomer )
+        foreach ( $appointments AS $appointment )
         {
-            $idList[] = $appointmentCustomer->appointment_id;
+            $idList[] = $appointment->id;
         }
 
         return $idList;
     }
-
-	public function getAllRecurringAppointmentCustomersId()
-	{
-		if( ! $this->getServiceInf()->is_recurring )
-			return [ $this->getInfo()->id ];
-
-		$appointmentCustomers   = AppointmentCustomer::where( 'recurring_id', $this->getInfo()->recurring_id )
-            ->select(['id'], true)
-            ->fetchAll();
-		$idList         = [];
-
-		foreach ( $appointmentCustomers AS $appointmentCustomer )
-		{
-			$idList[] = $appointmentCustomer->id;
-		}
-
-		return $idList;
-	}
 
 
 }

@@ -151,14 +151,17 @@ class QueryBuilder
 
 		$relations = $model::$relations;
 
-		if( isset( $relations[ $joinTo ] ) || ( ! is_null( $field1 ) && ! is_null( $field2 ) ) )
+		if( isset( $relations[ $joinTo ] ) || ( ! is_null( $field1 ) && ! is_null( $field2 ) ) || is_array($field1) )
 		{
 			$tableName = isset( $relations[ $joinTo ] ) ? $relations[ $joinTo ][0]::getTableName() : $joinTo;
 
-			$field1 = ! is_null( $field1 ) ? $field1 : DB::table( $tableName ) . '.' . $relations[ $joinTo ][1];
-			$field2 = ! is_null( $field2 ) ? $field2 : DB::table( $this->getTableName() ) . '.' . $relations[ $joinTo ][2];
+            if (!is_array($field1))
+            {
+                $field1 = ! is_null( $field1 ) ? $field1 : DB::table( $tableName ) . '.' . $relations[ $joinTo ][1];
+                $field2 = ! is_null( $field2 ) ? $field2 : DB::table( $this->getTableName() ) . '.' . $relations[ $joinTo ][2];
+            }
 
-			$this->_properties_qb['joins'][] = [ $tableName, [ [ $field1, '=', $field2 ] ], $joinType ];
+			$this->_properties_qb['joins'][] = [ $tableName, is_array($field1) ? $field1 : [ [ $field1, '=', $field2 ] ], $joinType ];
 
 			if( !empty( $select_fields ) )
 			{

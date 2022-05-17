@@ -43,7 +43,7 @@ defined( 'ABSPATH' ) or die();
 
         <div class="form-group col-md-6">
             <label for="input_price"><?php echo bkntc__('Price')?> ( <?php echo htmlspecialchars( Helper::currencySymbol() )?> ) <span class="required-star">*</span></label>
-            <input id="input_price" class="form-control required" placeholder="0.00" value="<?php echo empty($parameters['service']['price']) ? '' : Math::floor( $parameters['service']['price'], Helper::getOption('price_number_of_decimals', '2') )?>">
+            <input id="input_price" class="form-control required" placeholder="0.00" value="<?php echo empty($parameters['service']['price']) ? '' : Helper::price(Math::floor( $parameters['service']['price'], Helper::getOption('price_number_of_decimals', '2') ),false)?>">
         </div>
 
         <?php

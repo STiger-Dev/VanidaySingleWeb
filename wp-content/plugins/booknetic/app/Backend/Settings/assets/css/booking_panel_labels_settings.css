@@ -12,6 +12,9 @@
 	padding: 10px 16px;
 	margin: -10px -1px;
 	cursor: pointer;
+	background: none;
+	width: auto;
+	height: auto;
 }
 #translate_save_icon
 {

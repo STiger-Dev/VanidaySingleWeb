@@ -2,10 +2,9 @@
 
 namespace BookneticApp\Backend\Payments;
 
-use BookneticApp\Backend\Appointments\Helpers\AppointmentCustomerSmartObject;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentSmartObject;
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
-use BookneticApp\Models\AppointmentCustomerPrice;
+use BookneticApp\Models\AppointmentPrice;
 use BookneticApp\Providers\Core\Backend;
 use BookneticApp\Providers\Core\Capabilities;
 use BookneticApp\Providers\DB\DB;
@@ -21,7 +20,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		Capabilities::must( 'payments' );
 
 		$id     = Helper::_post('id', '0', 'integer');
-		$info   = AppointmentCustomerSmartObject::load( $id );
+		$info   = AppointmentSmartObject::load( $id );
 
 		if( ! $info->validate() )
 		{
@@ -37,7 +36,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
 		$paymentId		=	Helper::_post('payment', '0', 'integer');
 		$mn2			=	Helper::_post('mn2', '0', 'integer');
-		$info	        =   AppointmentCustomerSmartObject::load( $paymentId );
+		$info	        =   AppointmentSmartObject::load( $paymentId );
 
 		if( ! $info->validate() )
 		{
@@ -57,7 +56,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		$paymentId		= Helper::_post('id', 0, 'integer');
 		$prices	        = Helper::_post('prices', null, 'string');
 		$paid_amount	= Helper::_post('paid_amount', null, 'float');
-		$status			= Helper::_post('status', null, 'string', ['paid', 'canceled', 'pending']);
+		$status			= Helper::_post('status', null, 'string', ['paid', 'canceled', 'pending', 'not_paid']);
 
 		$prices         = json_decode( $prices, true );
 
@@ -66,7 +65,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 			return $this->response( false );
 		}
 
-		$info = AppointmentCustomerSmartObject::load( $paymentId );
+		$info = AppointmentSmartObject::load( $paymentId );
 
 		if( ! $info->validate() )
 		{
@@ -88,14 +87,14 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
 		foreach ( $prices AS $priceUniqueKey => $prieValue )
 		{
-			AppointmentCustomerPrice::where('appointment_customer_id', $paymentId)
+            AppointmentPrice::where('appointment_id', $paymentId)
 				->where('unique_key', $priceUniqueKey)
 				->update([
 					'price' =>  Math::floor( $prieValue )
 				]);
 		}
 
-		AppointmentCustomer::where('id', $paymentId)->update([
+		Appointment::where('id', $paymentId)->update([
 			'paid_amount'		=>	$paid_amount,
 			'payment_status'	=>	$status
 		]);
@@ -108,14 +107,14 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		Capabilities::must( 'payments_edit' );
 
 		$id     = Helper::_post('id', '0', 'integer');
-		$info   = AppointmentCustomerSmartObject::load( $id );
+		$info   = AppointmentSmartObject::load( $id );
 
 		if( ! $info->validate() )
 		{
 			return $this->response( false, bkntc__('Appointment not found or permission denied!') );
 		}
 
-		AppointmentCustomer::where( 'id', $id )->update([
+		Appointment::where( 'id', $id )->update([
 			'payment_status'    =>  'paid',
 			'paid_amount'       =>  $info->getTotalAmount()
 		]);

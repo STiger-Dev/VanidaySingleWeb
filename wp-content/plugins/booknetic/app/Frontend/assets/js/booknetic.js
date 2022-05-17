@@ -76,14 +76,89 @@ var bookneticHooks = {
 
 	$(document).ready( function()
 	{
+
+		$("body").click(function(e){
+
+			if( $(e.target).parent().hasClass('booknetic-cart-item-more') )
+			{
+				let a = $(e.target).parents('.booknetic-cart-item-header').find('.booknetic-cart-item-btns').first();
+				let b = a.hasClass('show');
+				$(".booknetic-cart-item-btns").removeClass("show");
+				if(!b)
+				{
+					a.addClass('show')
+				}
+				else
+				{
+					a.removeClass('show');
+				}
+			}
+			else
+			{
+				$(".booknetic-cart-item-btns").removeClass("show");
+			}
+		});
+
 		let index = 0;
 		let initBookingPage = function ( value )
 		{
+
 			index++;
 			let booking_panel_js = $(value);
 			let google_recaptcha_token;
 			let google_recaptcha_action = 'booknetic_booking_panel_' + index;
 			let booknetic = {
+				cartArr : [],
+				cartHTMLBody : [],
+				cartHTMLSideBar : [],
+				cartStepData: [],
+				cartCurrentIndex:0,
+				cartErrors : {
+					a:[],
+					callbacks: [(arr)=>{
+						if( arr.length > 0 )
+						{
+							let itemIds = [];
+
+							arr.forEach((value)=>{
+								if( itemIds.indexOf(value['cart_item']) === -1)
+									itemIds.push(value['cart_item']);
+							});
+
+
+							booking_panel_js.find('.booknetic-cart-item-error .booknetic-cart-item-error-body').remove();
+							booking_panel_js.find('.booknetic-cart-item-error').removeClass('show');
+
+							arr.forEach((value)=>{
+								if(value['cart_item']!==undefined)
+								{
+									booking_panel_js.find('div.booknetic-cart div[data-index='+ value['cart_item'] +'] .booknetic-cart-item-error').addClass('show');
+									booking_panel_js.find('div.booknetic-cart div[data-index='+ value['cart_item'] +'] .booknetic-cart-item-error').append(`
+										<div class="booknetic-cart-item-error-body">${value['message']}</div>
+									`);
+								}
+							})
+
+
+						}
+						else
+						{
+							booking_panel_js.find('.booknetic-cart-item-error .booknetic-cart-item-error-body').remove();
+							booking_panel_js.find('.booknetic-cart-item-error').removeClass('show');
+						}
+					}],
+					get error()
+					{
+						return this.a;
+					},
+					set error(arr)
+					{
+						this.a = arr;
+						for (let i = 0; i < this.callbacks.length; i++) {
+							this.callbacks[i](arr );
+						}
+					}
+				},
 				__,
 
 				panel_js : booking_panel_js,
@@ -106,8 +181,8 @@ var bookneticHooks = {
 
 				paymentWindow: null,
 				paymentStatus: null,
-				appointmentId: null,
-				uniqueToken: null,
+				appointmentId: null, // doit: bu failed payment olan appointmenti silmek ucundu, bunu payment_id ederik
+				paymentId: null,
 				dateBasedService: false,
 				serviceData: null,
 
@@ -284,6 +359,10 @@ var bookneticHooks = {
 
 					if( res['status'] == 'error' )
 					{
+						if( typeof res['errors'] != 'undefined' && res['errors'].length > 0)
+						{
+							return false;
+						}
 						this.toast( typeof res['error_msg'] == 'undefined' ? 'Error!' : res['error_msg'] );
 						return false;
 					}
@@ -654,7 +733,7 @@ var bookneticHooks = {
 					{
 						booking_panel_js.find(".booknetic_preloader_card3_box").hide();
 
-						booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="date_time"]').fadeIn(200, function()
+						booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="date_time"]').fadeIn(200, function()
 						{
 							booking_panel_js.find(".booknetic_appointment_container_body").scrollTop(0);
 							booknetic.niceScroll();
@@ -679,7 +758,7 @@ var bookneticHooks = {
 							const inc = Math.max(1, 1 / ratio);
 
 							for (let j = Math.floor(from); j < Math.floor(from + inc); j++) {
-								value ||= input[j];
+								value = value || input[j];
 							}
 
 							output[i] = value;
@@ -693,7 +772,7 @@ var bookneticHooks = {
 					if (data.length === 1 && booknetic.dateBasedService && !( 'hide_available_slots' in booknetic.calendarDateTimes && booknetic.calendarDateTimes['hide_available_slots'] === 'on' )) {
 						fills = [];
 						for (let i = 0; i < data[0].max_capacity; i++) {
-							fills.push(data[0].max_capacity - data[0].number_of_customers - i > 0 ? 1 : 0);
+							fills.push(data[0].max_capacity - data[0].weight - i > 0 ? 1 : 0);
 						}
 					}
 
@@ -797,7 +876,7 @@ var bookneticHooks = {
 						}
 						else
 						{
-							var val = booking_panel_js.find(".booknetic_appointment_container_body > [data-step-id=\"location\"] > .booknetic_card_selected").data('id');
+							var val = booking_panel_js.find(".booknetic_appointment_container_body [data-step-id=\"location\"] > .booknetic_card_selected").data('id');
 						}
 
 						return val ? val : '';
@@ -811,7 +890,7 @@ var bookneticHooks = {
 						}
 						else
 						{
-							var val = booking_panel_js.find(".booknetic_appointment_container_body > [data-step-id=\"staff\"] > .booknetic_card_selected").data('id');
+							var val = booking_panel_js.find(".booknetic_appointment_container_body [data-step-id=\"staff\"] > .booknetic_card_selected").data('id');
 						}
 
 						return val ? val : '';
@@ -825,7 +904,7 @@ var bookneticHooks = {
 						}
 						else
 						{
-							var val = booking_panel_js.find(".booknetic_appointment_container_body > [data-step-id=\"service\"]  .booknetic_service_card_selected").data('id');
+							var val = booking_panel_js.find(".booknetic_appointment_container_body [data-step-id=\"service\"]  .booknetic_service_card_selected").data('id');
 						}
 
 						return val ? val : '';
@@ -846,7 +925,7 @@ var bookneticHooks = {
 						}
 						else
 						{
-							val = booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="service"] .booknetic_service_card_selected').data('is-recurring');
+							val = booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="service"] .booknetic_service_card_selected').data('is-recurring');
 						}
 
 						return val == '1';
@@ -856,19 +935,16 @@ var bookneticHooks = {
 					{
 						var extras = [];
 
-						booking_panel_js.find(".booknetic_appointment_container_body > [data-step-id=\"service_extras\"]  .booknetic_service_extra_card_selected").each(function()
+						booking_panel_js.find(".booknetic_appointment_container_body [data-step-id=\"service_extras\"]  .booknetic_service_extra_card_selected").each(function()
 						{
 							var extra_id	 = $(this).data('id'),
-								quantity	 = parseInt( $(this).find('.booknetic_service_extra_quantity_input').val() ),
-								max_quantity = parseInt( $( this ).find( '.booknetic_service_extra_quantity_input' ).data( 'max-quantity' ) );
+								quantity	 = parseInt( $(this).find('.booknetic_service_extra_quantity_input').val() );
 
 							if( quantity > 0  )
 							{
 								extras.push({
-									customer: 0,
 									extra: extra_id,
 									quantity: quantity,
-									max_quantity: max_quantity
 								});
 							}
 						});
@@ -930,7 +1006,7 @@ var bookneticHooks = {
 					{
 						var data = { data: {} };
 
-						var form = booking_panel_js.find(".booknetic_appointment_container_body > [data-step-id=\"information\"]");
+						var form = booking_panel_js.find(".booknetic_appointment_container_body [data-step-id=\"information\"]");
 
 						form.find('input[name]#bkntc_input_name, input[name]#bkntc_input_surname, input[name]#bkntc_input_email, input[name]#bkntc_input_phone ').each(function()
 						{
@@ -948,7 +1024,7 @@ var bookneticHooks = {
 						if( booking_panel_js.find('.booknetic_appointment_step_element[data-step-id="confirm_details"]').hasClass('booknetic_menu_hidden') )
 							return 'local';
 
-						return booking_panel_js.find('.booknetic_payment_method.booknetic_payment_method_selected').data('payment-type');
+						return booking_panel_js.find('.booknetic_payment_method.booknetic_payment_method_selected').attr('data-payment-type');
 					},
 
 					paymentDepositFullAmount: function ()
@@ -1072,32 +1148,9 @@ var bookneticHooks = {
 
 				},
 
-				ajaxParameters: function ( defaultData )
+				ajaxParameters: function ( defaultData = undefined , bool = true )
 				{
 					var data = new FormData();
-
-					data.append( 'id', booknetic.appointmentId );
-					data.append( 'location', booknetic.getSelected.location() );
-					data.append( 'staff', booknetic.getSelected.staff() );
-					data.append( 'service_category', booknetic.getSelected.serviceCategory() );
-					data.append( 'service', booknetic.getSelected.service() );
-					data.append( 'service_extras', JSON.stringify( booknetic.getSelected.serviceExtras() ) );
-
-
-					data.append( 'date', booknetic.getSelected.date() );
-					data.append( 'time', booknetic.getSelected.time() );
-					data.append( 'brought_people_count', booknetic.getSelected.brought_people_count() );
-
-					data.append( 'recurring_start_date', booknetic.getSelected.recurringStartDate() );
-					data.append( 'recurring_end_date', booknetic.getSelected.recurringEndDate() );
-					data.append( 'recurring_times', booknetic.getSelected.recurringTimesArr() );
-					data.append( 'appointments', booknetic.getSelected.recurringTimesArrFinish() );
-
-					var customerData = booknetic.getSelected.formData();
-					for( var n in customerData['data'] )
-					{
-						data.append( 'customer_data['+n+']', customerData['data'][n] );
-					}
 
 					data.append( 'payment_method', booknetic.getSelected.paymentMethod() );
 					data.append( 'deposit_full_amount', booknetic.getSelected.paymentDepositFullAmount() ? 1 : 0 );
@@ -1113,6 +1166,13 @@ var bookneticHooks = {
 							data.append( key, defaultData[key] );
 						}
 					}
+
+					if (bool )
+					{
+						this.stepManager.saveData();
+					}
+					data.append( 'cart', JSON.stringify(booknetic.cartArr) );
+					data.append( 'current', booknetic.cartCurrentIndex );
 
 					return bookneticHooks.doFilter( 'appointment_ajax_data', data, booknetic );
 				},
@@ -1363,7 +1423,7 @@ var bookneticHooks = {
 						booknetic.refreshGoogleReCaptchaToken();
 
 						booknetic.appointmentId = result['id'];
-						booknetic.uniqueToken   = result['unique_token'];
+						booknetic.paymentId   = result['payment_id'];
 
 						if( booknetic.getSelected.paymentMethod() === 'local' )
 
@@ -1378,7 +1438,7 @@ var bookneticHooks = {
 						if( typeof result['id'] != 'undefined' )
 						{
 							booknetic.appointmentId = result['id'];
-							booknetic.uniqueToken   = typeof result['uniqueToken'] != 'undefined' ? result['uniqueToken'] : null;
+							booknetic.paymentId   = typeof result['payment_id'] != 'undefined' ? result['payment_id'] : null;
 						}
 					});
 				},
@@ -1420,7 +1480,7 @@ var bookneticHooks = {
 					}
 					else
 					{
-						booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="confirm_details"]').fadeOut( 150, function()
+						booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="confirm_details"]').fadeOut( 150, function()
 						{
 							booking_panel_js.find('.booknetic_appointment_container_body > .booknetic_appointment_finished_with_error').removeClass('booknetic_hidden').hide().fadeIn( 150 );
 						});
@@ -1740,6 +1800,7 @@ var bookneticHooks = {
 							errorMsg: errorMsg
 						};
 
+						bookneticHooks.doAction('step_end_' + step , booknetic);
 						return bookneticHooks.doFilter( 'step_validation_' + step, result, booknetic );
 					},
 
@@ -1756,13 +1817,28 @@ var bookneticHooks = {
 						var step_id		= next_step_el.data('step-id');
 						var loader		= booking_panel_js.find('.booknetic_preloader_' + next_step_el.data('loader') + '_box');
 
+						if( step_id !='cart')
+						{
+							booknetic.cartPrevStep = undefined;
+						}
+						if( current_step_el.data('step-id') =='cart')
+						{
+							let cartHtmlLastIndex = booking_panel_js.find('.booknetic-cart .booknetic-cart-col').last().attr('data-index');
+							if( booknetic.cartArr.length-1>cartHtmlLastIndex)
+							{
+								booknetic.cartArr = [];
+								booknetic.cartCurrentIndex--;
+							}
+
+						}
+
 						if( current_step_el.length > 0 )
 						{
 							current_step_el.removeClass('booknetic_active_step');
 							var current_step_id	= current_step_el.data('step-id');
 						}
 						next_step_el.addClass('booknetic_active_step');
-						booking_panel_js.find(".booknetic_appointment_container_header").text( next_step_el.data('title') );
+						booking_panel_js.find(".booknetic_appointment_container_header_text").text( next_step_el.data('title') );
 
 						var next2_step_el	= next_step_el.next('.booknetic_appointment_step_element');
 
@@ -1783,22 +1859,22 @@ var bookneticHooks = {
 						{
 							if( ! booknetic.stepManager.needToReload(step_id) )
 							{
-								booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + step_id + '"]').show();
+								booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + step_id + '"]').show();
 
-								booknetic.fadeInAnimate('.booknetic_appointment_container_body > [data-step-id="' + step_id + '"] .booknetic_fade');
+								booknetic.fadeInAnimate('.booknetic_appointment_container_body [data-step-id="' + step_id + '"] .booknetic_fade');
 
 								setTimeout(function ()
 								{
 									booking_panel_js.find(".booknetic_appointment_container_body").scrollTop(0);
 									booknetic.niceScroll();
 									booking_panel_js.find(".booknetic_next_step, .booknetic_prev_step").attr('disabled', false);
-								}, 101 + booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + step_id + '"] .booknetic_fade').length * 50);
+								}, 101 + booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + step_id + '"] .booknetic_fade').length * 50);
 							}
 							else
 							{
 								loader.removeClass('booknetic_hidden').hide().fadeIn(200);
 
-								booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + step_id + '"]').empty();
+								booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + step_id + '"]').empty();
 
 								booknetic.ajax( 'get_data_' + step_id, booknetic.ajaxParameters(), function ( result )
 								{
@@ -1814,9 +1890,9 @@ var bookneticHooks = {
 
 									loader.fadeOut(200, function ()
 									{
-										booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + step_id + '"]').show().html( booknetic.htmlspecialchars_decode( result['html'] ) );
+										booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + step_id + '"]').show().html( booknetic.htmlspecialchars_decode( result['html'] ) );
 
-										booknetic.fadeInAnimate('.booknetic_appointment_container_body > [data-step-id="' + step_id + '"] .booknetic_fade');
+										booknetic.fadeInAnimate('.booknetic_appointment_container_body [data-step-id="' + step_id + '"] .booknetic_fade');
 
 										booking_panel_js.find(".booknetic_next_step, .booknetic_prev_step").attr('disabled', false);
 
@@ -1824,7 +1900,7 @@ var bookneticHooks = {
 										{
 											booking_panel_js.find(".booknetic_appointment_container_body").scrollTop(0);
 											booknetic.niceScroll();
-										}, 101 + booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + step_id + '"] .booknetic_fade').length * 50);
+										}, 101 + booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + step_id + '"] .booknetic_fade').length * 50);
 
 
 										bookneticHooks.doAction( 'steps_' + step_id, booknetic );
@@ -1925,6 +2001,11 @@ var bookneticHooks = {
 											});
 										}
 
+										if ( step_id === 'cart' )
+										{
+											booknetic.showCartIcon();
+										}
+
 										if( step_id == 'confirm_details' )
 										{
 											if ( ! booknetic.isMobileView() )
@@ -1937,9 +2018,22 @@ var bookneticHooks = {
 											}
 										}
 									});
+									booknetic.cartErrors.error = []
 
-								}, false , function ()
+								}, false , function ( result )
 								{
+									if (typeof result['errors'] != undefined)
+									{
+										let errors = result['errors'];
+										errors.filter(function (value,index){
+											return typeof value['cart_item'] !== undefined;
+										})
+										booknetic.cartErrors.error = errors;
+									}
+									else
+									{
+										booknetic.cartErrors.error = [];
+									}
 									loader.fadeOut(200, function ()
 									{
 										booking_panel_js.find(".booknetic_next_step, .booknetic_prev_step").attr('disabled', false);
@@ -1947,7 +2041,7 @@ var bookneticHooks = {
 
 										if( current_step_el.length > 0 )
 										{
-											booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + current_step_id + '"]').fadeIn(100);
+											booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + current_step_id + '"]').fadeIn(100);
 										}
 										else
 										{
@@ -1957,18 +2051,48 @@ var bookneticHooks = {
 											}, 3000);
 										}
 									});
+									bookneticHooks.doAction('bkntc_step_' + step + '_error' , booknetic);
 								} );
 							}
+							booknetic.stepManager.saveData();
 						}
 
 						if( current_step_el.length > 0 )
 						{
-							booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + current_step_id + '"]').fadeOut( 200, loadNewStep);
+							booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + current_step_id + '"]').fadeOut( 200, loadNewStep);
 						}
 						else
 						{
 							loadNewStep();
 						}
+					},
+
+					saveData: ()=>{
+						let obj = {};
+
+						if(booknetic.cartArr[ booknetic.cartCurrentIndex ] !== undefined)
+						{
+							obj = booknetic.cartArr[ booknetic.cartCurrentIndex ];
+						}
+
+						obj['location'] =  booknetic.getSelected.location();
+						obj['staff'] =  booknetic.getSelected.staff();
+						obj['service_category'] =  booknetic.getSelected.serviceCategory();
+						obj['service'] =  booknetic.getSelected.service();
+						obj['service_extras'] =  booknetic.getSelected.serviceExtras();
+
+						obj['date'] =  booknetic.getSelected.date();
+						obj['time'] =  booknetic.getSelected.time();
+						obj['brought_people_count'] =  booknetic.getSelected.brought_people_count();
+
+						obj['recurring_start_date'] =  booknetic.getSelected.recurringStartDate();
+						obj['recurring_end_date'] =  booknetic.getSelected.recurringEndDate();
+						obj['recurring_times'] =  booknetic.getSelected.recurringTimesArr();
+						obj['appointments'] =  booknetic.getSelected.recurringTimesArrFinish();
+
+						obj['customer_data'] = booknetic.getSelected.formData()['data'];
+
+						booknetic.cartArr[ booknetic.cartCurrentIndex ] = bookneticHooks.doFilter('bkntc_cart' , obj , booknetic );
 					},
 
 					goForward: function ()
@@ -1991,19 +2115,24 @@ var bookneticHooks = {
 							return;
 						}
 
-						if( booknetic.save_step_data != null && JSON.stringify( [ ...booknetic.save_step_data.entries() ] ) != JSON.stringify( [ ...booknetic.ajaxParameters().entries() ] ) )
+						// if( booknetic.save_step_data != null && JSON.stringify( [ ...booknetic.save_step_data.entries() ] ) != JSON.stringify( [ ...booknetic.ajaxParameters().entries() ] ) )
+						// {
+						current_step_el.addClass('booknetic_selected_step');
+
+						booknetic.stepManager.saveData();
+
+						if( booknetic.save_step_data != null && JSON.stringify( booknetic.cartArr[ booknetic.cartCurrentIndex ] ) != JSON.stringify( booknetic.cartStepData[ booknetic.cartCurrentIndex ] ) )
 						{
 							let startToEmpty = next_step_el;
 							while( startToEmpty.length > 0 )
 							{
-								booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="'+startToEmpty.data('step-id')+'"]').empty();
+								booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="'+startToEmpty.data('step-id')+'"]').empty();
 								startToEmpty = startToEmpty.next();
 							}
 						}
 
 						booknetic.toast( false );
 						booknetic.stepManager.loadStep( next_step_id );
-						current_step_el.addClass('booknetic_selected_step');
 
 						if( booknetic.isMobileView() )
 						{
@@ -2014,38 +2143,35 @@ var bookneticHooks = {
 					goBack: function ()
 					{
 						let current_step_el	= booking_panel_js.find(".booknetic_appointment_step_element.booknetic_active_step"),
-							prev_step_el    = booknetic.stepManager.getPrevStep(),
-							step_id         = prev_step_el.data( 'step-id' );
+							prev_step_el    = booknetic.stepManager.getPrevStep();
 
 						current_step_el.removeClass('booknetic_selected_step').nextAll('.booknetic_appointment_step_element').removeClass('booknetic_selected_step');
 
 						if( prev_step_el.length > 0 )
 						{
-							booknetic.ajax( 'get_data_' + step_id, booknetic.ajaxParameters(), function ( result )
+							if (prev_step_el.data( 'step-id' ) === 'service_extras' && BookneticData[ 'skip_extras_step_if_need' ] === 'on' && prev_step_el.css('display') === 'none')
 							{
-								if ( step_id === 'service_extras' && BookneticData[ 'skip_extras_step_if_need' ] === 'on' && result.html.indexOf( 'booknetic_empty_box' ) > -1 )
-								{
-									booknetic.stepManager.goBack();
-									booking_panel_js.find( '.booknetic_appointment_step_element[data-step-id="service_extras"]:not(.booknetic_menu_hidden)' ).show();
-									booknetic.stepManager.refreshStepNumbers();
-								}
-							}, false );
+								prev_step_el.css('display', 'block');
+								prev_step_el.removeClass('booknetic_selected_step');
+								prev_step_el = prev_step_el.prev();
+							}
+
 							booknetic.save_step_data = booknetic.ajaxParameters();
 
 							current_step_el.removeClass('booknetic_active_step');
 							prev_step_el.addClass('booknetic_active_step');
 
 							booking_panel_js.find(".booknetic_next_step,.booknetic_prev_step").attr('disabled', true);
-							booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + current_step_el.data('step-id') + '"]').fadeOut(200, function()
+							booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + current_step_el.data('step-id') + '"]').fadeOut(200, function()
 							{
 								booking_panel_js.find(".booknetic_next_step,.booknetic_prev_step").attr('disabled', false);
-								booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + prev_step_el.data('step-id') + '"]').fadeIn(200, function ()
+								booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + prev_step_el.data('step-id') + '"]').fadeIn(200, function ()
 								{
 									booknetic.niceScroll();
 								});
 							});
 
-							booking_panel_js.find(".booknetic_appointment_container_header").text( prev_step_el.data('title') );
+							booking_panel_js.find(".booknetic_appointment_container_header_text").text( prev_step_el.data('title') );
 						}
 
 						booking_panel_js.find('.booknetic_next_step.booknetic_confirm_booking_btn').hide();
@@ -2065,6 +2191,12 @@ var bookneticHooks = {
 
 					getPrevStep: function ()
 					{
+						if( booknetic.cartPrevStep != undefined)
+						{
+							let x = booknetic.cartPrevStep;
+							booknetic.cartPrevStep = undefined;
+							return booking_panel_js.find(".booknetic_appointment_steps_body div[data-step-id=" + x + "]");
+						}
 						let current_step_el	= booking_panel_js.find(".booknetic_appointment_step_element.booknetic_active_step"),
 							prev_step_el    = current_step_el.prev('.booknetic_appointment_step_element');
 
@@ -2090,10 +2222,10 @@ var bookneticHooks = {
 
 					needToReload: function( step_id )
 					{
-						if( step_id == 'confirm_details' )
+						if( step_id == 'confirm_details' || step_id=='cart' )
 							return true;
 
-						if( booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + step_id + '"] > *').length > 0 )
+						if( booking_panel_js.find('.booknetic_appointment_container_body [data-step-id="' + step_id + '"] > *').length > 0 )
 						{
 							return false;
 						}
@@ -2109,9 +2241,107 @@ var bookneticHooks = {
 				validatePhone: function (phone) {
 					const phoneFormat = /^([0-9\s\(\)+-]+)$/;
 					return !!phone.match(phoneFormat);
+				},
+				validateDate: function (date) {
+					date = date.replace(/\s+/g, '')
+					let dateFormat = ''
+					switch (BookneticData.date_format) {
+						case 'Y-m-d':
+							dateFormat = /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/
+							return !!date.match(dateFormat);
+						case 'd-m-Y':
+							dateFormat = /^([0-9]{2})\-([0-9]{2})\-([0-9]{4})$/
+							return !!date.match(dateFormat);
+						case 'd.m.Y':
+							dateFormat = /^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/
+							return !!date.match(dateFormat);
+						case 'd/m/Y':
+							dateFormat = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/
+							return !!date.match(dateFormat);
+						case 'm/d/Y':
+							dateFormat = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/
+							return !!date.match(dateFormat);
+					}
+				},
+				deleteCartItem: function (itemIndex , itemLine ) {
+
+					itemIndex = Number.parseInt(itemIndex);
+					if( booknetic.cartArr.length == 1 && itemIndex == 0)
+					{
+						$("#booknetic_start_new_booking_btn").trigger('click' );
+						return;
+					}
+
+					if(booknetic.cartCurrentIndex != itemIndex)
+					{
+						itemLine.remove();
+						booknetic.cartArr.splice(itemIndex,1);
+						booknetic.cartCurrentIndex--;
+						booknetic.cartHTMLBody.splice(itemIndex,1);
+						booknetic.cartHTMLSideBar.splice(itemIndex,1);
+						booknetic.cartStepData.splice(itemIndex,1);
+						$("div.booknetic-cart .booknetic-cart-col").each( function (index){
+							$(this).attr('data-index', index);
+						})
+						this.showCartIcon();
+					}else
+					{
+
+						let hasPrev = booknetic.cartArr[itemIndex-1] != undefined;
+						let hasNext = booknetic.cartArr[itemIndex+1] != undefined;
+						let currentBody = value.querySelector('.booknetic_appointment_container_body .booknetic_need_copy');
+
+						if( hasPrev )
+						{
+							currentBody.parentNode.insertBefore( booknetic.cartHTMLBody[itemIndex-1] , currentBody);
+
+							value.querySelectorAll('.booknetic_appointment_steps_body .booknetic_appointment_step_element.need_copy').forEach((current)=>{
+								let id = current.getAttribute('data-step-id');
+								current.parentNode.insertBefore(booknetic.cartHTMLSideBar[itemIndex-1][id] , current);
+								current.parentNode.removeChild(current);
+							});
+
+							booknetic.cartCurrentIndex = itemIndex-1;
+						}
+						else if( hasNext )
+						{
+							currentBody.parentNode.insertBefore( booknetic.cartHTMLBody[itemIndex+1] , currentBody);
+							value.querySelectorAll('.booknetic_appointment_steps_body .booknetic_appointment_step_element.need_copy').forEach((current)=>{
+								let id = current.getAttribute('data-step-id');
+								current.parentNode.insertBefore(booknetic.cartHTMLSideBar[itemIndex+1][id] , current);
+								current.parentNode.removeChild(current);
+							});
+							booknetic.cartCurrentIndex = itemIndex;
+						}
+						currentBody.parentNode.removeChild(currentBody);
+						booknetic.cartArr.splice( itemIndex,1);
+						booknetic.cartHTMLBody.splice( itemIndex ,1);
+						booknetic.cartHTMLSideBar.splice( itemIndex ,1);
+						booknetic.cartStepData.splice( itemIndex ,1);
+
+						itemLine.remove();
+						$("div.booknetic-cart .booknetic-cart-col").each( function (index){
+							$(this).attr('data-index', index);
+						});
+
+						booknetic.cartPrevStep = undefined;
+
+					}
+					booknetic.stepManager.loadStep('cart');
+				},
+				showCartIcon: function () {
+					let cartContainer = booking_panel_js.find('.booknetic_appointment_container_header_cart');
+					cartContainer.find('span').text(booknetic.cartArr.length);
+
+					if (booknetic.cartArr.length > 0 ) {
+						cartContainer.fadeIn();
+					} else {
+						cartContainer.fadeOut();
+					}
 				}
 
 			};
+			window.b = booknetic;
 
 			// steplerle bagli basic eventler
 			booking_panel_js.on('click', '.booknetic_next_step', function()
@@ -2132,9 +2362,87 @@ var bookneticHooks = {
 				{
 					location.href = $(this).data('redirect-url');
 				}
-			}).on('click', '#booknetic_start_new_booking_btn', function ()
+			}).on('click' ,'.bkntc_again_booking' , function ()
 			{
 
+				let currentBody = value.querySelector('.booknetic_appointment_container_body .booknetic_need_copy');
+				// currentBody.parentNode.insertBefore(booknetic.tmplBody , currentBody);
+				// currentBody.parentNode.removeChild(currentBody);
+				// booknetic.cartHTMLBody[booknetic.cartCurrentIndex] = currentBody.cloneNode(true);
+				booknetic.cartHTMLBody[booknetic.cartCurrentIndex] = $(currentBody).clone(true,true).get(0);
+				booknetic.cartStepData[ booknetic.cartCurrentIndex ] = { ...booknetic.cartArr[ booknetic.cartCurrentIndex ] };
+
+				value.querySelectorAll('.booknetic_appointment_steps_body .booknetic_appointment_step_element.need_copy').forEach((current)=>{
+
+					let id = current.getAttribute('data-step-id');
+					if(booknetic.cartHTMLSideBar[booknetic.cartCurrentIndex] == undefined)
+					{
+						booknetic.cartHTMLSideBar[booknetic.cartCurrentIndex] = {};
+					}
+					booknetic.cartHTMLSideBar[booknetic.cartCurrentIndex][id] = $(current).clone(true,true).get(0);
+				});
+
+				booknetic.cartCurrentIndex = booknetic.cartArr.length;
+				booknetic.cartArr[booknetic.cartCurrentIndex] = {};
+
+				$("#booknetic_start_new_booking_btn").trigger('click' , true);
+			}).on('click' ,'.booknetic-cart-item-remove' , function ()
+			{
+				let itemLine  = $(this).parents('div.booknetic-cart-col');
+				let itemIndex = itemLine.attr('data-index');
+				booknetic.deleteCartItem( itemIndex , itemLine );
+
+			}).on('click','.booknetic-cart-item-edit',function (){
+				let itemLine  = $(this).parents('div.booknetic-cart-col');
+				let itemIndex = Number.parseInt(itemLine.attr('data-index'));
+
+
+				let currentBody = value.querySelector('.booknetic_appointment_container_body .booknetic_need_copy');
+
+				booknetic.save_step_data = booknetic.ajaxParameters();
+
+				currentBody.parentNode.insertBefore( booknetic.cartHTMLBody[itemIndex] , currentBody);
+
+				currentBody.parentNode.removeChild(currentBody);
+
+				// booknetic.cartHTMLBody[booknetic.cartCurrentIndex] = currentBody.cloneNode(true);
+				booknetic.cartHTMLBody[booknetic.cartCurrentIndex] = $(currentBody).clone(true,true).get(0);
+				booknetic.cartStepData[ booknetic.cartCurrentIndex ] = { ...booknetic.cartArr[ booknetic.cartCurrentIndex ] };
+
+				value.querySelectorAll('.booknetic_appointment_steps_body .booknetic_appointment_step_element.need_copy').forEach((current)=>{
+					let id = current.getAttribute('data-step-id');
+
+					if(booknetic.cartHTMLSideBar[booknetic.cartCurrentIndex] == undefined)
+					{
+						booknetic.cartHTMLSideBar[booknetic.cartCurrentIndex] = {};
+					}
+					booknetic.cartHTMLSideBar[booknetic.cartCurrentIndex][id] = $(current).clone(true,true).get(0);
+
+					current.parentNode.insertBefore(booknetic.cartHTMLSideBar[itemIndex][id] , current)
+					current.parentNode.removeChild(current);
+
+				});
+
+
+
+				var start_step = booking_panel_js.find(".booknetic_appointment_step_element:not(.booknetic_menu_hidden):eq(0)");
+
+				booknetic.stepManager.loadStep(start_step.attr('data-step-id'));
+				booknetic.cartCurrentIndex = itemIndex;
+
+
+			}).on('click', '#booknetic_start_new_booking_btn', function ( e , param )
+			{
+				if( param === undefined )
+				{
+					booking_panel_js.find('.booknetic_appointment_container_header_cart').fadeOut();
+
+					booknetic.cartHTMLBody 	   = [];
+					booknetic.cartHTMLSideBar  = [];
+					booknetic.cartStepData     = [];
+					booknetic.cartArr 		   = [];
+					booknetic.cartCurrentIndex = 0;
+				}
 				booking_panel_js.find('.booknetic_appointment_finished').fadeOut(100, function()
 				{
 					booking_panel_js.find('.booknetic_appointment_steps').fadeIn(100);
@@ -2151,16 +2459,16 @@ var bookneticHooks = {
 				booknetic.paymentWindow			= null;
 				booknetic.paymentStatus			= null;
 				booknetic.appointmentId			= null;
-				booknetic.uniqueToken			= null;
+				booknetic.paymentId			= null;
 				booknetic.save_step_data        = null;
 
 				var start_step = booking_panel_js.find(".booknetic_appointment_step_element:not(.booknetic_menu_hidden):eq(0)");
 				start_step.addClass('booknetic_active_step');
-				booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id] ').empty();
+				booking_panel_js.find('.booknetic_appointment_container_body  [data-step-id] ').empty();
 				booknetic.stepManager.loadStep( start_step.data('step-id') );
 
-				booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id]').hide();
-				booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="' + start_step.data('step-id') + '"]').show();
+				booking_panel_js.find('.booknetic_appointment_container_body  [data-step-id]').hide();
+				booking_panel_js.find('.booknetic_appointment_container_body  [data-step-id="' + start_step.data('step-id') + '"]').show();
 
 				booking_panel_js.find('.booknetic_card_selected').removeClass('booknetic_card_selected');
 				booking_panel_js.find('.booknetic_service_card_selected').removeClass('booknetic_service_card_selected');
@@ -2176,14 +2484,13 @@ var bookneticHooks = {
 				window.open( $(this).data('url') );
 			}).on('click', '.booknetic_try_again_btn', function ()
 			{
-				booknetic.ajax('delete_unpaid_appointment', booknetic.ajaxParameters({ unique_token: booknetic.uniqueToken }), function ()
+				booknetic.ajax('delete_unpaid_appointment', booknetic.ajaxParameters({ payment_id: booknetic.paymentId }), function ()
 				{
-					booknetic.appointmentId = null;
-					booknetic.uniqueToken   = null;
+					booknetic.paymentId   = null;
 
 					booking_panel_js.find('.booknetic_appointment_finished_with_error').fadeOut(150, function ()
 					{
-						booking_panel_js.find('.booknetic_appointment_container_body > [data-step-id="confirm_details"]').fadeIn(150, function ()
+						booking_panel_js.find('.booknetic_appointment_container_body  [data-step-id="confirm_details"]').fadeIn(150, function ()
 						{
 							booknetic.niceScroll();
 						});
@@ -2309,9 +2616,9 @@ var bookneticHooks = {
 				for( var i = 0; i < times.length; i++ )
 				{
 					var time_badge = '';
-					if( times[i]['number_of_customers'] > 0 && !( 'hide_available_slots' in booknetic.calendarDateTimes && booknetic.calendarDateTimes['hide_available_slots'] == 'on' ) )
+					if( times[i]['weight'] > 0 && !( 'hide_available_slots' in booknetic.calendarDateTimes && booknetic.calendarDateTimes['hide_available_slots'] == 'on' ) )
 					{
-						time_badge = '<div class="booknetic_time_group_num">' + times[i]['number_of_customers'] + ' / ' + times[i]['max_capacity'] + '</div>';
+						time_badge = '<div class="booknetic_time_group_num">' + times[i]['weight'] + ' / ' + times[i]['max_capacity'] + '</div>';
 					}
 
 					booking_panel_js.find(".booknetic_times_list").append('<div data-time="' + times[i]['start_time'] + '" data-endtime="' + times[i]['end_time'] + '" data-date-original="' + times[i]['date'] + '"><div>' + times[i]['start_time_format'] + '</div>' + (time_show_format == 1 ? '<div>' + times[i]['end_time_format'] + '</div>' : '') + time_badge + '</div>');
@@ -2440,6 +2747,36 @@ var bookneticHooks = {
 				}
 
 				while_fn();
+			});
+
+			// Cart stepi
+
+			booking_panel_js.on('click' , '.booknetic-cart-item-btns',function(e){
+				e.stopPropagation();
+			});
+
+			booking_panel_js.on('mouseenter' , '.booknetic-cart-item-info' , function (){
+				$(this).parents('.booknetic-cart-item-body-row').addClass('show');
+			}).on('mouseleave' , '.booknetic-cart-item-info' , function (){
+				$(this).parents('.booknetic-cart-item-body-row').removeClass('show');
+			}).on('click' , '.booknetic-appointment-container-cart-btn' , function ()
+			{
+				let current_step_el	= booking_panel_js.find(".booknetic_appointment_step_element.booknetic_active_step"),
+					current_step_id = current_step_el.data('step-id'),
+					next_step_el	= booking_panel_js.find('.booknetic_appointment_steps_body div[data-step-id="cart"]'),
+					next_step_id    = 'cart';
+				booknetic.toast( false );
+				booknetic.stepManager.loadStep( next_step_id );
+				// current_step_el.addClass('booknetic_selected_step');
+
+				if( booknetic.isMobileView() )
+				{
+					$('html,body').animate({scrollTop: parseInt(booking_panel_js.offset().top) - 100}, 1000);
+				}
+				if(current_step_id != 'cart')
+				{
+					booknetic.cartPrevStep = current_step_id;
+				}
 			});
 
 			// Recurringle bagli eventler
@@ -2681,11 +3018,37 @@ var bookneticHooks = {
 					booknetic.refreshGoogleReCaptchaToken();
 				});
 			}
+
+			booking_panel_js.on('click' , '.booking-again' , function () {
+
+
+				booknetic.cartCurrentIndex++;
+				booknetic.stepManager.saveData();
+				$("#booknetic_start_new_booking_btn").trigger('click');
+			});
 		};
 
-		$(".booknetic_appointment").each( ( i , v ) => initBookingPage( v ) )
+		$(".booknetic_appointment").each( ( i , v ) => {
+			 initBookingPage( v )
+		} )
+
 
 		window.bookneticInitBookingPage = initBookingPage;
+
+		bookneticHooks.addAction('bkntc_step_confirm_details_error' , function (booknetic){
+
+		});
+
+		// Cart
+		$(".booknetic-cart-item-info").hover(function() {
+			$(this).closest('.booknetic-cart-item-body-row').toggleClass('show');
+		});
+
+		$(".booknetic-cart-item-error-close").click(function () {
+			$(this).closest('.booknetic-cart-item-error').removeClass('show')
+		});
+
+
 
 	});
 

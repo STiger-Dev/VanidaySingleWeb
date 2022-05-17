@@ -4,7 +4,6 @@ namespace BookneticApp\Backend\Dashboard;
 
 
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
 use BookneticApp\Providers\Core\Capabilities;
 use BookneticApp\Providers\Helpers\Date;
 use BookneticApp\Providers\DB\DB;
@@ -18,7 +17,7 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 	{
 		Capabilities::must( 'dashboard' );
 
-		$totalAccordingToStatus = AppointmentCustomer::where('id' , '>' , 0)
+		$totalAccordingToStatus = Appointment::where('id' , '>' , 0)
             ->select(['count(status) as count' , 'status'] )
             ->groupBy(['status'])
             ->fetchAll();

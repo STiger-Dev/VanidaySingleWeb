@@ -1766,6 +1766,34 @@ input[type="radio"] ~ label, input[type="checkbox"] ~ label
 	font-size: 13px;
 }
 
+.payment-status-not_paid
+{
+	display: block;
+
+	background: #c7cfd9;
+
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+
+	width: 26px;
+	height: 26px;
+
+	color: #fff;
+	text-align: center;
+	padding-top: 7px;
+
+	cursor: pointer;
+}
+
+.payment-status-not_paid:after
+{
+	content: "\f00d";
+	font-weight: 600;
+	font-family: "Font Awesome 5 Free";
+	line-height: 1;
+	font-size: 13px;
+}
 
 
 

@@ -4,7 +4,6 @@ namespace BookneticApp\Backend\Services;
 
 use BookneticApp\Providers\Core\Capabilities;
 use BookneticApp\Providers\DB\Collection;
-use BookneticApp\Models\AppointmentCustomer;
 use BookneticApp\Models\AppointmentExtra;
 use BookneticApp\Models\SpecialDay;
 use BookneticApp\Models\Timesheet;
@@ -167,7 +166,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		$hide_duration			=	Helper::_post('hide_duration', '0', 'int', ['1']);
 		$timeslot_length		=	Helper::_post('timeslot_length', '0', 'int');
 
-		$price					=	Helper::_post('price', null, 'float');
+		$price					=	Helper::_post('price', null, 'price');
         $deposit_enabled		=	Helper::_post('deposit_enabled', '0', 'int', [ 0, 1 ]);
 		$deposit				=	Helper::_post('deposit', null, 'float');
 		$deposit_type			=	Helper::_post('deposit_type', null, 'string', ['percent', 'price']);
@@ -595,6 +594,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		Controller::_delete( [ $id ] );
 
 		Service::where('id' , $id)->delete();
+        Service::deleteData( $id );
 
 		return $this->response(true);
 	}
@@ -743,7 +743,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		$name			=	Helper::_post('name', '', 'string');
 		$duration		=	Helper::_post('duration', '0', 'int');
 		$hide_duration	=	Helper::_post('hide_duration', '0', 'int', ['1', '0']);
-		$price			=	Helper::_post('price', null, 'float');
+		$price			=	Helper::_post('price', null, 'price');
 		$hide_price		=	Helper::_post('hide_price', '0', 'int', ['1', '0']);
 		$max_quantity	=	Helper::_post('max_quantity', '0', 'int');
 
@@ -841,9 +841,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		$checkAppointments = AppointmentExtra::where('extra_id', $id)->fetch();
 		if( $checkAppointments )
 		{
-			$appointmentCustomerInf = AppointmentCustomer::where('id', $checkAppointments['appointment_customer_id'] )->fetch();
-
-			return $this->response(false, bkntc__('This extra is using some Appointments (ID: %d). Firstly remove them!' , [ (int)$appointmentCustomerInf['id'] ]));
+			return $this->response(false, bkntc__('This extra is using some Appointments (ID: %d). Firstly remove them!' , [ (int)$checkAppointments['appointment_id'] ]));
 		}
 
 		ServiceExtra::where('id', $id)->delete();
@@ -938,7 +936,7 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
 		return $this->response(true, [
 			'name'			=>	htmlspecialchars($extraInf['name']),
-			'price'			=>	Math::floor( $extraInf['price'] ),
+			'price'			=>	Helper::price(Math::floor( $extraInf['price'] ),false),
 			'hide_price'	=>	(int)$extraInf['hide_price'],
 			'duration'		=>	(int)$extraInf['duration'],
 			'duration_txt'	=>	Helper::secFormat( (int)$extraInf['duration'] * 60 ),

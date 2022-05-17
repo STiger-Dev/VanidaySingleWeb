@@ -25,7 +25,7 @@ use BookneticApp\Providers\Common\PaymentGatewayService;
                 <?php echo bkntc__( 'Payment methods' ); ?>&nbsp;<span class="required-star">*</span>
             </label>
             <select id="service_settings_custom_payment_methods" class="form-control" multiple="multiple">
-                <?php foreach ( PaymentGatewayService::getEnabledGatewayNames() as $paymentGateway ): ?>
+                <?php foreach ( PaymentGatewayService::getInstalledGatewayNames() as $paymentGateway ): ?>
                     <option value="<?php echo htmlspecialchars( PaymentGatewayService::find( $paymentGateway )->getSlug() ); ?>" <?php echo in_array( PaymentGatewayService::find( $paymentGateway )->getSlug(), $parameters[ 'custom_payment_methods' ] ) ? 'selected' : ''; ?>><?php echo htmlspecialchars( PaymentGatewayService::find( $paymentGateway )->getTitle() ); ?></option>
                 <?php endforeach; ?>
             </select>

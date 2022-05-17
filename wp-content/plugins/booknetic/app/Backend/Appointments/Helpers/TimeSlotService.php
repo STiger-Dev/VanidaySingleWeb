@@ -12,7 +12,6 @@ class TimeSlotService extends ServiceDefaults implements \JsonSerializable
 	private $time;
 
 	private $isBookable;
-	private $appointmentId;
 
 	public function __construct( $date, $time )
 	{
@@ -31,12 +30,16 @@ class TimeSlotService extends ServiceDefaults implements \JsonSerializable
 		return $formatTime ? Date::time( $this->time ) : $this->time;
 	}
 
+    public function getTimestamp()
+    {
+        return Date::epoch( $this->date . ' ' . $this->time );
+    }
+
 	public function isBookable()
 	{
 		if( is_null( $this->isBookable ) )
 		{
 			$this->isBookable           = true;
-			$this->appointmentId        = 0;
 			$dayDif                     = (int)( (Date::epoch( $this->date ) - Date::epoch()) / 60 / 60 / 24 );
 			$availableDaysForBooking    = Helper::getOption('available_days_for_booking', '365');
 
@@ -52,21 +55,9 @@ class TimeSlotService extends ServiceDefaults implements \JsonSerializable
 				{
 					$this->isBookable = false;
 				}
-				else if( $selectedTimeSlotInfo['appointment_id'] > 0 )
-				{
-
-					if( ( $selectedTimeSlotInfo['number_of_customers'] + $this->totalCustomerCount ) > $selectedTimeSlotInfo['max_capacity'] )
-					{
-						$this->isBookable = false;
-					}
-					else
-					{
-						$this->appointmentId = $selectedTimeSlotInfo['appointment_id'];
-					}
-				}
 				else
                 {
-                    if( ( $selectedTimeSlotInfo['number_of_customers'] + $this->totalCustomerCount ) > $selectedTimeSlotInfo['max_capacity'] )
+                    if( ( $selectedTimeSlotInfo['weight'] + $this->totalCustomerCount ) > $selectedTimeSlotInfo['max_capacity'] )
                     {
                         $this->isBookable = false;
                     }
@@ -77,46 +68,16 @@ class TimeSlotService extends ServiceDefaults implements \JsonSerializable
 		return $this->isBookable;
 	}
 
-	public function getAppointmentId()
-	{
-		if( is_null( $this->appointmentId ) )
-		{
-			$this->isBookable();
-		}
-
-		return $this->appointmentId;
-	}
-
 	public function getInfo()
 	{
 		$allTimeslotsForToday = new CalendarService( Date::dateSQL( $this->getDate(), '-1 days' ), Date::dateSQL( $this->getDate(), '+1 days' ) );
 		$allTimeslotsForToday->setDefaultsFrom( $this );
-		$allTimeslotsForToday = $allTimeslotsForToday->getCalendar();
+		$slots = $allTimeslotsForToday->getCalendar('timestamp');
 
-        foreach ( $allTimeslotsForToday['dates'] as $dateKey=>$dateVal )
+        if (array_key_exists($this->getTimestamp(), $slots['dates']))
         {
-            foreach ($dateVal as $key => $value )
-            {
-                if( $dateKey != $value['date'] )
-                {
-                    $allTimeslotsForToday['dates'][ $value['date'] ][] = $value;
-                    unset( $allTimeslotsForToday['dates'][  $dateKey  ][$key]);
-                }
-            }
+            return $slots['dates'][$this->getTimestamp()];
         }
-
-		if( isset( $allTimeslotsForToday['dates'][ $this->getDate() ] ) )
-		{
-			$selectedTimeEpoch = Date::epoch( $this->getTime() );
-
-			foreach( $allTimeslotsForToday['dates'][ $this->getDate() ] AS $timeSlotInfo )
-			{
-				if( Date::epoch( $timeSlotInfo['start_time'] ) == $selectedTimeEpoch )
-				{
-					return $timeSlotInfo;
-				}
-			}
-		}
 
 		return [];
 	}
@@ -128,8 +89,7 @@ class TimeSlotService extends ServiceDefaults implements \JsonSerializable
 			'time'              =>  $this->getTime(),
 			'date_format'       =>  $this->getDate( true ),
 			'time_format'       =>  $this->getTime( true ),
-			'is_bookable'       =>  $this->isBookable(),
-			'appointment_id'    =>  $this->getAppointmentId()
+			'is_bookable'       =>  $this->isBookable()
 		];
 	}
 

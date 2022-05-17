@@ -29,15 +29,6 @@
 	padding-top: 0;
 }
 
-.fs-modal .table-gray-2 th.text-center
-{
-	width: 50px;
-}
-.fs-modal .table-gray-2 th.text-center:last-child
-{
-	width: 70px;
-}
-
 /* Checkout details section */
 
 .fs-modal .checkout-details {

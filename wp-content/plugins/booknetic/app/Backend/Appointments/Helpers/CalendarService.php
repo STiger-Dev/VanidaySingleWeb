@@ -3,7 +3,6 @@
 namespace BookneticApp\Backend\Appointments\Helpers;
 
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
 use BookneticApp\Providers\Helpers\Date;
 use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
@@ -40,7 +39,7 @@ class CalendarService extends ServiceDefaults
 		AppointmentService::cancelUnpaidAppointments();
 	}
 
-	public function getCalendar( $fixClientTimezoneIssue = true )
+	public function getCalendar( $groupBy = 'day' )
 	{
 		if( !( $this->staffId > 0 ) )
 			return $this->getAllStaffCalendars();
@@ -68,7 +67,7 @@ class CalendarService extends ServiceDefaults
 
         $rangesFromTimesheet = $this->rangesFromTimesheet();
 
-        $staffRanges = $this->rangesFromStaff($rangesFromTimesheet);
+        $staffRanges = $this->rangesFromStaff($rangesFromTimesheet, $groupBy);
         $calendarData['dates'] = $staffRanges['timeslots'];
         $calendarData['fills'] = $staffRanges['fills'];
 
@@ -117,8 +116,8 @@ class CalendarService extends ServiceDefaults
 					if( $dateFromEpoch != Date::epoch( Date::dateSQL( $dateFromEpoch ) . " " . $timesheet->startTime() ) )
 						$busySlots[] = [ $dateFromEpoch , Date::epoch( Date::dateSQL( $dateFromEpoch ) . " " . $timesheet->startTime() ) ];
 
-					if( Date::epoch( Date::dateSQL( $dateFromEpoch ) . " " . $timesheet->endTime(false, true) ) != Date::epoch( $dateFromEpoch, '+1 day' ) )
-						$busySlots[] = [ Date::epoch( Date::dateSQL( $dateFromEpoch ) . " " . $timesheet->endTime(false, true) ) , Date::epoch( $dateFromEpoch, '+1 day' ) ];
+					if( Date::epoch( Date::dateSQL( $dateFromEpoch ) . " " . $timesheet->endTime() ) != Date::epoch( $dateFromEpoch, '+1 day' ) )
+						$busySlots[] = [ Date::epoch( Date::dateSQL( $dateFromEpoch ) . " " . $timesheet->endTime() ) , Date::epoch( $dateFromEpoch, '+1 day' ) ];
 				}
 			}
 		}
@@ -128,33 +127,27 @@ class CalendarService extends ServiceDefaults
         return compact('timesheetForAllDay' , 'busySlots');
 	}
 
-    public function rangesFromStaff($rangesFromTimesheet)
+    public function rangesFromStaff($rangesFromTimesheet, $groupBy)
     {
         $serverTimezone = $this->serverTimezone;
         $clientTimezone = $this->clientTimezone;
 
         $busyStatuses = Helper::getBusyAppointmentStatuses();
 
-        $subQuery = AppointmentCustomer::where('appointment_id', DB::field('id', 'appointments'))
-            ->where( 'status', 'in', $busyStatuses )
-            ->select('IFNULL(SUM(number_of_customers), 0)');
-
-        $staffAppointments = Appointment::where('timestampadd(minute, -buffer_before, timestamp(date,start_time))', '<=', DB::field("timestamp('". (new DateTime($this->dateTo . " 24:00:00", $this->clientTimezone))->setTimezone($this->serverTimezone)->modify("+" . $this->serviceMarginAfter . " minutes")->format("Y-m-d H:i:s") . "')") )
-            ->where( 'timestampadd(minute,duration + ifnull(extras_duration, 0) + ifnull(buffer_after, 0) , timestamp(date,start_time) )', '>=', DB::field("timestamp('". ((new DateTime($this->dateFrom . " 00:00:00"))->setTimezone($this->serverTimezone)->modify("-" . $this->serviceMarginBefore . " minutes")->format("Y-m-d H:i:s")) . "')")  )
+        $staffAppointments = Appointment::where('busy_from', '<=', (new DateTime($this->dateTo . " 24:00:00", $this->clientTimezone))->setTimezone($this->serverTimezone)->modify("+" . $this->serviceMarginAfter . " minutes")->getTimestamp() )
+            ->where( 'busy_to', '>=', ((new DateTime($this->dateFrom . " 00:00:00"))->setTimezone($this->serverTimezone)->modify("-" . $this->serviceMarginBefore . " minutes")->getTimestamp())  )
             ->where( 'staff_id', $this->staffId )
-            ->select('*')
-            ->selectSubQuery( $subQuery, 'number_of_customers' );
+            ->where( 'status', 'in', $busyStatuses )
+            ->select(['location_id', 'service_id', 'busy_from', 'busy_to', 'starts_at', 'ends_at'])
+            ->select('SUM(weight) as total_weight')
+            ->groupBy(['starts_at', 'staff_id', 'location_id', 'service_id']);
 
         if( is_numeric( $this->excludeAppointmentId ) && $this->excludeAppointmentId> 0 )
         {
             $staffAppointments->where( Appointment::getField( 'id' ), '<>', (int) $this->excludeAppointmentId );
         }
 
-        $staffAppointments = $staffAppointments->fetchAll();
-
-        $staffAppointments =  array_filter($staffAppointments, function ($a) {
-            return $a->number_of_customers > 0;
-        });
+        $staffAppointments = apply_filters('bkntc_staff_appointments', $staffAppointments->fetchAll(), $this);
 
         $timeSlot = [];
         $dayFillPercents = [];
@@ -175,7 +168,7 @@ class CalendarService extends ServiceDefaults
             while  ( $j < $dayEnd )
             {
 
-                if ( ! array_key_exists((clone $j)->setTimezone($clientTimezone)->format('Y-m-d') , $timeSlot ))
+                if ( $groupBy === 'day' && ! array_key_exists((clone $j)->setTimezone($clientTimezone)->format('Y-m-d') , $timeSlot ))
                 {
                     $timeSlot[(clone $j)->setTimezone($clientTimezone)->format('Y-m-d')] = [];
                 }
@@ -200,25 +193,30 @@ class CalendarService extends ServiceDefaults
 
                 $matchedAppointment = null;
                 $matchedAppointmentCanBook = false;
+                $matchedAppointmentCanBookForOtherSlots = false;
                 foreach ($staffAppointments as $appointment)
                 {
-                    $appointmentStart = new DateTime($appointment->date . ' ' . $appointment->start_time, $serverTimezone);
-                    $appointmentEnd = (clone $appointmentStart)->modify("+" . $appointment->duration . " minutes");
-                    if (!empty($appointment->extras_duration))
-                    {
-                        $appointmentEnd->modify("+" . $appointment->extras_duration . " minutes");
-                    }
+                    $appointmentStart = (new DateTime())->setTimezone($serverTimezone)->setTimestamp($appointment->starts_at);
+                    $appointmentEnd = (new DateTime())->setTimezone($serverTimezone)->setTimestamp($appointment->ends_at);
 
-                    $appointmentRealStart = (clone $appointmentStart)->modify("-{$appointment->buffer_before} minutes");
-                    $appointmentRealEnd = (clone $appointmentEnd)->modify("+{$appointment->buffer_after} minutes");
+
+                    $appointmentRealStart = (new DateTime())->setTimezone($serverTimezone)->setTimestamp($appointment->busy_from);
+                    $appointmentRealEnd = (new DateTime())->setTimezone($serverTimezone)->setTimestamp($appointment->busy_to);
                     if (! ((clone $j)->modify('-' . $this->serviceMarginBefore . ' minutes') >= $appointmentRealEnd || ((clone $j)->modify('+' . $this->serviceMarginAfter . ' minutes') <= $appointmentRealStart)) )
                     {
                         $matchedAppointment = $appointment;
+                        $matchedAppointmentCanBookForOtherSlots = (
+                            $matchedAppointment->location_id == $this->getLocationId() &&
+                            $matchedAppointment->service_id == $this->getServiceId() &&
+                            $matchedAppointment->total_weight < $this->getServiceInf()->max_capacity
+                        );
+
                         $matchedAppointmentCanBook = (
                             $matchedAppointment->location_id == $this->getLocationId() &&
                             $matchedAppointment->service_id == $this->getServiceId() &&
-                            $matchedAppointment->number_of_customers < $this->getServiceInf()->max_capacity &&
-                            $appointmentStart->getTimestamp() == $j->getTimestamp()
+                            $matchedAppointment->total_weight < $this->getServiceInf()->max_capacity &&
+                            $appointmentStart->getTimestamp() == $j->getTimestamp() &&
+                            $appointmentEnd->getTimestamp() == ((clone $j)->modify('+' . $this->serviceTotalDuration . ' minutes'))->getTimestamp()
                         );
 
                         $matchedAppointment->realEndDT = $appointmentRealEnd;
@@ -233,8 +231,7 @@ class CalendarService extends ServiceDefaults
 
 					// doit: original timelar H:i ile yox da, birbasha epoch ile getmelidi ki, 0 bug qalsin DST-da. Meselen Berlinde saat chekilmesi geriye oldugda 02:00-03:00 2 defe tekrarlanacaq timeslot olacaq... ve original time-larida eyni qaydada tekrarlanacaq... cunki ora H:i gedir. amma full epoch getse (timestamp(Y-m-d H:i:s)) o halda 0 bug olacag...
 
-                    $timeSlot[(clone $j)->setTimezone($clientTimezone)->format('Y-m-d')][] = [
-                        'appointment_id' => empty($matchedAppointment) ? 0 : $matchedAppointment->id,
+                    $cSlot = [
                         'date' => $start->setTimezone($serverTimezone)->format('Y-m-d'),
                         'start_time' => $start->setTimezone($serverTimezone)->format('H:i'),
                         'end_time' => $end->setTimezone($serverTimezone)->format('H:i'),
@@ -244,8 +241,17 @@ class CalendarService extends ServiceDefaults
                         'buffer_after' => '0',
                         'duration' => $this->serviceTotalDuration,
                         'max_capacity' => $this->getServiceInf()->max_capacity,
-                        'number_of_customers' => empty($matchedAppointment) ? 0 : $matchedAppointment->number_of_customers,
+                        'weight' => empty($matchedAppointment) ? 0 : $matchedAppointment->total_weight,
                     ];
+
+                    if ($groupBy === 'day')
+                    {
+                        $timeSlot[(clone $j)->setTimezone($clientTimezone)->format('Y-m-d')][] = $cSlot;
+                    }
+                    else if ($groupBy == 'timestamp')
+                    {
+                        $timeSlot[$start->getTimestamp()] = $cSlot;
+                    }
 
                     $dayFillPercents[(clone $j)->setTimezone($clientTimezone)->format('Y-m-d')][] = 1;
                 }
@@ -254,7 +260,7 @@ class CalendarService extends ServiceDefaults
                     $dayFillPercents[(clone $j)->setTimezone($clientTimezone)->format('Y-m-d')][] = 0;
                 }
 
-                if ($matchedAppointment !== null && $this->flexibleTimeslot)
+                if ($matchedAppointment !== null && $this->flexibleTimeslot && !$matchedAppointmentCanBookForOtherSlots)
                 {
                     $j = (clone $matchedAppointment->realEndDT)->modify("+" . $this->serviceMarginBefore . " minutes");;
                 }

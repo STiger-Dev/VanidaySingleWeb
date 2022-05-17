@@ -59,9 +59,10 @@ use BookneticApp\Providers\Core\Permission;
 								<div data-step-id="service_extras" class="booknetic_appointment_step_element<?php echo (\BookneticApp\Providers\Core\Capabilities::tenantCan( 'services' ) == false ? '_ hidden' : '')?>"><span class="booknetic_badge">4</span> <span class="booknetic_step_title" data-translate="Service Extras"></span></div>
 								<div data-step-id="date_time" class="booknetic_appointment_step_element"><span class="booknetic_badge">5</span> <span class="booknetic_step_title" data-translate="Date & Time"></span></div>
 								<div data-step-id="information" class="booknetic_appointment_step_element"><span class="booknetic_badge">6</span> <span class="booknetic_step_title" data-translate="Information"></span></div>
-								<div data-step-id="confirm_details" class="booknetic_appointment_step_element"><span class="booknetic_badge">7</span> <span class="booknetic_step_title" data-translate="Confirmation"></span></div>
-								<div data-step-id="finish" class="booknetic_appointment_step_element"><span class="booknetic_badge">8</span> <span class="booknetic_step_title" data-translate="Finish"></span></div>
-								<div data-step-id="other" class="booknetic_appointment_step_element"><span class="booknetic_badge">9</span> <span class="booknetic_step_title"><?php echo bkntc__('Other')?></span></div>
+                                <div data-step-id="cart" class="booknetic_appointment_step_element"><span class="booknetic_badge">8</span> <span class="booknetic_step_title" data-translate="Cart"></span></div>
+                                <div data-step-id="confirm_details" class="booknetic_appointment_step_element"><span class="booknetic_badge">7</span> <span class="booknetic_step_title" data-translate="Confirmation"></span></div>
+								<div data-step-id="finish" class="booknetic_appointment_step_element"><span class="booknetic_badge">9</span> <span class="booknetic_step_title" data-translate="Finish"></span></div>
+								<div data-step-id="other" class="booknetic_appointment_step_element"><span class="booknetic_badge">10</span> <span class="booknetic_step_title"><?php echo bkntc__('Other')?></span></div>
 							</div>
 							<div class="booknetic_appointment_steps_footer">
 								<div class="booknetic_appointment_steps_footer_txt1"><?php echo Helper::getOption('company_phone', '') == '' ? '' : ('<div class="d-inline-block" data-translate="Have any questions?"></div>')?></div>
@@ -76,6 +77,7 @@ use BookneticApp\Providers\Core\Permission;
 							<div class="booknetic_appointment_container_header hidden" data-step-id="service_extras"><span data-translate="Select service extras"></span></div>
 							<div class="booknetic_appointment_container_header hidden" data-step-id="information"><span data-translate="Fill information"></span></div>
 							<div class="booknetic_appointment_container_header hidden" data-step-id="date_time"><span data-translate="Select Date & Time"></span></div>
+							<div class="booknetic_appointment_container_header hidden" data-step-id="cart"><span data-translate="Add to cart"></span></div>
 							<div class="booknetic_appointment_container_header hidden" data-step-id="confirm_details"><span data-translate="Confirm Details"></span></div>
 							<div class="booknetic_appointment_container_header hidden" data-step-id="other"></div>
 
@@ -271,40 +273,94 @@ use BookneticApp\Providers\Core\Permission;
 											<input type="text" id="bkntc_input_phone" class="form-control" name="phone">
 										</div>
 									</div>
+
+                                    <div id="booknetic_bring_someone_section">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <input type="checkbox" id="">
+                                                <label for=""><span data-translate="Bring People with You"></span></label>
+                                            </div>
+
+                                            <div class="form-group col-md-6 booknetic_number_of_brought_customers ">
+                                                <label for=""><span data-translate="Number of people:"></span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
 								</div>
 
+                                <div class="hidden" data-step-id="cart">
+                                    <div class="booknetic-cart-holder">
+                                        <div class="booknetic-cart">
+                                            <div class="booknetic-cart-col" data-index="0"  >
+                                                    <div class="booknetic-cart-item">
+                                                        <div class="booknetic-cart-item-header">
+                                                            <span><?php echo isset($parameters['services'][0]->name) ? htmlspecialchars($parameters['services'][0]->name) : '-' ?></span>
+                                                            <button class="booknetic-cart-item-more">
+                                                                <img src="<?php echo Helper::icon('more-vertical.svg','front-end') ?>" alt="">
+                                                            </button>
+                                                            <div class="booknetic-cart-item-btns ">
+
+                                                                <button class="booknetic-cart-item-edit">
+                                                                    <img src="<?php echo Helper::icon('edit-2.svg','front-end') ?>" >
+                                                                    <span><div><span data-translate="Edit"></span></div></span>
+                                                                </button>
+                                                                <button class="booknetic-cart-item-remove">
+                                                                    <img src="<?php echo Helper::icon('trash-2.svg','front-end') ?>" alt="">
+                                                                    <span><div><span data-translate="Remove"></span></div></span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="booknetic-cart-item-body">
+                                                            <div class="booknetic-cart-item-body-row">
+                                                                <span class="booknetic-cart-item-body-cell"><?php echo bkntc__( 'Staff' ); ?>:</span>
+                                                                <span class="booknetic-cart-item-body-cell"><?php echo isset($parameters['staff'][0]->name) ? htmlspecialchars($parameters['staff'][0]->name) : '-' ?></span>
+                                                            </div>
+                                                            <div class="booknetic-cart-item-body-row">
+                                                                <span class="booknetic-cart-item-body-cell"><?php echo bkntc__( 'Location' ); ?>:</span>
+                                                                <span class="booknetic-cart-item-body-cell"><?php echo isset($parameters['locations'][0]->name) ? htmlspecialchars($parameters['locations'][0]->name) : '-' ?></span>
+                                                            </div>
+                                                            <div class="booknetic-cart-item-body-row">
+                                                                <span class="booknetic-cart-item-body-cell"><?php echo bkntc__( 'Date & Time' ); ?>:</span>
+                                                                <span class="booknetic-cart-item-body-cell"><?php echo date('Y-m-d') . ' / ' . date('H:00') . '-' . date('H:00' ,strtotime('+1 hour')) ?></span>
+                                                            </div>
+                                                            <div class="booknetic-cart-item-body-row">
+
+                                                                <span class="booknetic-cart-item-body-cell"><div><span data-translate="Amount"></span></div>:</span>
+                                                                <span class="booknetic-cart-item-body-cell amount">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo Helper::price(100); ?></span>
+                                                                <span class="booknetic-cart-item-body-cell">
+                                                                    <button class="booknetic-cart-item-info">
+                                                                        <img src="<?php echo Helper::icon('info.svg' ,'front-end') ?>" alt="">
+                                                                        <div class="booknetic-cart-item-info-details-arrow"></div>
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+                                                            <div class="booknetic-cart-item-error ">
+                                                                <div class="booknetic-cart-item-error-header">
+                                                                    <div>
+                                                                        <img src="<?php echo Helper::icon('alert-triangle.svg','front-end')?>" alt="">
+                                                                        <span><?php echo bkntc__('Has error') ?></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="booknetic-cart-item-error-body">
+                                                                    Lorem ipsum dolor sit amet lorem ipsum dolor sit amet
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                        <button class="bkntc_again_booking">
+                                            <img src="<?php echo Helper::icon('plus-2.svg' ,'front-end')?>" alt="">
+                                            <span><div><span data-translate="Add new Booking"></span></div></span>
+                                        </button>
+                                    </div>
+
+                                </div>
+
 								<div class="hidden" data-step-id="confirm_details">
-									<div class="booknetic_confirm_date_time booknetic_portlet">
-
-										<div>
-											<span class="booknetic_text_primary"><span data-translate="Date & Time"></span>:</span>
-											<span><?php echo Date::datee()?> / <?php echo Date::time()?></span>
-										</div>
-
-										<?php
-										if( Helper::getOption('show_step_staff', 'on') != 'off' )
-										{
-											?>
-											<div>
-												<span class="booknetic_text_primary"><span data-translate="Staff"></span>:</span>
-												<span><?php echo isset( $staffInf ) ? $staffInf->name : '???' ?></span>
-											</div>
-											<?php
-										}
-										?>
-										<?php
-										if( Helper::getOption('show_step_location', 'on') != 'off' )
-										{
-											?>
-											<div>
-												<span class="booknetic_text_primary"><span data-translate="Location"></span>:</span>
-												<span><?php echo isset( $location ) ? $location->name : '???' ?></span>
-											</div>
-											<?php
-										}
-										?>
-									</div>
-
 									<div class="booknetic_confirm_step_body">
 
 										<div class="booknetic_confirm_sum_body<?php echo $parameters['hide_payments'] ? ' booknetic_confirm_sum_body_full_width' : '';?>">

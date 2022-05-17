@@ -38,7 +38,7 @@ use BookneticApp\Providers\Helpers\Date;
             echo $badge;
 			echo '<div class="list_right_box">';
 			echo '<span class="list_right_box_date">' . Date::datee($customer['created_at']) .  '</span>';
-			echo '<div class="list_right_box_user"><i class="fa fa-user"></i><span>' . $customer['number_of_customers'] .  '</span></div>';
+			echo '<div class="list_right_box_user"><i class="fa fa-user"></i><span>' . $customer['weight'] .  '</span></div>';
 			echo '<div class="appointment-status-' . htmlspecialchars( $customer['status'] ) .'"></div>';
             echo '<span class="list_right_box_date" style="margin-left: 10px">#' . $customer['id'] .  '</span>';
 

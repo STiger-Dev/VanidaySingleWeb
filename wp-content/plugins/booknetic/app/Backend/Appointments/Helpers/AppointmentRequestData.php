@@ -2,9 +2,7 @@
 
 namespace BookneticApp\Backend\Appointments\Helpers;
 
-use BookneticApp\Backend\Appointments\Helpers\AppointmentPriceObject;
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
 use BookneticApp\Models\Customer;
 use BookneticApp\Models\Location;
 use BookneticApp\Models\Service;
@@ -16,7 +14,6 @@ use BookneticApp\Providers\Helpers\Date;
 use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Math;
-use BookneticApp\Providers\Common\PaymentGatewayService;
 use BookneticApp\Providers\Core\Permission;
 use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
@@ -33,15 +30,12 @@ use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 class AppointmentRequestData
 {
 
-	/**
-	 * @var AppointmentRequestData
-	 */
-	private static $appointmentDataInstance;
+    use ARDHelper;
 
 	/**
 	 * @var AppointmentPriceObject[]
 	 */
-	private $prices;
+	private $prices = [];
 	private $payableToday;
 
 	public $appointmentId;
@@ -64,7 +58,8 @@ class AppointmentRequestData
 	public $customerId = -1;
     public $setBillingData = false;
 	public $newCustomerPass;
-	public $customers;
+    public $status;
+    public $weight;
 
 	public $paymentMethod;
 
@@ -79,7 +74,29 @@ class AppointmentRequestData
 
 	public $calledFromBackend = false;
 
-	public $appointmentList;
+	public $timeslots;
+
+    private $rawData = [];
+
+    private $appointmentRequests;
+
+    /**
+     * @return AppointmentRequests
+     */
+    public function getAppointmentRequests()
+    {
+        return $this->appointmentRequests;
+    }
+
+    /**
+     * @param AppointmentRequests $appointmentRequests
+     * @return AppointmentRequestData
+     */
+    public function setAppointmentRequests($appointmentRequests)
+    {
+        $this->appointmentRequests = $appointmentRequests;
+        return $this;
+    }
 
 	/**
 	 * Magic methoddan istifade ederek ashagidaki Infolari collect edir.
@@ -101,7 +118,10 @@ class AppointmentRequestData
 				$this->locationInf = Location::get( $this->locationId );
 				break;
 			case 'serviceStaffInf':
-				$this->serviceStaffInf = ServiceStaff::where( 'service_id', $this->serviceId )->where( 'staff_id', $this->staffId )->fetch();
+                $serviceStaffInf = ServiceStaff::where( 'service_id', $this->serviceId )->where( 'staff_id', $this->staffId )->fetch();
+                if( !empty( $serviceStaffInf ) )
+                    $this->serviceStaffInf = $serviceStaffInf;
+
 				break;
 			case 'staffInf':
 				$this->staffInf = Staff::get( $this->staffId );
@@ -111,89 +131,94 @@ class AppointmentRequestData
 		return isset( $this->$name ) ? $this->$name : null;
 	}
 
-	public function __construct()
-	{
-		if( is_null( static::$appointmentDataInstance ) )
-		{
-			static::$appointmentDataInstance = $this;
-		}
-	}
+    public static function fromArray( $arr, $calledFromBackend = false )
+    {
+        $instance = new AppointmentRequestData();
+        $instance->rawData = $arr;
 
-	/**
-	 * Singleton methodla cari obyektin tekrar init olmaginin qarshisi alinir
-	 * Ve lazimi diger prosesler avtomatik ishe salinir...
-	 *
-	 * @return AppointmentRequestData
-	 */
-	public static function load( $calledFromBackend = false, $validateAllData = false )
-	{
-		if( is_null( static::$appointmentDataInstance ) )
-		{
-			static::$appointmentDataInstance = new AppointmentRequestData();
+        if( $calledFromBackend )
+        {
+            $instance->calledFromBackend();
+        }
 
-			if( $calledFromBackend )
-			{
-				static::$appointmentDataInstance->calledFromBackend();
-			}
+        $instance->initDefaultProperties();
+        $instance->handleCustomerInfo();
+        $instance->initDefaultPrices();
+//        do_action( 'bkntc_appointment_request_data_load', $instance );
 
-			static::$appointmentDataInstance->initDefaultProperties();
-			static::$appointmentDataInstance->handleCustomerInfo();
+        return $instance;
+    }
 
-			if( $validateAllData && ! static::$appointmentDataInstance->calledFromBackend )
-			{
-				static::$appointmentDataInstance->handleAnyStaffOption();
-			}
+    public function getData($key, $default = null, $check_type = null, $whiteList = [])
+    {
+        $res = isset($this->rawData[$key]) ? $this->rawData[$key] : $default;
 
-			static::$appointmentDataInstance->initDefaultPrices();
+        if( $res !== $default && !is_null( $check_type ) )
+        {
+            if( $check_type == 'num' || $check_type == 'int' || $check_type == 'integer' )
+            {
+                $res = is_numeric( $res ) ? (int)$res : $default;
+            }
+            else if($check_type == 'str' || $check_type == 'string')
+            {
+                $res = is_string( $res ) ? trim( stripslashes_deep((string)$res) ) : $default;
+            }
+            else if($check_type == 'arr' || $check_type == 'array')
+            {
+                $res = is_array( $res ) ? stripslashes_deep((array)$res) : $default;
+            }
+            else if($check_type == 'float')
+            {
+                $res = is_numeric( $res ) ? (float)$res : $default;
+            }
+            else if($check_type == 'email')
+            {
+                $res = is_string( $res ) && filter_var($res, FILTER_VALIDATE_EMAIL) !== false ? trim( (string)$res ) : $default;
+            }
+            else if($check_type == 'json')
+            {
+                $res = json_decode( (string)$res, true );
+                $res = is_array( $res ) ? $res : $default;
+            }
+        }
 
-			if( $validateAllData )
-			{
-				static::$appointmentDataInstance->validateBasicData();
-				static::$appointmentDataInstance->validateRecurringData();
-				static::$appointmentDataInstance->validateCustomerData();
-				static::$appointmentDataInstance->validateAppointmentsAvailability();
-			}
+        if( !empty( $whiteList ) && !in_array( $res , $whiteList ) )
+        {
+            $res = $default;
+        }
 
-			do_action( 'bkntc_appointment_request_data_load', static::$appointmentDataInstance );
-		}
-
-		return static::$appointmentDataInstance;
-	}
-
-	public static function getInstance()
-	{
-		return self::$appointmentDataInstance;
-	}
+        return $res;
+    }
 
 	/**
 	 * POST Request ile gelen datalar burada emal olunaraq uygun propertieslere oturulur.
 	 */
 	public function initDefaultProperties()
 	{
-		$this->appointmentId				=	Helper::_post('id', 0, 'int');
+		$this->appointmentId				=	$this->getData('id', 0, 'int');
 
-		$this->locationId				    =	Helper::_post('location', 0, 'int');
-		$this->staffId					    =	Helper::_post('staff', 0, 'int');
-		$this->serviceId				    =	Helper::_post('service', 0, 'int');
-		$this->serviceCategoryId	        =   Helper::_post('service_category', 0, 'int');
+		$this->locationId				    =	$this->getData('location', 0, 'int');
+		$this->staffId					    =	$this->getData('staff', 0, 'int');
+		$this->serviceId				    =	$this->getData('service', 0, 'int');
+		$this->serviceCategoryId	        =   $this->getData('service_category', 0, 'int');
 
-		$this->date						    =	Helper::_post('date', '', 'str');
-		$this->time						    =	Helper::_post('time', '', 'str');
+		$this->date						    =	$this->getData('date', '', 'str');
+		$this->time						    =	$this->getData('time', '', 'str');
 
-		$this->note						    =	Helper::_post('note', '', 'str');
+		$this->note						    =	$this->getData('note', '', 'str');
 
-		$this->totalCustomerCount		    =	Helper::_post('brought_people_count', 0 , 'int') + 1;
+		$this->totalCustomerCount		    =	$this->getData('brought_people_count', 0 , 'int') + 1;
 
-		$this->customerData				    =	Helper::_post('customer_data', [], 'arr');
+		$this->customerData				    =	$this->getData('customer_data', [], 'arr');
 
-		$this->paymentMethod			    =	Helper::_post('payment_method', '', 'str' );
+		$this->paymentMethod			    =	$this->getData('payment_method', '', 'str' );
 
-		$this->clientTimezone			    =   Helper::_post('client_time_zone', '-', 'string');
+		$this->clientTimezone			    =   $this->getData('client_time_zone', '-', 'string');
 
-		$this->recurringStartDate		    =	Helper::_post('recurring_start_date', '', 'string');
-		$this->recurringEndDate			    =	Helper::_post('recurring_end_date', '', 'string');
-		$this->recurringTimes			    =	Helper::_post('recurring_times', '', 'string');
-		$this->recurringAppointmentsList	=	Helper::_post('appointments', '', 'string');
+		$this->recurringStartDate		    =	$this->getData('recurring_start_date', '', 'string');
+		$this->recurringEndDate			    =	$this->getData('recurring_end_date', '', 'string');
+		$this->recurringTimes			    =	$this->getData('recurring_times', '', 'string');
+		$this->recurringAppointmentsList	=	$this->getData('appointments', '', 'string');
 
 		$this->recurringAppointmentsList	=	json_decode( $this->recurringAppointmentsList, true );
 		$this->recurringAppointmentsList	=	is_array( $this->recurringAppointmentsList ) ? $this->recurringAppointmentsList : [];
@@ -209,8 +234,8 @@ class AppointmentRequestData
 
 		if( $this->locationId == -1 )
 		{
-			$locationArr = (new Ajax())->get_data_location( true );
-			$this->locationId = isset( $locationArr[0] ) ? $locationArr[0]['id'] : null;
+			$locationInf = $this->getAvailableLocations()->limit(1)->fetch();
+			$this->locationId = !empty( $locationInf ) ? $locationInf->id : null;
 		}
 
         // doit: bu niye elave olunub? frontda critical bug yaradirdi, commente alindi
@@ -225,8 +250,7 @@ class AppointmentRequestData
 	{
 		if( is_null( $this->serviceExtras ) )
 		{
-			$serviceExtras = Helper::_post('service_extras', '[]', 'string');
-            $serviceExtras = json_decode($serviceExtras, true);
+			$serviceExtras = $this->getData('service_extras', [], 'arr');
 
 			$this->serviceExtras = [];
 
@@ -235,7 +259,6 @@ class AppointmentRequestData
 				if( ! isset( $extraDetails['extra'] ) || ! isset( $extraDetails['quantity'] )
 				    || ! ( is_numeric( $extraDetails['extra'] ) && $extraDetails['extra'] > 0 )
 					|| ! ( is_numeric( $extraDetails['quantity'] ) && $extraDetails['quantity'] > 0 )
-					|| ( $this->calledFromBackend && ! ( isset( $extraDetails['customer'] ) && is_numeric( $extraDetails['customer'] ) && $extraDetails['customer'] > 0 ) )
 				)
 				{
 					continue;
@@ -247,12 +270,7 @@ class AppointmentRequestData
 				{
 					$extraObj['quantity'] = $extraDetails['quantity'];
 
-					if( ! $this->calledFromBackend )
-					{
-						$extraObj['customer'] = $this->customerId;
-					} else {
-                        $extraObj['customer'] = $extraDetails['customer'];
-                    }
+                    $extraObj['customer'] = $this->customerId;
 
 					$this->serviceExtras[] = $extraObj;
 				}
@@ -296,107 +314,23 @@ class AppointmentRequestData
 	{
 		if( $this->calledFromBackend )
 		{
-			$customers                  =	Helper::_post('customers', '', 'string');
-			$this->customers            =	json_decode($customers, true);
+			$this->customerId           =	$this->getData('customer_id', '', 'int');
+			$this->status               =	$this->getData('status', '', 'string');
+			$this->weight               =	$this->getData('weight', '', 'int');
+
 			$this->totalCustomerCount   =   0;
 
-			foreach ( $this->customers AS $customer )
-			{
-				if(
-					! (
-						isset( $customer['id'] ) && is_numeric($customer['id']) && $customer['id'] > 0
-						&& isset( $customer['status'] ) && is_string($customer['status'])
-						&& isset( $customer['number'] ) && is_numeric($customer['number']) && $customer['number'] >= 0
-					)
-				)
-				{
-					throw new \Exception( bkntc__('Please select customers!') );
-				}
+            $busyStatuses = Helper::getBusyAppointmentStatuses();
 
-				if(
-					$this->isEdit() &&
-					! ( isset( $customer['ac_id'] ) && is_numeric($customer['ac_id']) && $customer['ac_id'] >= 0 )
-				)
-				{
-					throw new \Exception( bkntc__('Please select customers!') );
-				}
-
-				$checkCustomerExists = Customer::get( $customer['id'] );
-				if( ! $checkCustomerExists )
-				{
-					throw new \Exception( bkntc__('Please select customers!') );
-				}
-
-				if( $this->isEdit() && $customer['ac_id'] > 0 )
-				{
-					$checkAppointmentCustomerExists = AppointmentCustomer::get( $customer['ac_id'] );
-
-					if( ! $checkAppointmentCustomerExists )
-					{
-						throw new \Exception( bkntc__('Please select customers!') );
-					}
-				}
-
-                $busyStatuses = Helper::getBusyAppointmentStatuses();
-
-				if ( in_array( $customer['status'] , $busyStatuses ) )
-				{
-                    $this->totalCustomerCount += (int)$customer['number'];
-                }
-
+            if ( in_array( $this->status , $busyStatuses ) )
+            {
+                $this->totalCustomerCount = (int)$this->weight;
             }
 		}
 		else
 		{
-		    if( ! empty( $this->customerData['email'] ) )
-            {
-                $wpUserId = Permission::userId();
-
-                if ( $wpUserId > 0 )
-                {
-                    $checkCustomerExists = Customer::where('user_id', $wpUserId)->fetch();
-
-                    if ( $checkCustomerExists )
-                    {
-                        if ( $checkCustomerExists->email != $this->customerData['email'] )
-                        {
-	                        throw new \Exception( bkntc__('You cannot use any email other than your own email.') );
-                        }
-                    }
-
-                }
-                else
-                {
-//                    if ( get_user_by('email', $this->customerData['email']) )
-//                    {
-//                        throw new \Exception( bkntc__('Please login and continue.') );
-//                    }
-
-                    $checkCustomerExists = Customer::where('email', $this->customerData['email'])->fetch();
-                }
-
-                if ( $checkCustomerExists )
-                {
-                    $this->customerId = $checkCustomerExists->id;
-
-                    if (
-                        ( $checkCustomerExists->phone_number != $this->customerData['phone'] && ! empty( $this->customerData['phone'] ) ) ||
-                        ( $checkCustomerExists->first_name != $this->customerData['first_name'] && ! empty( $this->customerData['first_name'] ) ) ||
-                        ( $checkCustomerExists->last_name != $this->customerData['last_name'] && ! empty( $this->customerData['last_name'] ) )
-                    )
-                    {
-                        $this->setBillingData = true;
-                    }
-                }
-            }
-
-			$this->customers = [
-				[
-					'id'		=>	$this->customerId,
-					'status'	=>	Helper::getDefaultAppointmentStatus(),
-					'number'	=>	$this->totalCustomerCount,
-				]
-			];
+            $this->status = Helper::getDefaultAppointmentStatus();
+            $this->weight = $this->totalCustomerCount;
 		}
 	}
 
@@ -472,13 +406,6 @@ class AppointmentRequestData
 			$this->newCustomerPass    =  isset( $newCustomerPass ) ? $newCustomerPass : '';
 
 			$this->customerId         = DB::lastInsertedId();
-			$this->customers[0]['id'] = $this->customerId;
-
-			if( isset( $this->prices[ -1 ] ) )
-			{
-				$this->prices[ $this->customerId ] = $this->prices[ -1 ];
-				unset( $this->prices[ -1 ] );
-			}
 
             if ( !empty($this->serviceExtras) )
             {
@@ -514,11 +441,11 @@ class AppointmentRequestData
 		{
 			$this->staffId          = $staffID;
 			unset( $this->staffInf );
-			$this->appointmentList  = null;
+			$this->timeslots  = null;
 
 			$staffIsOkay            = true;
 
-			foreach ( $this->getAllAppointments() AS $timeSlot )
+			foreach ($this->getAllTimeslots() AS $timeSlot )
 			{
 				if( ! $timeSlot->isBookable() )
 				{
@@ -531,7 +458,7 @@ class AppointmentRequestData
 				break;
 
 			$this->staffId          = -1;
-			$this->appointmentList  = null;
+			$this->timeslots  = null;
 			unset( $this->staffInf );
 		}
 	}
@@ -541,11 +468,11 @@ class AppointmentRequestData
 	 *
 	 * @return TimeSlotService[]
 	 */
-	public function getAllAppointments()
+	public function getAllTimeslots()
 	{
-		if( is_null( $this->appointmentList ) )
+		if( is_null( $this->timeslots ) )
 		{
-			$this->appointmentList      = [];
+			$this->timeslots      = [];
 			$listAppointments           = $this->isRecurring() ? $this->recurringAppointmentsList : [ [ $this->date , $this->time ] ];
 
 			foreach( $listAppointments AS $appointmentDateAndTime )
@@ -556,11 +483,11 @@ class AppointmentRequestData
 				$timeSlot = new TimeSlotService( $appointmentDateAndTime[0], $appointmentDateAndTime[1] );
 				$timeSlot->setDefaultsFrom( $this );
 
-				$this->appointmentList[] = $timeSlot;
+				$this->timeslots[] = $timeSlot;
 			}
 		}
 
-		return $this->appointmentList;
+		return $this->timeslots;
 	}
 
 	/**
@@ -569,9 +496,9 @@ class AppointmentRequestData
 	 *
 	 * @return int
 	 */
-	public function getAppointmentsCount()
+	public function getTimeslotsCount()
 	{
-		return count( $this->getAllAppointments() );
+		return count( $this->getAllTimeslots() );
 	}
 
 	/**
@@ -585,8 +512,22 @@ class AppointmentRequestData
 		if( $this->isRecurring() && $this->serviceInf->recurring_payment_type == 'first_month' )
 			return 1;
 
-		return $this->getAppointmentsCount();
+		return $this->getTimeslotsCount();
 	}
+
+    /**
+     * @throws \Exception
+     */
+    public function validate()
+    {
+        $this->handleAnyStaffOption();
+        $this->validateBasicData();
+        $this->validateRecurringData();
+        $this->validateCustomerData();
+        $this->validateAppointmentsAvailability();
+
+        do_action('bkntc_appointment_request_data_validate' , $this );
+    }
 
 	/**
 	 * Eger recurring appointmentdirse o halda sechilmish butun date&time`lari, eks halda yalniz 1 date&time sechilir.
@@ -594,7 +535,10 @@ class AppointmentRequestData
 	 */
 	public function validateAppointmentsAvailability()
 	{
-		foreach ( $this->getAllAppointments() AS $timeSlot )
+        if( $this->isEdit() &&  ! in_array($this->status , Helper::getBusyAppointmentStatuses()) &&  $this->appointmentInf->starts_at == $this->getAllTimeslots()[0]->getTimestamp() )
+            return;
+
+		foreach ($this->getAllTimeslots() AS $timeSlot )
 		{
 			if( ! $timeSlot->isBookable() )
 			{
@@ -603,7 +547,7 @@ class AppointmentRequestData
 		}
 	}
 
-	private function validateBasicData()
+	public function validateBasicData()
 	{
 		if(
 			empty( $this->locationId )
@@ -642,17 +586,60 @@ class AppointmentRequestData
 		}
 	}
 
-	private function validateCustomerData()
+    public function validateCustomerData()
 	{
 		if( $this->calledFromBackend )
 		{
-			if( empty( $this->customers ) )
+			if( empty( $this->customerId ) )
 			{
 				throw new \Exception( bkntc__('Please fill in all required fields correctly!') );
 			}
 
+            $checkCustomerExists = Customer::get( $this->customerId );
+            if( ! $checkCustomerExists )
+            {
+                throw new \Exception( bkntc__('Please select customers!') );
+            }
+
 			return;
 		}
+
+        if( ! empty( $this->customerData['email'] ) )
+        {
+            $wpUserId = Permission::userId();
+
+            if ( $wpUserId > 0 )
+            {
+                $checkCustomerExists = Customer::where('user_id', $wpUserId)->fetch();
+
+                if ( $checkCustomerExists )
+                {
+                    if ( $checkCustomerExists->email != $this->customerData['email'] )
+                    {
+                        throw new \Exception( bkntc__('You cannot use any email other than your own email.') );
+                    }
+                }
+
+            }
+            else
+            {
+                $checkCustomerExists = Customer::where('email', $this->customerData['email'])->fetch();
+            }
+
+            if ( $checkCustomerExists )
+            {
+                $this->customerId = $checkCustomerExists->id;
+
+                if (
+                    ( $checkCustomerExists->phone_number != $this->customerData['phone'] && ! empty( $this->customerData['phone'] ) ) ||
+                    ( $checkCustomerExists->first_name != $this->customerData['first_name'] && ! empty( $this->customerData['first_name'] ) ) ||
+                    ( $checkCustomerExists->last_name != $this->customerData['last_name'] && ! empty( $this->customerData['last_name'] ) )
+                )
+                {
+                    $this->setBillingData = true;
+                }
+            }
+        }
 
 		$customer_inputs = ['first_name', 'last_name', 'email', 'phone'];
 
@@ -829,35 +816,32 @@ class AppointmentRequestData
 	 *
 	 * @return AppointmentPriceObject
 	 */
-	public function price( $uniqueKey, $customerId, $groupByKey = null )
+	public function price($uniqueKey, $groupByKey = null)
 	{
-		if( ! isset( $this->prices[ $customerId ][ $uniqueKey ] ) )
+		if( ! isset( $this->prices[ $uniqueKey ] ) )
 		{
-			if( !isset( $this->prices[ $customerId ] ) )
+			if( !isset( $this->prices ) )
 			{
-				$this->prices[ $customerId ] = [];
+				$this->prices = [];
 			}
 
-			$this->prices[ $customerId ][ $uniqueKey ] = new AppointmentPriceObject( $uniqueKey, $groupByKey );
-			$this->prices[ $customerId ][ $uniqueKey ]->setAppointmentsCount( $this->getPayableAppointmentsCount() );
+			$this->prices[ $uniqueKey ] = new AppointmentPriceObject( $uniqueKey, $groupByKey );
+			$this->prices[ $uniqueKey ]->setAppointmentsCount( $this->getPayableAppointmentsCount() );
 		}
 
-		return $this->prices[ $customerId ][ $uniqueKey ];
+		return $this->prices[ $uniqueKey ];
 	}
 
 	/**
 	 * Elave olunan price`larin siyahisini array sheklinde geri qaytarir.
 	 *
-	 * @param $customerId - Her customerin ferqli pricelari ola biler. Meselen 1de coupon var, digerlerinde yoxdu. O sebebden CustoemrId`e gore filter vacibdi.
 	 * @param false $groupPrices - Pricelari hansi parametre gore quruplashdirmagi mueyyenleshdirir. Esasen service_extra`lar uchun istifade olunur. Chunki servis extralar front-endde her biri ayri row kimi dushduyu teqdirde database`e insert zamani onlar qruplashir ve "service_extra" ile insert olunur. Insert zamani bura true gelir, diger hallarda false.
 	 *
 	 * @return AppointmentPriceObject[]
 	 */
-	public function getPrices( $customerId = null, $groupPrices = false )
+	public function getPrices( $groupPrices = false )
 	{
-		$customerId = is_null( $customerId ) ? $this->customerId : $customerId;
-
-		$prices = ! ( isset( $this->prices[ $customerId ] ) && is_array( $this->prices[ $customerId ] ) ) ? [] : $this->prices[ $customerId ];
+		$prices = $this->prices;
 
 		if( ! $groupPrices || empty( $prices ) )
 			return $prices;
@@ -880,7 +864,7 @@ class AppointmentRequestData
 			}
 			else
 			{
-				$groupedPrices[ $priceKey ] = $priceObj;
+				$groupedPrices[ $priceKey ] = clone $priceObj;
 			}
 		}
 
@@ -892,11 +876,11 @@ class AppointmentRequestData
 	 *
 	 * @return string
 	 */
-	public function getPricesHTML( $customerId = null )
+	public function getPricesHTML()
 	{
 		$pricesHTML = '';
 
-		foreach ( $this->getPrices( $customerId ) AS $price )
+		foreach ( $this->getPrices() AS $price )
 		{
 			$pricesHTML .= '<div class="booknetic_confirm_details ' . ($price->isHidden() ? ' booknetic_hidden' : '') . '" data-price-id="' . htmlspecialchars($price->getId()) . '">
 				<div class="booknetic_confirm_details_title">' . $price->getLabel() . '</div>
@@ -916,11 +900,11 @@ class AppointmentRequestData
 	 *
 	 * @return float
 	 */
-	public function getSubTotal( $customerId = null, $sumForAllRecurringAppointments = false )
+	public function getSubTotal( $sumForAllRecurringAppointments = false )
 	{
 		$subTotal = 0;
 
-		foreach ( $this->getPrices( $customerId ) AS $priceInf )
+		foreach ( $this->getPrices() AS $priceInf )
 		{
 			$subTotal += $priceInf->getPrice( $sumForAllRecurringAppointments );
 		}
@@ -983,7 +967,7 @@ class AppointmentRequestData
 	 */
 	public function getPayableTodayPrice( $priceUniqueKey, $sumForAllRecurringAppointments = false )
 	{
-		$price = $this->getSubTotal( null, $sumForAllRecurringAppointments ) > 0 ? $this->getPayableToday( $sumForAllRecurringAppointments ) / $this->getSubTotal( null, $sumForAllRecurringAppointments ) * $this->price( $priceUniqueKey, $this->customerId )->getPrice( $sumForAllRecurringAppointments ) : 0;
+		$price = $this->getSubTotal( $sumForAllRecurringAppointments ) > 0 ? $this->getPayableToday( $sumForAllRecurringAppointments ) / $this->getSubTotal( $sumForAllRecurringAppointments ) * $this->price($priceUniqueKey)->getPrice( $sumForAllRecurringAppointments ) : 0;
 
 		return Math::floor( $price );
 	}
@@ -1016,7 +1000,7 @@ class AppointmentRequestData
 		}
 		else
 		{
-			return Math::floor( $this->getSubTotal( null, $sumForAllRecurringAppointments ) * $deposit / 100 );
+			return Math::floor( $this->getSubTotal( $sumForAllRecurringAppointments ) * $deposit / 100 );
 		}
 	}
 
@@ -1061,31 +1045,29 @@ class AppointmentRequestData
 		if( empty( $this->serviceId ) )
 			return;
 
-		foreach ( $this->customers as $customer )
-		{
-			$customerId = $customer['id'];
+        $customerId = $this->customerId;
 
-			$servicePrice = $this->price( 'service_price', $customerId );
-			$servicePrice->setPrice( $this->getServicePrice() * $customer['number'] );
-			$servicePrice->setLabel( $this->serviceInf->name . ( $customer['number'] > 1 ? ' [x' . $customer['number'] . ']' : '' ) );
+        $servicePrice = $this->price('service_price')->setIsMergeable(false);
+        $servicePrice->setPrice( $this->getServicePrice() * $this->weight );
+        $servicePrice->setLabel( $this->serviceInf->name . ( $this->weight > 1 ? ' [x' . $this->weight . ']' : '' ) );
 
-			foreach ( $this->getServiceExtras($customerId) as $extra )
-			{
-				$addExtraPrice = $this->price( 'service_extra_' . $extra['id'], $customerId, 'service_extra' );
-				$addExtraPrice->setPrice( $extra['price'] * $extra['quantity'] );
-				$addExtraPrice->setLabel( $extra['name'].' [x' . ( $extra['quantity'] ) . ']' );
-			}
+        foreach ( $this->getServiceExtras($customerId) as $extra )
+        {
+            $addExtraPrice = $this->price('service_extra_' . $extra['id'], 'service_extra');
+            $addExtraPrice->setPrice( $extra['price'] * $extra['quantity'] );
+            $addExtraPrice->setLabel( $extra['name'].' [x' . ( $extra['quantity'] ) . ']' );
+            $addExtraPrice->setIsMergeable(false);
+        }
 
-			$discountPrice = $this->price( 'discount', $customerId );
-			$discountPrice->setPrice( 0 );
-			$discountPrice->setLabel( bkntc__('Discount') );
-			$discountPrice->setNegativeOrPositive(-1);
+        $discountPrice = $this->price('discount');
+        $discountPrice->setPrice( 0 );
+        $discountPrice->setLabel( bkntc__('Discount') );
+        $discountPrice->setNegativeOrPositive(-1);
 
-			if( Helper::getOption('hide_discount_row', 'off') == 'on' )
-			{
-				$discountPrice->setHidden( true );
-			}
-		}
+        if( Helper::getOption('hide_discount_row', 'off') == 'on' )
+        {
+            $discountPrice->setHidden( true );
+        }
 	}
 
 
@@ -1105,6 +1087,12 @@ class AppointmentRequestData
 
 	public function getDateTimeView()
 	{
+        if ($this->isRecurring() && empty($this->recurringStartDate)) {
+            return '-';
+        }
+
+        if (empty($this->date)) return '-';
+
 		if( $this->isRecurring() )
 		{
 			$dateTimeView = Date::datee( $this->recurringStartDate ) . ' / ' . Date::datee( $this->recurringEndDate );
@@ -1148,21 +1136,7 @@ class AppointmentRequestData
 	 */
 	public function getFirstAppointmentId()
 	{
-		$createdAppointmentIDs = array_keys( $this->createdAppointments );
-
-		return reset( $createdAppointmentIDs );
-	}
-
-	/**
-	 * Recurring ola bileceyini de nezere alaraq ilk appointmentin ilk appointmentCustomerId`sini geri qaytarir
-	 *
-	 * @return int
-	 */
-	public function getFirstAppointmentCustomerId()
-	{
-		$firstAppointment = reset( $this->createdAppointments );
-
-		return isset( $firstAppointment[0] ) ? $firstAppointment[0] : 0;
+		return reset( $this->createdAppointments );
 	}
 
 	/**

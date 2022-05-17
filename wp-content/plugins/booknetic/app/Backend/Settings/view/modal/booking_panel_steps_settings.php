@@ -55,6 +55,12 @@ $steps = [
 		'can_hide'	=>	true,
 		'hidden'    =>  false
 	],
+	'cart'	=>	[
+		'title'		=>	bkntc__('Cart'),
+		'sortable'	=>	false,
+		'can_hide'	=>	true,
+		'hidden'    =>  false
+	],
 	'finish'			=>	[
 		'title'		=>	bkntc__('Finish'),
 		'sortable'	=>	false,

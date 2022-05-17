@@ -40,7 +40,7 @@ class ActionsAjax extends \BookneticApp\Providers\Core\Controller
         $availableParams = $this->workflowEventsManager->get(Workflow::get($workflowActionInfo->workflow_id)['when'])
             ->getAvailableParams();
 
-        $idShortcodes = $this->workflowEventsManager->getShortcodeService()->getShortCodesList($availableParams, ['appointment_customer_id']);
+        $idShortcodes = $this->workflowEventsManager->getShortcodeService()->getShortCodesList($availableParams, ['appointment_id']);
 
         $IDS = [];
         foreach ($idShortcodes as $shortcode)

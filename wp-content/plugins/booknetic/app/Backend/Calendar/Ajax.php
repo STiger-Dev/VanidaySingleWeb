@@ -21,91 +21,77 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		$startTime			= Helper::_post('start', '', 'string');
 		$endTime			= Helper::_post('end', '', 'string');
 
-		$startTime			= Date::dateSQL( $startTime );
-		$endTime			= Date::dateSQL( $endTime );
+		$startTime			= Date::epoch( $startTime );
+		$endTime			= Date::epoch( $endTime );
 
 		$stafFilter			= Helper::_post('staff', [], 'array');
 		$locationFilter		= Helper::_post('location', '0', 'int');
 		$servicesFilter		= Helper::_post('service', '0', 'int');
 
-		$stafFilterSanitized = [];
+        $staffFilterSanitized = [];
 		foreach ( $stafFilter AS $staffId )
 		{
 			if( is_numeric( $staffId ) && $staffId > 0 )
 			{
-				$stafFilterSanitized[] = (int)$staffId;
+				$staffFilterSanitized[] = (int)$staffId;
 			}
 		}
 
-		$stafFilter = !empty( $stafFilterSanitized ) ? " AND tb1.staff_id IN ('" . implode("','", $stafFilterSanitized) . "')" : '';
-		$locationFilter = !empty( $locationFilter ) ? " AND location_id='$locationFilter'" : '';
-		$servicesFilter = !empty( $servicesFilter ) ? " AND service_id='$servicesFilter'" : '';
 
-		$dataTable = DB::DB()->get_results(
-			DB::DB()->prepare( "
-				SELECT 
-					tb1.*, 
-					(SELECT `name` FROM `" . DB::table('locations') . "` WHERE id=tb1.location_id) AS location_name,
-					tb3.name AS service_name, tb3.duration AS service_duration, tb3.color AS service_color,
-					tb2.name AS staff_name,tb2.id as staff_id, tb2.profile_image AS staff_profile_image,
-					(SELECT group_concat( (SELECT concat(`first_name`, ' ', `last_name`) FROM `" . DB::table('customers') . "` WHERE `id`=subtb1.`customer_id`), '::', `status` ) FROM `" . DB::table('appointment_customers') . "` subtb1 WHERE `appointment_id`=tb1.`id`) AS customers
-				FROM `" . DB::table('appointments') . "` tb1
-				LEFT JOIN `" . DB::table('staff') . "` tb2 ON tb2.id=tb1.staff_id
-				LEFT JOIN `" . DB::table('services') . "` tb3 ON tb3.id=tb1.service_id
-				WHERE tb1.date>=%s AND tb1.date<=%s {$stafFilter} {$locationFilter} {$servicesFilter}" . Permission::queryFilter('appointments', 'tb1.staff_id', 'AND', 'tb1.tenant_id')
-			, [ $startTime, $endTime ] ),
-			ARRAY_A
-		);
+        // De Morgan's law
+        // not ( a OR b ) = not(a) AND not(b)
+        // not ( starts_at > $endTime OR ends_at < $startTime )
+        // starts_at <= $endTime AND ends_at >= $startTime
+        $appointments = Appointment::where('starts_at', '<=', $endTime)
+            ->where('ends_at', '>=', $startTime);
 
-		$events = [];
-		foreach( $dataTable AS $dataInfo )
-		{
-		    $appointmentEventId = Appointment::getData($dataInfo['id'], 'google_event_id');
+        if ( !empty($staffFilterSanitized) )
+        {
+            $appointments = $appointments->where('staff_id', 'in', $staffFilterSanitized);
+        }
 
-			$customers = explode(',', $dataInfo['customers']);
-			$customersCount = count($customers);
-			if( $customersCount == 1 )
-			{
-			    $customer	= explode('::', reset($customers));
-                if( !empty($customer) && count($customer) == 2 )
-                {
-                    $status		= htmlspecialchars($customer[1]);
-                    $customer	= htmlspecialchars($customer[0]);
-                }
+        if ( !empty($locationFilter) )
+        {
+            $appointments = $appointments->where('location_id', $locationFilter);
+        }
 
-			}
-			else
-			{
-				$customer	= '';
-				$status		= '';
-			}
+        if ( !empty($servicesFilter) )
+        {
+            $appointments = $appointments->where('service_id', $servicesFilter);
+        }
 
-			$additionalDays = (int)( ($dataInfo['duration'] + $dataInfo['extras_duration']) / 60 / 24 );
-			$additionalDays = ( $additionalDays >= 2 ) ? $additionalDays : 0;
+        $appointments = $appointments->leftJoin('staff', ['name', 'profile_image'])
+            ->leftJoin('location', ['name'])
+            ->leftJoin('service', ['name', 'color'])
+            ->leftJoin('customer', ['first_name', 'last_name']);
+        $appointments = $appointments->fetchAll();
 
-			$events[] = [
-				'appointment_id'		=>	(int)$dataInfo['id'],
-				'title'					=>	htmlspecialchars( $dataInfo['service_name'] ),
+        $events = [];
+        foreach ($appointments as $appointment)
+        {
+            $events[] = [
+                'appointment_id'		=>	$appointment['id'],
+                'title'					=>	htmlspecialchars( $appointment['service_name'] ),
                 'event_title'			=>	'',
-				'color'					=>	empty($dataInfo['service_color']) ? '#ff7675' : $dataInfo['service_color'],
-				'text_color'			=>	static::getContrastColor( empty($dataInfo['service_color']) ? '#ff7675' : $dataInfo['service_color'] ),
-				'location_name'			=>	htmlspecialchars( $dataInfo['location_name'] ),
-				'service_name'			=>	htmlspecialchars( $dataInfo['service_name'] ),
-				'staff_name'			=>	htmlspecialchars( $dataInfo['staff_name'] ),
-				'staff_id'			    =>	$dataInfo['staff_id'] ,
-				'resourceId'			=>	$dataInfo['staff_id'] ,
-				'staff_profile_image'	=>	Helper::profileImage( $dataInfo['staff_profile_image'], 'Staff' ),
-				'start_time'			=>	Date::time( $dataInfo['start_time'] ),
-				'end_time'				=>	Date::time( Date::epoch($dataInfo['start_time']) + ($dataInfo['duration'] + $dataInfo['extras_duration']) * 60 ),
-				'start'					=>	Date::dateSQL( $dataInfo['date'] ) . 'T' . Date::format( 'H:i:s', $dataInfo['start_time'] ),
-				'end'                   =>  Date::format( 'Y-m-d\TH:i:s', Date::epoch( $dataInfo['date'] . ' ' . $dataInfo['start_time'] ) + ( $dataInfo[ 'duration' ] + $dataInfo[ 'extras_duration' ] ) * 60 ),
-				'customer'				=>	$customer,
-				'customers_count'		=>	$customersCount,
-				'status'				=>	Helper::appointmentStatus( $status )
-			];
-		}
+                'color'					=>	empty($appointment['service_color']) ? '#ff7675' : $appointment['service_color'],
+                'text_color'			=>	static::getContrastColor( empty($appointment['service_color']) ? '#ff7675' : $appointment['service_color'] ),
+                'location_name'			=>	htmlspecialchars( $appointment['location_name'] ),
+                'service_name'			=>	htmlspecialchars( $appointment['service_name'] ),
+                'staff_name'			=>	htmlspecialchars( $appointment['staff_name'] ),
+                'staff_id'			    =>	$appointment['staff_id'] ,
+                'resourceId'			=>	$appointment['staff_id'] ,
+                'staff_profile_image'	=>	Helper::profileImage( $appointment['staff_profile_image'], 'Staff' ),
+                'start_time'			=>	Date::time( $appointment['starts_at'] ),
+                'end_time'				=>	Date::time( $appointment['ends_at'] ),
+                'start'					=>	Date::format( 'Y-m-d\TH:i:s', $appointment['starts_at']),
+                'end'                   =>  Date::format( 'Y-m-d\TH:i:s', $appointment['ends_at']),
+                'customer'				=>	$appointment['customer_first_name'] . ' ' . $appointment['customer_last_name'],
+                'customers_count'		=>	1,
+                'status'				=>	Helper::appointmentStatus( $appointment['status'] )
+            ];
+        }
 
-		$events = apply_filters('bkntc_calendar_events', $events, $startTime, $endTime);
+		$events = apply_filters('bkntc_calendar_events', $events, $startTime, $endTime , $staffFilterSanitized);
 
 		return $this->response( true, [
 			'data'	=>	$events

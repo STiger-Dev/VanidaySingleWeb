@@ -2,12 +2,12 @@
 
 defined( 'ABSPATH' ) or die();
 
-use BookneticApp\Backend\Appointments\Helpers\AppointmentCustomerSmartObject;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentSmartObject;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Date;
 
 /**
- * @var $parameters AppointmentCustomerSmartObject[]
+ * @var $parameters AppointmentSmartObject[]
  * @var mixed $_mn
  */
 
@@ -61,22 +61,16 @@ use BookneticApp\Providers\Helpers\Date;
 						<thead>
 						<tr>
 							<th><?php echo bkntc__('CUSTOMER')?></th>
-							<th class="text-center"><?php echo bkntc__('TOTAL')?></th>
-							<th class="text-center"><?php echo bkntc__('PAID')?></th>
-							<th class="text-center"><?php echo bkntc__('DUE')?></th>
-							<th class="text-center pr-1"><?php echo bkntc__('METHOD')?></th>
-							<th class="text-center"><?php echo bkntc__('STATUS')?></th>
+							<th><?php echo bkntc__('METHOD')?></th>
+							<th><?php echo bkntc__('STATUS')?></th>
 						</tr>
 						</thead>
 						<tbody>
 						<?php
 						echo '<tr data-customer-id="' . (int)$parameters['info']->getInfo()->customer_id . '" data-id="' . (int)$parameters['info']->getId() . '">';
 						echo '<td>' . Helper::profileCard($parameters['info']->getCustomerInf()->full_name, $parameters['info']->getCustomerInf()->profile_image, $parameters['info']->getCustomerInf()->email, 'Customers') . '</td>';
-						echo '<td class="text-center">' . Helper::price( $parameters['info']->getTotalAmount() ) . '</td>';
-						echo '<td class="text-center">' . Helper::price( $parameters['info']->getRealPaidAmount() ) . '</td>';
-						echo '<td class="text-center">' . Helper::price( $parameters['info']->getDueAmount() ) . '</td>';
-						echo '<td class="text-center">' . Helper::paymentMethod( $parameters['info']->getInfo()->payment_method ) . '</td>';
-						echo '<td class="text-center"><span class="payment-status-' . htmlspecialchars($parameters['info']->getInfo()->payment_status) . '"></span></td>';
+						echo '<td>' . Helper::paymentMethod( $parameters['info']->getInfo()->payment_method ) . '</td>';
+						echo '<td><span class="payment-status-' . htmlspecialchars($parameters['info']->getInfo()->payment_status) . '"></span></td>';
 						echo '</tr>';
 						?>
 						</tbody>

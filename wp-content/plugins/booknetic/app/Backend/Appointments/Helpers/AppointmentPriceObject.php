@@ -18,6 +18,7 @@ class AppointmentPriceObject
 	private $color;
 	private $appointmentsCount = 1;
     private $negativeOrPositive = 1;
+    private $isMergeable = true;
 
 
 	public function __construct( $uniqueKey, $groupByKey = null )
@@ -43,12 +44,16 @@ class AppointmentPriceObject
 		return $this->groupByKey;
 	}
 
-	public function setPrice( $price, $printAbs = false )
+	public function setPrice( $price, $printAbs = null )
 	{
 		$this->price    = $price;
-		$this->printAbs = $printAbs;
 
-		return $this;
+        if (!is_null($printAbs))
+        {
+            $this->printAbs = $printAbs;
+        }
+
+        return $this;
 	}
 
 	public function setLabel( $label )
@@ -67,7 +72,7 @@ class AppointmentPriceObject
 
 	public function getPrice( $sumForAllRecurringAppointments = false )
 	{
-		return is_null( $this->price ) ? 0 : ( $sumForAllRecurringAppointments ? Math::floor( $this->price * $this->appointmentsCount ) : $this->price );
+		return   is_null( $this->price ) ? 0 : ( $sumForAllRecurringAppointments ? Math::mul($this->price, $this->appointmentsCount) : Math::floor($this->price) );
 	}
 
 	public function getPriceView( $sumForAllRecurringAppointments = false )
@@ -114,6 +119,18 @@ class AppointmentPriceObject
     public function getNegativeOrPositive()
     {
         return $this->negativeOrPositive;
+    }
+
+    public function setIsMergeable($isMergeable)
+    {
+        $this->isMergeable = $isMergeable;
+
+        return $this;
+    }
+
+    public function isMergeable()
+    {
+        return $this->isMergeable;
     }
 
 

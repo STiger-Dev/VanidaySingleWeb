@@ -137,7 +137,8 @@ $isRtl = Helper::isRTLLanguage(0, true, Session::get('active_language', get_loca
 			weekStartsOn	    =	"<?php echo Helper::getOption('week_starts_on', 'sunday') == 'monday' ? 'monday' : 'sunday'?>",
 			dateFormat  	    =	"<?php echo htmlspecialchars(Helper::getOption('date_format', 'Y-m-d'))?>",
 			timeFormat  	    =	"<?php echo htmlspecialchars(Helper::getOption('time_format', 'H:i'))?>",
-			localization	    =   <?php echo json_encode($localization)?>;
+			localization	    =   <?php echo json_encode($localization)?>,
+			isSaaSVersion	    =   <?php echo json_encode(Helper::isSaaSVersion()) ?>;
 	</script>
 
 	<?php do_action( 'bkntc_enqueue_assets', $currentModule, $currentAction, $fullViewPath );?>

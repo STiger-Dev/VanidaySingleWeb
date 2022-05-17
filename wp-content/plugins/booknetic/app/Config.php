@@ -2,12 +2,11 @@
 
 namespace BookneticApp;
 
-use BookneticApp\Backend\Appointments\Helpers\AppointmentCustomerSmartObject;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentSmartObject;
 use BookneticApp\Backend\Appointments\Helpers\AppointmentRequestData;
 use BookneticApp\Backend\Settings\Helpers\LocalizationService;
 use BookneticApp\Backend\Workflow\Actions\SetBookingStatusAction;
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
 use BookneticApp\Providers\Common\LocalPayment;
 use BookneticApp\Providers\Common\ShortCodeService;
 use BookneticApp\Providers\Common\ShortCodeServiceImpl;
@@ -452,27 +451,27 @@ class Config
         self::$workflowEventsManager->get('booking_new')
             ->setTitle(bkntc__('New booking'))
             ->setEditAction('workflow_events', 'event_new_booking')
-            ->setAvailableParams(['appointment_customer_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
+            ->setAvailableParams(['appointment_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
 
         self::$workflowEventsManager->get('booking_rescheduled')
             ->setTitle(bkntc__('Booking rescheduled'))
             ->setEditAction('workflow_events', 'event_booking_rescheduled')
-            ->setAvailableParams(['appointment_customer_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
+            ->setAvailableParams(['appointment_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
 
         self::$workflowEventsManager->get('booking_status_changed')
             ->setTitle(bkntc__('Booking status changed'))
             ->setEditAction('workflow_events', 'event_booking_status_changed')
-            ->setAvailableParams(['appointment_customer_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
+            ->setAvailableParams(['appointment_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
 
         self::$workflowEventsManager->get('booking_starts')
             ->setTitle(bkntc__('Booking starts'))
             ->setEditAction('workflow_events', 'event_booking_starts')
-            ->setAvailableParams(['appointment_customer_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
+            ->setAvailableParams(['appointment_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
 
         self::$workflowEventsManager->get('booking_ends')
             ->setTitle(bkntc__('Booking ends'))
             ->setEditAction('workflow_events', 'event_booking_ends')
-            ->setAvailableParams(['appointment_customer_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
+            ->setAvailableParams(['appointment_id', 'location_id', 'service_id', 'staff_id', 'customer_id']);
 
         self::$workflowEventsManager->get('new_wp_user_customer_created')
             ->setTitle(bkntc__('New customer created'))
@@ -480,23 +479,22 @@ class Config
             ->setAvailableParams(['customer_id', 'customer_password']);
 
 
-        add_action('bkntc_payment_confirmed', function ($appointmentCustomerId)
+        add_action('bkntc_payment_confirmed', function ($appointmentId)
         {
-            $appointmentCustomer = AppointmentCustomer::get($appointmentCustomerId);
-            $appointment = Appointment::get($appointmentCustomer->appointment_id);
+            $appointment = Appointment::get($appointmentId);
 
             self::$workflowEventsManager->trigger('booking_new', [
-                'appointment_customer_id' => $appointmentCustomerId,
+                'appointment_id' => $appointmentId,
                 'location_id' => $appointment->location_id,
                 'service_id' => $appointment->service_id,
                 'staff_id' => $appointment->staff_id,
-                'customer_id' => $appointmentCustomer->customer_id
-            ], function ($event) use ($appointment, $appointmentCustomer) {
+                'customer_id' => $appointment->customer_id
+            ], function ($event) use ($appointment) {
                 if (empty($event['data'])) return true;
 
                 $data = json_decode($event['data'], true);
 
-                if ( ! empty( $data[ 'locale' ] ) && $data['locale'] !== $appointmentCustomer->locale) {
+                if ( ! empty( $data[ 'locale' ] ) && $data['locale'] !== $appointment->locale) {
                     return false;
                 }
 
@@ -517,138 +515,103 @@ class Config
 
         }, 1000, 1);
 
-        add_action('bkntc_appointment_customer_rescheduled', function ($appointmentCustomerId, $appointmentData)
+        $oldAppointmentInfObj = new \stdClass();
+        $oldAppointmentInfObj->inf = null;
+
+        add_action('bkntc_appointment_before_mutation', function ($id) use ($oldAppointmentInfObj)
         {
+            $oldAppointmentInfObj->inf = is_null($id) ? null : Appointment::get($id);
+        });
 
-            $appointmentCustomer = AppointmentCustomer::get($appointmentCustomerId);
-            $appointment = Appointment::noTenant()->where('id', $appointmentCustomer->appointment_id)->fetch();
-            $tenant_id = $appointment->tenant_id;
-
-            self::$workflowEventsManager->trigger('booking_rescheduled', [
-                'appointment_customer_id' => $appointmentCustomerId,
-                'location_id' => $appointment->location_id,
-                'service_id' => $appointment->service_id,
-                'staff_id' => $appointment->staff_id,
-                'customer_id' => $appointmentCustomer->customer_id
-            ], function ($event) use ($appointment, $appointmentCustomer) {
-                if (empty($event['data'])) return true;
-
-                $data = json_decode($event['data'], true);
-
-                if ( ! empty( $data[ 'locale' ] ) && $data['locale'] !== $appointmentCustomer->locale) {
-                    return false;
-                }
-
-                if (count($data['locations']) > 0 && !in_array($appointment->location_id, $data['locations'])) {
-                    return false;
-                }
-
-                if (count($data['services']) > 0 && !in_array($appointment->service_id, $data['services'])) {
-                    return false;
-                }
-
-                if (count($data['staffs']) > 0 && !in_array($appointment->staff_id, $data['staffs'])) {
-                    return false;
-                }
-
-                return true;
-            }, true, $tenant_id);
-        }, 10, 2);
-
-        add_action('bkntc_appointment_rescheduled', function ($appointmentId)
+        add_action('bkntc_appointment_after_mutation', function ($id) use ($oldAppointmentInfObj)
         {
-            $appointment = Appointment::get($appointmentId);
-            $appointmentCustomers = AppointmentCustomer::where('appointment_id', $appointmentId)->fetchAll();
+            $oldAppointmentInf = $oldAppointmentInfObj->inf;
+            $newAppointmentInf = is_null($id) ? null : Appointment::get($id);
 
-            $sentAtLeastOne = false;
+            if (empty($oldAppointmentInf) || empty($newAppointmentInf))
+                return;
 
-            foreach ($appointmentCustomers as $appointmentCustomer)
+            // status change
+            if ($newAppointmentInf->status != $oldAppointmentInf->status)
             {
-                self::$workflowEventsManager->trigger('booking_rescheduled', [
-                    'appointment_customer_id' => $appointmentCustomer->id,
-                    'location_id' => $appointment->location_id,
-                    'service_id' => $appointment->service_id,
-                    'staff_id' => $appointment->staff_id,
-                    'customer_id' => $appointmentCustomer->customer_id
-                ], function ($event) use ($sentAtLeastOne, $appointment, $appointmentCustomer) {
+                self::$workflowEventsManager->trigger('booking_status_changed', [
+                    'appointment_id' => $newAppointmentInf->id,
+                    'location_id' => $newAppointmentInf->location_id,
+                    'service_id' => $newAppointmentInf->service_id,
+                    'staff_id' => $newAppointmentInf->staff_id,
+                    'customer_id' => $newAppointmentInf->customer_id
+                ], function($event) use ($oldAppointmentInf, $newAppointmentInf) {
                     if (empty($event['data'])) return true;
 
                     $data = json_decode($event['data'], true);
 
-                    $forEachCustomer = isset( $data['for_each_customer'] ) && is_bool( $data['for_each_customer'] ) ? $data['for_each_customer'] : true;
-
-                    if ((!$forEachCustomer) && $sentAtLeastOne) {
+                    if ( ! empty( $data[ 'locale' ] ) && $data['locale'] !== $newAppointmentInf->locale) {
                         return false;
                     }
 
-                    if ( ! empty( $data[ 'locale' ] ) && $data['locale'] !== $appointmentCustomer->locale) {
+                    if (count($data['statuses']) > 0 && !in_array($newAppointmentInf->status, $data['statuses'])) {
                         return false;
                     }
 
-                    if (count($data['locations']) > 0 && !in_array($appointment->location_id, $data['locations'])) {
+                    if (count($data['prev_statuses']) > 0 && !in_array($oldAppointmentInf->status, $data['prev_statuses'])) {
                         return false;
                     }
 
-                    if (count($data['services']) > 0 && !in_array($appointment->service_id, $data['services'])) {
+                    if (count($data['locations']) > 0 && !in_array($newAppointmentInf->location_id, $data['locations'])) {
                         return false;
                     }
 
-                    if (count($data['staffs']) > 0 && !in_array($appointment->staff_id, $data['staffs'])) {
+                    if (count($data['services']) > 0 && !in_array($newAppointmentInf->service_id, $data['services'])) {
+                        return false;
+                    }
+
+                    if (count($data['staffs']) > 0 && !in_array($newAppointmentInf->staff_id, $data['staffs'])) {
                         return false;
                     }
 
                     return true;
                 });
-
-                $sentAtLeastOne = true;
             }
-        });
 
-        add_action('bkntc_appointment_customer_status_changed', function ($appointmentCustomerId, $status, $prevStatus)
-        {
-            $appointmentCustomer = AppointmentCustomer::get($appointmentCustomerId);
-            $appointment = Appointment::noTenant()->where('id', $appointmentCustomer->appointment_id)->fetch();
-            $tenant_id = $appointment->tenant_id;
+            // reschedule
+            if ($newAppointmentInf->starts_at != $oldAppointmentInf->starts_at
+                || $newAppointmentInf->location_id != $oldAppointmentInf->location_id
+                || $newAppointmentInf->service_id != $oldAppointmentInf->service_id
+                || $newAppointmentInf->staff_id != $oldAppointmentInf->staff_id
+            )
+            {
+                self::$workflowEventsManager->trigger('booking_rescheduled', [
+                    'appointment_id' => $newAppointmentInf->id,
+                    'location_id' => $newAppointmentInf->location_id,
+                    'service_id' => $newAppointmentInf->service_id,
+                    'staff_id' => $newAppointmentInf->staff_id,
+                    'customer_id' => $newAppointmentInf->customer_id
+                ], function ($event) use ($newAppointmentInf) {
+                    if (empty($event['data'])) return true;
 
-            self::$workflowEventsManager->trigger('booking_status_changed', [
-                'appointment_customer_id' => $appointmentCustomerId,
-                'location_id' => $appointment->location_id,
-                'service_id' => $appointment->service_id,
-                'staff_id' => $appointment->staff_id,
-                'customer_id' => $appointmentCustomer->customer_id
-            ], function($event) use ($prevStatus, $status, $appointmentCustomer, $appointment) {
-                if (empty($event['data'])) return true;
+                    $data = json_decode($event['data'], true);
 
-                $data = json_decode($event['data'], true);
+                    if ( ! empty( $data[ 'locale' ] ) && $data['locale'] !== $newAppointmentInf->locale) {
+                        return false;
+                    }
 
-                if ( ! empty( $data[ 'locale' ] ) && $data['locale'] !== $appointmentCustomer->locale) {
-                    return false;
-                }
+                    if (count($data['locations']) > 0 && !in_array($newAppointmentInf->location_id, $data['locations'])) {
+                        return false;
+                    }
 
-                if (count($data['statuses']) > 0 && !in_array($status, $data['statuses'])) {
-                    return false;
-                }
+                    if (count($data['services']) > 0 && !in_array($newAppointmentInf->service_id, $data['services'])) {
+                        return false;
+                    }
 
-                if (count($data['prev_statuses']) > 0 && !in_array($prevStatus, $data['prev_statuses'])) {
-                    return false;
-                }
+                    if (count($data['staffs']) > 0 && !in_array($newAppointmentInf->staff_id, $data['staffs'])) {
+                        return false;
+                    }
 
-                if (count($data['locations']) > 0 && !in_array($appointment->location_id, $data['locations'])) {
-                    return false;
-                }
+                    return true;
+                });
+            }
 
-                if (count($data['services']) > 0 && !in_array($appointment->service_id, $data['services'])) {
-                    return false;
-                }
-
-                if (count($data['staffs']) > 0 && !in_array($appointment->staff_id, $data['staffs'])) {
-                    return false;
-                }
-
-                return true;
-            }, true, $tenant_id);
-        }, 10, 3);
-
+        }, 1000, 1);
 
         add_action('bkntc_customer_created', function ( $customerId, $customerPassword )
         {
@@ -696,129 +659,129 @@ class Config
 		$shortCodeService->registerShortCode( 'appointment_id', [
 			'name'      =>  bkntc__('Appointment ID'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id',
-            'kind'      =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id',
+            'kind'      =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_date', [
 			'name'      =>  bkntc__('Appointment date'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_date_time', [
 			'name'      =>  bkntc__('Appointment date-time'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_start_time', [
 			'name'      =>  bkntc__('Appointment start time'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_end_time', [
 			'name'      =>  bkntc__('Appointment end time'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
         $shortCodeService->registerShortCode( 'appointment_date_client', [
             'name'      =>  bkntc__('Appointment date (customer timezone)'),
             'category'  =>  'appointment_info',
-            'depends'   =>  'appointment_customer_id'
+            'depends'   =>  'appointment_id'
         ] );
         $shortCodeService->registerShortCode( 'appointment_date_time_client', [
             'name'      =>  bkntc__('Appointment date-time (customer timezone)'),
             'category'  =>  'appointment_info',
-            'depends'   =>  'appointment_customer_id'
+            'depends'   =>  'appointment_id'
         ] );
         $shortCodeService->registerShortCode( 'appointment_start_time_client', [
             'name'      =>  bkntc__('Appointment start time (customer timezone)'),
             'category'  =>  'appointment_info',
-            'depends'   =>  'appointment_customer_id'
+            'depends'   =>  'appointment_id'
         ] );
         $shortCodeService->registerShortCode( 'appointment_end_time_client', [
             'name'      =>  bkntc__('Appointment end time (customer timezone)'),
             'category'  =>  'appointment_info',
-            'depends'   =>  'appointment_customer_id'
+            'depends'   =>  'appointment_id'
         ] );
 		$shortCodeService->registerShortCode( 'appointment_duration', [
 			'name'      =>  bkntc__('Appointment duration'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_buffer_before', [
 			'name'      =>  bkntc__('Appointment buffer before time'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_buffer_after', [
 			'name'      =>  bkntc__('Appointment buffer after time'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_status', [
 			'name'      =>  bkntc__('Appointment status'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_service_price', [
 			'name'      =>  bkntc__('Service price'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_extras_price', [
 			'name'      =>  bkntc__('Price of extra services'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_extras_list', [
 			'name'      =>  bkntc__('List of extra services'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_discount_price', [
 			'name'      =>  bkntc__('Discount'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_sum_price', [
 			'name'      =>  bkntc__('Sum price'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
         $shortCodeService->registerShortCode( 'appointments_total_price', [
             'name'      =>  bkntc__('Sum price for recurring appointments'),
             'category'  =>  'appointment_info',
-            'depends'   =>  'appointment_customer_id'
+            'depends'   =>  'appointment_id'
         ] );
 		$shortCodeService->registerShortCode( 'appointment_paid_price', [
 			'name'      =>  bkntc__('Paid price'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_payment_method', [
 			'name'      =>  bkntc__('Payment method'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_created_date', [
 			'name'      =>  bkntc__('Appointment created date'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
 		$shortCodeService->registerShortCode( 'appointment_created_time', [
 			'name'      =>  bkntc__('Appointment created time'),
 			'category'  =>  'appointment_info',
-			'depends'   =>  'appointment_customer_id'
+			'depends'   =>  'appointment_id'
 		] );
         $shortCodeService->registerShortCode( 'appointment_brought_people', [
             'name' => bkntc__('Appointment Brought People'),
             'category' => 'appointment_info',
-            'depends' => 'appointment_customer_id'
+            'depends' => 'appointment_id'
         ] );
 
         $shortCodeService->registerShortCode( 'add_to_google_calendar_link', [
             'name'      =>  bkntc__('Add to google calendar'),
             'category'  =>  'appointment_info',
-            'depends'   =>  'appointment_customer_id'
+            'depends'   =>  'appointment_id'
         ] );
 
 		$shortCodeService->registerShortCode( 'service_name', [
@@ -959,6 +922,11 @@ class Config
 			'category'  =>  'location_info',
 			'depends'   =>  'location_id'
 		] );
+        $shortCodeService->registerShortCode( 'location_google_maps_url', [
+            'name'      =>  bkntc__('Location Google Maps URL'),
+            'category'  =>  'location_info',
+            'depends'   =>  'location_id'
+        ] );
 
 		$shortCodeService->registerShortCode( 'company_name', [
 			'name'      =>  bkntc__('Company name'),

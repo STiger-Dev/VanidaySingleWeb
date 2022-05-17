@@ -29,7 +29,7 @@ function extrasTpl($id = 0, $name = '', $duration = 0, $price = 0, $max_quantity
         </div>
         <div class="form-group col-md-2">
             <label><?php echo bkntc__('Price')?>:</label>
-            <div class="form-control-plaintext" data-tag="price"><?php echo Helper::price( $price )?></div>
+            <div class="form-control-plaintext" data-tag="price"><?php echo Helper::price( $price , false )?></div>
         </div>
         <div class="form-group col-md-3">
             <label><?php echo bkntc__('Max. quantity')?>:</label>

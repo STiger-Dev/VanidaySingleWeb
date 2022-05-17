@@ -112,3 +112,37 @@
 {
 	width: 100px;
 }
+
+.fs-modal .extra_row
+{
+	position: relative;
+	-webkit-box-shadow: 0 0 30px 0 rgba(0,0,0,0.05);
+	-moz-box-shadow: 0 0 30px 0 rgba(0,0,0,0.05);
+	box-shadow: 0 0 30px 0 rgba(0,0,0,0.05);
+
+	padding: 20px;
+	padding-bottom: 0;
+
+	margin-bottom: 20px;
+
+	height: 115px;
+	padding-top: 30px;
+}
+
+.fs-modal .extra_row[data-active="0"]
+{
+	opacity: 0.5;
+}
+
+.fs-modal .extra_row label
+{
+	font-size: 16px;
+	font-weight: 500;
+	margin-bottom: 0;
+}
+
+.fs-modal .extra_row .form-control-plaintext
+{
+	color: #828F9A;
+	padding-top: 5px;
+}

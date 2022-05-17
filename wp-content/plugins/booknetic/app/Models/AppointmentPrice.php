@@ -8,13 +8,12 @@ use BookneticApp\Providers\DB\Model;
 /**
  * @property-read int $id
  * @property-read int $appointment_id
- * @property-read int $appointment_customer_id
  * @property-read string $unique_key
  * @property-read float $price
  * @property-read int $negative_or_positive
  * @property-read string $name
  */
-class AppointmentCustomerPrice extends Model
+class AppointmentPrice extends Model
 {
 
 	public static $relations = [

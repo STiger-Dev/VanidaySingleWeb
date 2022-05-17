@@ -26,11 +26,11 @@
 		booknetic.dataTable.actionCallbacks['delete'] = function (ids)
 		{
 			let d = '<div class="mt-3"> <input type="checkbox" id="input_delete_customer_wp_user" checked><label for="input_delete_customer_wp_user">Delete associated WordPress account</label> </div>';
-
+			d = (isSaaSVersion != undefined && isSaaSVersion===true) ? '' : d;
 			booknetic.confirm([ booknetic.__('are_you_sure_want_to_delete'), d], 'danger', 'trash', function(modal)
 			{
 				let ajaxData = {
-					'delete_wp_user': modal.find('#input_delete_customer_wp_user').is(':checked') ? 1 : 0
+					'delete_wp_user': modal.find('#input_delete_customer_wp_user').is(':checked') ? 1 : ((isSaaSVersion != undefined && isSaaSVersion===true) ? 1 : 0)
 				};
 
 				booknetic.dataTable.doAction('delete', ids, ajaxData, function ()

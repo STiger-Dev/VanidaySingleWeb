@@ -28,7 +28,7 @@
 
 .fs-modal .customer-status-btn
 {
-	width: calc(60% - 20px);
+	width: 60%;
 }
 
 .fs-modal .customer-status-btn > button
@@ -124,7 +124,7 @@
 
 .number_of_group_customers_span
 {
-	width: calc(40% - 20px);
+	width: 40%;
 }
 
 .input_customer ~ .input-group-prepend > button

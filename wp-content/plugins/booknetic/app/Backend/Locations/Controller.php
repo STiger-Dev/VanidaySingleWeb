@@ -72,9 +72,11 @@ class Controller extends \BookneticApp\Providers\Core\Controller
             }
 
 			DB::DB()->query( DB::DB()->prepare("UPDATE `".DB::table('staff')."` SET locations=TRIM(BOTH ',' FROM REPLACE(CONCAT(',',`locations`,','),%s,',')) WHERE FIND_IN_SET(%d, `locations`)", [",{$id},", $id]) );
-		}
 
-        Location::where('id', $ids)->delete();
+            Location::where('id', $id)->delete();
+        }
+
+
 	}
 
 }

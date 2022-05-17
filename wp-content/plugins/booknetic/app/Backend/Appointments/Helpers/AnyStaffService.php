@@ -75,25 +75,25 @@ class AnyStaffService
 
 			if( $dateRule == 'day' )
 			{
-				$startDate	= $date;
-				$endDate	= $date;
+				$startDate	= Date::epoch($date, 'today');
+				$endDate	= Date::epoch($date, 'tomorrow');
 			}
 			else if( $dateRule == 'week' )
 			{
-				$startDate	= Date::dateSQL($date, 'monday this week');
-				$endDate	= Date::dateSQL($date, 'sunday this week');
+				$startDate	= Date::epoch($date, 'monday this week');
+				$endDate	= Date::epoch($date, 'monday next week');
 			}
 			else
 			{
-				$startDate	= Date::dateSQL($date, 'first day of this month');
-				$endDate	= Date::dateSQL($date, 'last day of this month');
+				$startDate	= Date::epoch($date, 'first day of this month');
+				$endDate	= Date::epoch($date, 'first day of next month');
 			}
 
 			$orderType = strpos( $rule, 'most_' ) === 0 ? 'DESC' : 'ASC';
 
 			$subQuery = Appointment::where('staff_id', DB::field('id', 'staff'))
-			                       ->where('date', '>=', $startDate)
-			                       ->where('date', '<=', $endDate)
+			                       ->where('starts_at', '>=', $startDate)
+			                       ->where('ends_at', '<=', $endDate)
 				->select('count(0)');
 
 			$getStaff = Staff::select('id')

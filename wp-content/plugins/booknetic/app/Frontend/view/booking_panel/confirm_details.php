@@ -12,44 +12,45 @@ defined( 'ABSPATH' ) or die();
  */
 
 ?>
+<div class="booknetic_confirm_container">
+    <?php if(Helper::getOption('show_step_cart', 'off') == 'off'): ?>
+    <div class="booknetic_confirm_date_time booknetic_portlet <?php echo $parameters['hide_confirm_step'] ? 'booknetic_hidden' : ''?>">
 
-<div class="booknetic_confirm_date_time booknetic_portlet <?php echo $parameters['hide_confirm_step'] ? 'booknetic_hidden' : ''?>">
+        <div>
+            <span class="booknetic_text_primary"><?php echo bkntc__('Date & Time')?>:</span>
+            <span><?php echo $parameters['appointmentData']->getDateTimeView()?></span>
+        </div>
 
-	<div>
-		<span class="booknetic_text_primary"><?php echo bkntc__('Date & Time')?>:</span>
-		<span><?php echo $parameters['appointmentData']->getDateTimeView()?></span>
-	</div>
+        <?php if( Helper::getOption('show_step_staff', 'on') != 'off' ): ?>
+            <div>
+                <span class="booknetic_text_primary"><?php echo bkntc__('Staff')?>:</span>
+                <span><?php echo htmlspecialchars($parameters['appointmentData']->staffInf->name)?></span>
+            </div>
+        <?php endif; ?>
 
-	<?php if( Helper::getOption('show_step_staff', 'on') != 'off' ): ?>
-	<div>
-		<span class="booknetic_text_primary"><?php echo bkntc__('Staff')?>:</span>
-		<span><?php echo htmlspecialchars($parameters['appointmentData']->staffInf->name)?></span>
-	</div>
-	<?php endif; ?>
+        <?php if( Helper::getOption('show_step_location', 'on') != 'off' ): ?>
+            <div>
+                <span class="booknetic_text_primary"><?php echo bkntc__('Location')?>:</span>
+                <span><?php echo htmlspecialchars($parameters['appointmentData']->locationInf->name)?></span>
+            </div>
+        <?php endif; ?>
 
-	<?php if( Helper::getOption('show_step_location', 'on') != 'off' ): ?>
-	<div>
-		<span class="booknetic_text_primary"><?php echo bkntc__('Location')?>:</span>
-		<span><?php echo htmlspecialchars($parameters['appointmentData']->locationInf->name)?></span>
-	</div>
-	<?php endif; ?>
+        <?php if( Helper::getOption('show_step_service', 'on') != 'off' ): ?>
+            <div>
+                <span class="booknetic_text_primary"><?php echo bkntc__('Service')?>:</span>
+                <span><?php echo htmlspecialchars($parameters['appointmentData']->serviceInf->name)?></span>
+            </div>
+        <?php endif; ?>
 
-	<?php if( Helper::getOption('show_step_service', 'on') != 'off' ): ?>
-	<div>
-		<span class="booknetic_text_primary"><?php echo bkntc__('Service')?>:</span>
-		<span><?php echo htmlspecialchars($parameters['appointmentData']->serviceInf->name)?></span>
-	</div>
-	<?php endif; ?>
-
-</div>
-
-<div class="booknetic_confirm_step_body <?php echo $parameters['hide_confirm_step'] ? 'booknetic_hidden' : ''?>">
+    </div>
+    <?php endif; ?>
+    <div class="booknetic_confirm_step_body <?php echo $parameters['hide_confirm_step'] ? 'booknetic_hidden' : ''?>">
 
 	<div class="booknetic_confirm_sum_body<?php echo ($parameters['hide_payments'] && !$parameters['hide_price_section'] ? ' booknetic_confirm_sum_body_full_width' : '') . ($parameters['hide_price_section'] ? ' booknetic_hidden' : '');?>">
 		<div class="booknetic_portlet">
 			<div class="booknetic_portlet_content">
 				<div class="booknetic_prices_box">
-					<?php echo $parameters['appointmentData']->getPricesHTML();?>
+					<?php echo $parameters['appointment_requests']->getPricesHTML();?>
 				</div>
 
 				<div class="booknetic_show_balance"></div>
@@ -61,73 +62,71 @@ defined( 'ABSPATH' ) or die();
 
 			<div class="booknetic_confirm_sum_price">
 				<div><?php echo bkntc__('Total price')?></div>
-				<div class="booknetic_sum_price"><?php echo Helper::price( $parameters['appointmentData']->getSubTotal( null, true ) )?></div>
+				<div class="booknetic_sum_price"><?php echo Helper::price( $parameters['appointment_requests']->getSubTotal( true ) )?></div>
 			</div>
 		</div>
 	</div>
 
 	<div class="booknetic_confirm_deposit_body<?php echo ($parameters['hide_price_section'] && !$parameters['hide_payments'] ? ' booknetic_confirm_deposit_body_full_width' : '') . ($parameters['hide_payments'] ? ' booknetic_hidden' : '');?>">
 
-		<div class="booknetic_portlet">
+		<div class="booknetic_portlet booknetic_payment_methods_container">
 			<div class="booknetic_payment_methods">
                 <?php
-
                 $first_is_local_method = false;
+                $serviceCustomPaymentMethods = $parameters['custom_payment_methods'];
 
-                $serviceCustomPaymentMethods = $parameters['appointmentData']->serviceInf->getData( 'custom_payment_methods' );
-                $serviceCustomPaymentMethods = json_decode( $serviceCustomPaymentMethods );
-
-                if ( $parameters[ 'appointmentData' ]->getSubTotal( null, true ) <= 0 )
+                if ( $parameters[ 'appointment_requests' ]->getSubTotal( true ) <= 0 )
                 {
                     $serviceCustomPaymentMethods = [ 'local' ];
                 }
 
-                $gateways = empty( $serviceCustomPaymentMethods ) ? PaymentGatewayService::getEnabledGatewayNames() : $serviceCustomPaymentMethods;
+                $gateways = $serviceCustomPaymentMethods;
+                $i = 0;
 
-                foreach ( $gateways as $i => $slug )
+                foreach ( $gateways as $slug )
                 {
                     $gateway = PaymentGatewayService::find( $slug );
 
                     if ( ! empty( $gateway ) )
                     {
                         ?>
-
                         <div class="booknetic_payment_method <?php echo $i === 0 ? 'booknetic_payment_method_selected' : ''; ?>" data-payment-type="<?php echo $slug; ?>">
                             <img src="<?php echo $gateway->getIcon(); ?>" alt="<?php echo $gateway->getTitle(); ?>">
                             <span>
                                 <?php echo $gateway->getTitle(); ?>
                             </span>
                         </div>
-
                         <?php
-
-                        if ( $i === 0 && $slug === 'local' ) {
+                        if ( $i === 0 && $slug === 'local' )
+                        {
                             $first_is_local_method = true;
                         }
 
+                        $i++;
                     }
                 }
-
                 ?>
 			</div>
 
-			<?php if( Helper::getOption('deposit_can_pay_full_amount', 'on') == 'on' && $parameters['appointmentData']->hasDeposit() ): ?>
-				<div class="booknetic_hr mt-3 booknetic_hide_on_local <?php echo $first_is_local_method ? 'booknetic_hidden' : '';?>"></div>
+            <div class="booknetic_payment_methods_footer">
+                <?php if( $parameters['appointmentData']->hasDeposit() ): ?>
+                    <div class="booknetic_deposit_price booknetic_hide_on_local <?php echo $first_is_local_method ? 'booknetic_hidden' : '';?>">
+                        <div><?php echo bkntc__('Deposit')?>:</div>
+                        <div class="booknetic_deposit_amount_txt"><?php echo Helper::price( $parameters['appointmentData']->getDepositPrice( true ) )?></div>
+                    </div>
+                <?php endif; ?>
 
+			<?php if( Helper::getOption('deposit_can_pay_full_amount', 'on') == 'on' && $parameters['appointmentData']->hasDeposit() ): ?>
 				<div class="booknetic_deposit_radios booknetic_hide_on_local <?php echo $first_is_local_method ? 'booknetic_hidden' : '';?>">
 					<div><input type="radio" id="input_deposit_2" name="input_deposit" value="1" checked><label for="input_deposit_2"><?php echo bkntc__('Deposit')?></label></div>
 					<div><input type="radio" id="input_deposit_1" name="input_deposit" value="0"><label for="input_deposit_1"><?php echo bkntc__('Full amount')?></label></div>
 				</div>
 			<?php endif; ?>
-
-			<?php if( $parameters['appointmentData']->hasDeposit() ): ?>
-				<div class="booknetic_deposit_price booknetic_hide_on_local <?php echo $first_is_local_method ? 'booknetic_hidden' : '';?>">
-					<div><?php echo bkntc__('Deposit')?>:</div>
-					<div class="booknetic_deposit_amount_txt"><?php echo Helper::price( $parameters['appointmentData']->getDepositPrice( true ) )?></div>
 				</div>
-			<?php endif; ?>
+
 		</div>
 
 	</div>
 
+</div>
 </div>

@@ -105,9 +105,8 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 			SpecialDay::where('staff_id' , $id )->delete();
 			Timesheet::where('staff_id' , $id )->delete();
             Data::where('table_name', 'staff')->where('row_id', $id)->delete();
+            Staff::where( 'id', $id )->delete();
 		}
-
-        Staff::where('id', $ids)->delete();
 	}
 
 }

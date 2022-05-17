@@ -109,7 +109,8 @@ class Capabilities extends AbstractCapabilities
 
 		if( $capabilityInf === false )
 		{
-			throw new \Exception( bkntc__('Capability %s not found', [ $capability ]) );
+            return true;
+			//throw new \Exception( bkntc__('Capability %s not found', [ $capability ]) );
 		}
 
 		if( ! empty( $capabilityInf['parent'] ) && ! Capabilities::tenantCan( $capabilityInf['parent'] ) )

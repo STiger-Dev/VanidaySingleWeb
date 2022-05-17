@@ -50,7 +50,7 @@ class AjaxHelper
 
 	public static function addToGoogleCalendarURL( AppointmentRequestData $appointmentObj )
 	{
-		$allAppointments        = $appointmentObj->getAllAppointments();
+		$allAppointments        = $appointmentObj->getAllTimeslots();
 		$firstAppointment       = $allAppointments[0];
 
 		$firstAppointmentDate   = $firstAppointment->getDate();

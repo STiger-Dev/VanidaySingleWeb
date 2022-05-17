@@ -58,16 +58,16 @@ class TimeSheetObject implements \JsonSerializable
 	 *
 	 * @return string
 	 */
-	public function endTime( $formatTime = false, $fullDay = false )
+	public function endTime()
 	{
 		$end = $this->timesheet['end'];
 
-		if( $fullDay && $end == '24:00' )
+		if( $end == '24:00' )
         {
             return '24:00';
         }
 
-		return $formatTime ? Date::time( $end ) : Date::timeSQL( $end );
+		return Date::timeSQL( $end );
 	}
 
 	/**

@@ -6,7 +6,6 @@ use BookneticApp\Backend\Appearance\Helpers\Theme;
 use BookneticApp\Models\Appearance;
 use BookneticApp\Backend\Appointments\Helpers\AppointmentService;
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
 use BookneticApp\Models\Customer;
 use BookneticApp\Models\Location;
 use BookneticApp\Models\Service;
@@ -192,6 +191,8 @@ class Frontend
 			'tenant_id'                 => Permission::tenantId()
 		];
 
+        $bookneticJSData['localization'] = apply_filters('bkntc_frontend_localization' , $bookneticJSData['localization'] );
+
 		wp_enqueue_script( 'select2-bkntc', Helper::assets('js/select2.min.js') );
 		wp_enqueue_script( 'booknetic.datapicker', Helper::assets('js/datepicker.min.js', 'front-end') );
 		wp_enqueue_script( 'jquery.nicescroll', Helper::assets('js/jquery.nicescroll.min.js', 'front-end'), [ 'jquery' ] );
@@ -267,6 +268,13 @@ class Frontend
 				'loader'		=>	'card3',
 				'title'			=>	bkntc__('Information'),
 				'head_title'	=>	bkntc__('Fill information')
+			],
+			'cart'		=> [
+				'value'			=>	'',
+				'hidden'		=>	Helper::getOption('show_step_cart', 'on') == 'off',
+				'loader'		=>	'card3',
+				'title'			=>	bkntc__('Cart'),
+				'head_title'	=>	bkntc__('Add to cart')
 			],
 			'date_time'			=> [
 				'value'			=>	'',

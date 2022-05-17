@@ -7,6 +7,10 @@
 		return key in localization ? localization[ key ] : key;
 	}
 
+	$('body').on('click' , '.booknetic-cart-item-more' ,function (){
+		$(".booknetic-cart-item-btns").toggleClass("show");
+	});
+
 	function displayCalendar()
 	{
 		var localization = {

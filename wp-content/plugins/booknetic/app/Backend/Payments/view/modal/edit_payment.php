@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-use BookneticApp\Backend\Appointments\Helpers\AppointmentCustomerSmartObject;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentSmartObject;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Date;
 use BookneticApp\Providers\Helpers\Math;
@@ -48,7 +48,8 @@ use BookneticApp\Providers\Helpers\Math;
 					<select class="form-control" id="input_payment_status">
 						<option value="pending"><?php echo bkntc__('Pending')?></option>
 						<option value="paid"<?php echo ( $parameters['payment']->getInfo()->payment_status == 'paid' ? ' selected' : '' )?>><?php echo bkntc__('Paid')?></option>
-						<option value="canceled"<?php echo ( $parameters['payment']->getInfo()->payment_status == 'canceled' ? ' selected' : '' )?>><?php echo bkntc__('Canceled')?></option>
+                        <option value="canceled"<?php echo ( $parameters['payment']->getInfo()->payment_status == 'canceled' ? ' selected' : '' )?>><?php echo bkntc__('Canceled')?></option>
+                        <option value="not_paid"<?php echo ( $parameters['payment']->getInfo()->payment_status == 'not_paid' ? ' selected' : '' )?>><?php echo bkntc__('Not paid')?></option>
 					</select>
 				</div>
 			</div>

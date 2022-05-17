@@ -836,25 +836,6 @@
     box-shadow: 0 0 30px 0 rgba(0,0,0,0.05);
 }
 
-
-
-
-
-.booknetic_confirm_date_time
-{
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 15px;
-}
-.booknetic_confirm_date_time > div
-{
-    display: inline-block;
-    width: calc(50% - 2px);
-}
-.booknetic_confirm_date_time > div > .booknetic_text_primary
-{
-    margin-left: 5px;
-}
 .booknetic_confirm_details
 {
     position: relative;
@@ -1224,4 +1205,466 @@
     float: right;
     margin-right: unset;
     margin-left: 15px;
+}
+
+
+
+/* Cart new */
+.booknetic-cart {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    margin-right: -8px;
+    margin-left: -8px;
+    margin-top: -16px;
+}
+
+.booknetic-cart-col {
+    display: flex;
+    align-items: stretch;
+    padding-right: 8px;
+    padding-left: 8px;
+    margin-top: 16px;
+    background: #f5f7fa !important;
+}
+
+.booknetic-cart-item {
+    position: relative;
+    padding: 16px 12px;
+    border-radius: 8px;
+    width: 219px;
+    background: #ffffff;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border: 2px solid transparent;
+}
+
+.booknetic-cart-item.active {
+    border-color: #6C70DC;
+}
+
+.booknetic-cart-item .booknetic-cart-item-header {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 30px;
+    color: #2E3A59;
+    padding-right: 24px;
+    margin-bottom: 10px;
+}
+
+.booknetic-cart-item-header .booknetic-cart-item-btns {
+    position: absolute;
+    right: 12px;
+    top: 52px;
+    padding: 14px 10px;
+    box-shadow: 0 6px 12px rgba(108, 119, 131, 0.25);
+    border-radius: 8px;
+    background: #ffffff;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 250ms ease-in-out;
+    -webkit-transition: all 250ms ease-in-out;
+    -moz-transition: all 250ms ease-in-out;
+    -ms-transition: all 250ms ease-in-out;
+    -o-transition: all 250ms ease-in-out;
+    z-index: 1;
+}
+
+.booknetic-cart-item-header .booknetic-cart-item-btns.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.booknetic-cart-item-more {
+    position: absolute;
+    top: 16px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none !important;
+    cursor: pointer;
+    z-index: 1;
+    outline: none !important;
+}
+
+.booknetic-cart-item-more:hover {
+    background: none;
+}
+
+.booknetic-cart-item-more img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.booknetic-cart-item-btns button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+.booknetic-cart-item-btns button:not(:last-child) {
+    margin-bottom: 4px;
+}
+
+.booknetic-cart-item-btns button:hover {
+    background: none;
+}
+
+.booknetic-cart-item-btns button img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.booknetic-cart-item-btns button span {
+    color: #2E3A59;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+.booknetic-cart-item-body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.booknetic-cart-item-body-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.booknetic-cart-item-body-row:not(:last-child) {
+    margin-bottom: 12px;
+}
+
+.booknetic-cart-item-body-row .booknetic-cart-item-body-cell {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    line-height: 20px;
+    color: #2E3A59;
+}
+
+.booknetic-cart-item-body-row .booknetic-cart-item-body-cell:first-child {
+    margin-right: 8px;
+}
+
+.booknetic-cart-item-body-row .booknetic-cart-item-body-cell.amount {
+    color: #4FBF65;
+    margin-right: 4px;
+}
+
+.booknetic-cart-item-body-row .booknetic-cart-item-body-cell.amount img {
+    color: #4FBF65;
+}
+
+.booknetic-cart-item-info {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.booknetic-cart-item-info:hover {
+    background: none;
+}
+
+.booknetic-cart-item-info img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.booknetic-cart-item-info-details {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    margin-bottom: 13px;
+    background: #DDF7E2;
+    padding: 8px 12px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 250ms ease-in-out;
+    -webkit-transition: all 250ms ease-in-out;
+    -moz-transition: all 250ms ease-in-out;
+    -ms-transition: all 250ms ease-in-out;
+    -o-transition: all 250ms ease-in-out;
+    z-index: 2;
+}
+
+.booknetic-cart-item-info-details-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.booknetic-cart-item-info-details-row:not(:last-child) {
+    margin-bottom: 8px;
+}
+
+.booknetic-cart-item-info-details-row .booknetic-cart-item-info-details-cell {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #2E3A59;
+}
+
+.booknetic-cart-item-info-details-row .booknetic-cart-item-info-details-cell:not(:last-child) {
+    margin-right: 8px;
+}
+
+.booknetic-cart-item-info-details-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 12px 8px 0 8px;
+    border-color: #DDF7E2 transparent transparent transparent;
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: 4px;
+    border-radius: 1px;
+    -webkit-border-radius: 1px;
+    -moz-border-radius: 1px;
+    -ms-border-radius: 1px;
+    -o-border-radius: 1px;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 250ms ease-in-out;
+    -webkit-transition: all 250ms ease-in-out;
+    -moz-transition: all 250ms ease-in-out;
+    -ms-transition: all 250ms ease-in-out;
+    -o-transition: all 250ms ease-in-out;
+    z-index: 2;
+}
+
+.booknetic-cart-item-info-details-cell.details-cell-success {
+    color: #4FBF65;
+}
+
+.booknetic-cart-item-info-details-cell.details-cell-warning {
+    color: #DB8B00;
+}
+
+.booknetic-cart-item-body-row.show .booknetic-cart-item-info-details, .booknetic-cart-item-body-row.show .booknetic-cart-item-info-details-arrow {
+    opacity: 1;
+    visibility: visible;
+}
+
+.bkntc_again_booking {
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    background: #FFFFFF !important;
+    border: none !important;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(108, 119, 131, 0.25);
+}
+
+.bkntc_again_booking:hover {
+    background: #FFFFFF;
+}
+
+.bkntc_again_booking img {
+    width: 24px;
+    height: 24px;
+    background: #DDF7E2;
+    object-fit: contain;
+    padding: 4px;
+    margin-right: 4px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+.bkntc_again_booking span {
+    font-size: 14px;
+    line-height: 16px;
+    color: #1D2123;
+}
+
+.booknetic-cart-item-error {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px;
+    background-color: #FFF2F2;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 250ms ease-in-out;
+    -webkit-transition: all 250ms ease-in-out;
+    -moz-transition: all 250ms ease-in-out;
+    -ms-transition: all 250ms ease-in-out;
+    -o-transition: all 250ms ease-in-out;
+    z-index: 2;
+}
+
+.booknetic-cart-item-error.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.booknetic-cart-item-error .booknetic-cart-item-error-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.booknetic-cart-item-error .booknetic-cart-item-error-header>div {
+    display: flex;
+    align-items: center;
+}
+
+.booknetic-cart-item-error .booknetic-cart-item-error-header>div img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    margin-right: 4px;
+}
+
+.booknetic-cart-item-error .booknetic-cart-item-error-header>div span {
+    color: #FF3D71;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+}
+
+.booknetic-cart-item-error .booknetic-cart-item-error-body {
+    font-size: 12px;
+    line-height: 20px;
+}
+
+
+.booknetic-cart-item-error-close {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    right: 16px;
+    top: 12px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.booknetic-cart-item-error-close:hover {
+    background: none;
+}
+
+
+.booknetic-cart-item-error-close img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.booknetic_appointment_container_header {
+    position: relative;
+}
+
+.booknetic_appointment_container_header .booknetic_appointment_container_header_cart {
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+}
+.booknetic-appointment-container-cart-btn-r-100
+{
+    right: 65px;
+}
+
+.booknetic_appointment_container_header .booknetic_appointment_container_header_cart>div {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #ECEFF2;
+    cursor: pointer;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+.booknetic_appointment_container_header .booknetic_appointment_container_header_cart>div img {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    margin-top: 6px;
+}
+
+.booknetic_appointment_container_header .booknetic_appointment_container_header_cart>div span {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    right: 6px;
+    top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #E21E4C;
+    color: #ffffff;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+.booknetic-cart-holder {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }

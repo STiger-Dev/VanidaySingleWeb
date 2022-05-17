@@ -4,11 +4,9 @@ namespace BookneticApp\Backend\Appointments\Helpers;
 
 use BookneticApp\Config;
 use BookneticApp\Models\Appointment;
-use BookneticApp\Models\AppointmentCustomer;
 use BookneticApp\Models\Workflow;
 use BookneticApp\Providers\Core\Permission;
 use BookneticApp\Providers\Helpers\Date;
-use BookneticApp\Providers\DB\DB;
 
 class ReminderService
 {
@@ -42,8 +40,8 @@ class ReminderService
             try {
                 if (!empty($workflow->data)) {
                     $data = json_decode($workflow->data, true);
-                    $offset = $data['offset_value'];
-                    $offset *= $data['offset_sign'] === 'before' ? -1 : 1;
+                    $offset = $data['offset_value'] * 60;
+                    $offset *= $data['offset_sign'] === 'before' ? 1 : -1;
 
                     if ($data['offset_type'] === 'hour') $offset *= 60;
                     if ($data['offset_type'] === 'day') $offset *= 60 * 24;
@@ -61,10 +59,14 @@ class ReminderService
 
             if ( $workflow->when === 'booking_ends' )
             {
-                $offset = "($offset + duration + extras_duration)";
+                $nearbyAppointments = Appointment::where('ends_at', '>=', Date::epoch('now', '-5 minutes') + $offset)
+                    ->where('ends_at', '<=', Date::epoch('now', '+5 minutes') + $offset);
             }
-
-            $nearbyAppointments = Appointment::where("timestampdiff(minute, timestampadd(minute, $offset, concat(date, ' ', start_time)), '" . Date::dateTimeSQL() .  "')", "between", DB::field("-6 and 10")); //->fetchAll();
+            else
+            {
+                $nearbyAppointments = Appointment::where('starts_at', '>=', Date::epoch('now', '-5 minutes') + $offset)
+                    ->where('starts_at', '<=', Date::epoch('now', '+5 minutes') + $offset);
+            }
 
             if (is_array($locations_filter) && count($locations_filter) > 0)
             {
@@ -81,7 +83,14 @@ class ReminderService
                 $nearbyAppointments->where('staff_id', $staff_filter);
             }
 
+            if (is_array($status_filter) && count($status_filter) > 0)
+            {
+                $nearbyAppointments->where('status', $status_filter);
+            }
+
             $nearbyAppointments = $nearbyAppointments->fetchAll();
+
+            $workflow_actions = $workflow->workflow_actions()->where('is_active', true)->fetchAll();
 
             foreach ($nearbyAppointments as $nearbyAppointment)
             {
@@ -91,37 +100,21 @@ class ReminderService
                     continue;
                 }
 
-                $appointmentCustomers = AppointmentCustomer::where('appointment_id', $nearbyAppointment->id);
+                $params = [
+                    'appointment_id' => $nearbyAppointment->id,
+                    'customer_id' => $nearbyAppointment->customer_id,
+                    'staff_id' => $nearbyAppointment->staff_id,
+                    'location_id' => $nearbyAppointment->location_id,
+                    'service_id' => $nearbyAppointment->service_id
+                ];
 
-                if (is_array($status_filter) && count($status_filter) > 0)
+                foreach ($workflow_actions as $action)
                 {
-                    $appointmentCustomers->where('status', $status_filter);
-                }
-
-                $appointmentCustomers = $appointmentCustomers->fetchAll();
-
-                $workflow_actions = $workflow->workflow_actions()->where('is_active', true)->fetchAll();
-
-                foreach ($appointmentCustomers as $appointmentCustomer)
-                {
-                    $params = [
-                        'appointment_customer_id' => $appointmentCustomer->id,
-                        'customer_id' => $appointmentCustomer->customer_id,
-                        'staff_id' => $nearbyAppointment->staff_id,
-                        'location_id' => $nearbyAppointment->location_id,
-                        'service_id' => $nearbyAppointment->service_id
-                    ];
-
-                    foreach ($workflow_actions as $action)
+                    $driver = Config::getWorkflowDriversManager()->get($action['driver']);
+                    if ( !empty($driver) )
                     {
-                        $driver = Config::getWorkflowDriversManager()->get($action['driver']);
-                        if ( !empty($driver) )
-                        {
-                            $driver->handle($params, json_decode($action['data'], true), Config::getShortCodeService() );
-                        }
+                        $driver->handle($params, json_decode($action['data'], true), Config::getShortCodeService() );
                     }
-
-                    if (!$for_each_customer) break;
                 }
 
                 $alreadyTriggeredWorkflowIDs[] = $workflow->id;

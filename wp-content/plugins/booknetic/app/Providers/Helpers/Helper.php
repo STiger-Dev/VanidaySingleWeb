@@ -172,11 +172,18 @@ class Helper
 			{
 				$res = is_string( $res ) && filter_var($res, FILTER_VALIDATE_EMAIL) !== false ? trim( (string)$res ) : $default;
 			}
-			else if($check_type == 'json')
-			{
-				$res = json_decode( (string)$res, true );
-				$res = is_array( $res ) ? $res : $default;
-			}
+            else if($check_type == 'json')
+            {
+                $res = json_decode( (string)$res, true );
+                $res = is_array( $res ) ? $res : $default;
+            }
+            else if($check_type == 'price')
+            {
+                $price = self::deFormatPrice($res);
+
+
+                $res = ! is_null($price) ? $price : $default;
+            }
 		}
 
 		if( !empty( $whiteList ) && !in_array( $res , $whiteList ) )
@@ -428,7 +435,7 @@ class Helper
 
 	public static function getBookingStepsOrder($recurringInfoStep = false)
 	{
-		$steps_order = Helper::getOption('steps_order', 'location,staff,service,service_extras,date_time,information');
+		$steps_order = Helper::getOption('steps_order', 'location,staff,service,service_extras,date_time,information,cart');
 
 		if( $recurringInfoStep )
 		{
@@ -441,11 +448,11 @@ class Helper
 
 		if( $recurringInfoStep )
 		{
-			$requiredSteps = explode(',', 'location,staff,service,service_extras,date_time,information,recurring_info,confirm_details,finish');
+			$requiredSteps = explode(',', 'location,staff,service,service_extras,date_time,information,recurring_info,cart,confirm_details,finish');
 		}
 		else
 		{
-			$requiredSteps = explode(',', 'location,staff,service,service_extras,date_time,information,confirm_details,finish');
+			$requiredSteps = explode(',', 'location,staff,service,service_extras,date_time,information,cart,confirm_details,finish');
 		}
 
 		foreach ( $requiredSteps AS $requiredStep )
@@ -512,6 +519,28 @@ class Helper
         return null;
 	}
 
+    public static function deFormatPrice ( $price )
+    {
+        $priceNumberFormat	= self::getOption('price_number_format', '1');
+
+        switch( $priceNumberFormat )
+        {
+            case '1':
+                $price =  str_replace(' ' , '' , $price);
+                break;
+            case '2':
+                $price = str_replace(',' , '' , $price);
+                break;
+            case '3':
+                $price = str_replace([' ' , '.', ','] , ['','x','.'] , $price);
+                break;
+            case '4':
+                $price = str_replace(['.' , ','] , ['','.'] , $price);
+                break;
+        }
+        return preg_match("/^[+-]?[0-9]*(\.[0-9]*)?$/", $price  ) ? $price : null;
+    }
+
 	public static function price( $price, $currency = null )
 	{
 		$scale				= self::getOption('price_number_of_decimals', '2');
@@ -542,6 +571,10 @@ class Helper
 		$price = number_format($price, $scale, $decimalPoint, $thousandsSeparator);
 
 		$currencyFormat	= self::getOption('currency_format', '1');
+        if( $currency === false )
+        {
+            return $price;
+        }
 		$currency		= is_null( $currency ) ? self::currencySymbol() : $currency;
 
 		switch ( $currencyFormat )
@@ -777,9 +810,8 @@ class Helper
 		return [
 			'appearance',
             'appointment_extras',
-			'appointment_customer_prices',
-            'appointment_customers',
 			'customers',
+            'appointment_prices',
 			'appointments',
 			'holidays',
 			'locations',
@@ -983,12 +1015,12 @@ class Helper
 
 	/**
 	 * Checks if user in admin panel
-	 * 
+	 *
 	 * @return bool
 	 */
 	public static function isAdmin()
 	{
-		if ( is_admin() ) 
+		if ( is_admin() )
 		{
 			return true;
 		}

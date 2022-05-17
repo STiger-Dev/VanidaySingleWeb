@@ -44,6 +44,12 @@ class BackupService
         self::$zip->addFromString('sql/options.json', json_encode( $options ));
 		self::$zip->addFromString('sql/tables.json', json_encode( $tableData ));
 
+        $metadata = [
+            'version' => '3.1.2'
+        ];
+
+        self::$zip->addFromString( 'metadata.json', json_encode( $metadata ) );
+
 		$upload_path = Helper::uploadFolder('');
 		self::addDir( $upload_path );
 
@@ -107,6 +113,14 @@ class BackupService
 		{
 			throw new \Exception( bkntc__('Unable to read the backup file!') );
 		}
+
+        // if imported file is exported from 3.1.2 and below, don't allow
+        if ( $zip->locateName('metadata.json') === false )
+        {
+            throw new \Exception( bkntc__('Exported data from older versions are incompatible with this version!') );
+        }
+
+        // doit ehtiyac olduqda json icindeki versiya ile yoxlama aparariq
 
 		if( $zip->locateName('sql/options.json') === false || $zip->locateName('sql/tables.json') === false )
 		{

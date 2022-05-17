@@ -54,7 +54,7 @@
                     {
                         modalX.css('display', 'flex');
                         modalBody.html(result)
-                        bookneticInitBookingPage( $(".bkntc_booking_modal .content .body .booknetic_appointment"));
+                        bookneticInitBookingPage( $(".bkntc_booking_modal .content .body .booknetic_appointment").get(0));
 
                     },
                     error: function (jqXHR, exception)

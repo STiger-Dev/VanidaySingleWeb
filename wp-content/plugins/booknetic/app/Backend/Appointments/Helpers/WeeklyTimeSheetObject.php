@@ -54,9 +54,10 @@ class WeeklyTimeSheetObject implements \JsonSerializable
 		return $formatTime ? Date::time( $minStartTime ) : Date::timeSQL( $minStartTime );
 	}
 
-	public function maxStartTime( $formatTime = false )
+	public function maxStartTime()
 	{
 		$maxEndTime = Date::epoch('00:00:01');
+        $timeString = '';
 
 		foreach( $this->weeklyTimesheet AS $timesheetOfDay )
 		{
@@ -65,11 +66,17 @@ class WeeklyTimeSheetObject implements \JsonSerializable
 
 			if( $maxEndTime < Date::epoch( $timesheetOfDay->endTime() ) )
 			{
-				$maxEndTime = Date::epoch( $timesheetOfDay->endTime() );
+                $timeString = $timesheetOfDay->endTime();
+				$maxEndTime = Date::epoch( $timeString );
 			}
 		}
 
-		return $formatTime ? Date::time( $maxEndTime ) : Date::timeSQL( $maxEndTime );
+        if ( $timeString === '24:00' )
+        {
+            return $timeString;
+        }
+
+		return Date::timeSQL( $maxEndTime );
 	}
 
 	public function toArr()

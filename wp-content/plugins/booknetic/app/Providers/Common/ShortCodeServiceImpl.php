@@ -2,8 +2,8 @@
 
 namespace BookneticApp\Providers\Common;
 
-use BookneticApp\Backend\Appointments\Helpers\AppointmentCustomerSmartObject;
-use BookneticApp\Models\AppointmentCustomer;
+use BookneticApp\Backend\Appointments\Helpers\AppointmentSmartObject;
+use BookneticApp\Models\Appointment;
 use BookneticApp\Models\AppointmentExtra;
 use BookneticApp\Models\Customer;
 use BookneticApp\Models\Location;
@@ -17,12 +17,13 @@ class ShortCodeServiceImpl
 
     public static function replace($text, $data)
     {
-        if( ! empty( $data['appointment_customer_id'] ) )
+        if( ! empty( $data['appointment_id'] ) )
         {
-            $appointmentCustomerData = AppointmentCustomerSmartObject::load( $data['appointment_customer_id'] );
+            $appointmentSO = AppointmentSmartObject::load($data['appointment_id']);
+            $appointmentInf = $appointmentSO->getInfo();
 
             $extraServices = AppointmentExtra::leftJoin( 'extra', [ 'name' ] )
-                ->where('appointment_customer_id', $data['appointment_customer_id'] )
+                ->where('appointment_id', $appointmentInf->id )
                 ->fetchAll();
 
             $serviceExtraList = '';
@@ -32,57 +33,48 @@ class ShortCodeServiceImpl
             }
 
             $addToGoogleCalendarURL = 'https://www.google.com/calendar/render?action=TEMPLATE&text='
-                . urlencode( $appointmentCustomerData->getServiceInf()->name)
-                . '&dates=' . ( Date::UTCDateTime($appointmentCustomerData->getAppointmentInfo()->date . ' ' . $appointmentCustomerData->getAppointmentInfo()->start_time, 'Ymd\THis\Z') . '/'
-                    . Date::UTCDateTime($appointmentCustomerData->getAppointmentInfo()->date . ' ' . $appointmentCustomerData->getAppointmentInfo()->start_time, 'Ymd\THis\Z', '+' . ($appointmentCustomerData->getServiceInf()->duration + $appointmentCustomerData->getAppointmentInfo()->extras_duration) . ' minutes') )
-                . '&details=&location=' . urlencode( $appointmentCustomerData->getLocationInf()->name ) . '&sprop=&sprop=name:';
+                . urlencode( $appointmentSO->getServiceInf()->name)
+                . '&dates=' . ( Date::UTCDateTime($appointmentInf->starts_at, 'Ymd\THis\Z') . '/'
+                    . Date::UTCDateTime($appointmentInf->ends_at, 'Ymd\THis\Z') )
+                . '&details=&location=' . urlencode( $appointmentSO->getLocationInf()->name ) . '&sprop=&sprop=name:';
 
             $arr = [
-                '{appointment_id}'                          => $appointmentCustomerData->getInfo()->id,
-                '{appointment_date}'                        => Date::datee( $appointmentCustomerData->getAppointmentInfo()->date ),
-                '{appointment_date_time}'                   => Date::dateTime( $appointmentCustomerData->getAppointmentInfo()->date . ' ' . $appointmentCustomerData->getAppointmentInfo()->start_time ),
-                '{appointment_start_time}'                  => Date::time( $appointmentCustomerData->getAppointmentInfo()->date . ' ' . $appointmentCustomerData->getAppointmentInfo()->start_time ),
-                '{appointment_end_time}'                    => Date::time(Date::epoch( $appointmentCustomerData->getAppointmentInfo()->date . ' ' . $appointmentCustomerData->getAppointmentInfo()->start_time ) + $appointmentCustomerData->getAppointmentInfo()->duration * 60 +  $appointmentCustomerData->getAppointmentInfo()->extras_duration * 60 ),
-                '{appointment_date_client}'                 => Date::datee( $appointmentCustomerData->getAppointmentInfo()->date . ' ' . $appointmentCustomerData->getAppointmentInfo()->start_time, false, true, $appointmentCustomerData->getInfo()->client_timezone ),
-                '{appointment_date_time_client}'            => Date::dateTime( $appointmentCustomerData->getAppointmentInfo()->date . ' ' . $appointmentCustomerData->getAppointmentInfo()->start_time, false, true, $appointmentCustomerData->getInfo()->client_timezone ),
-                '{appointment_start_time_client}'           => Date::time( $appointmentCustomerData->getAppointmentInfo()->date . ' ' . $appointmentCustomerData->getAppointmentInfo()->start_time, false, true, $appointmentCustomerData->getInfo()->client_timezone ),
-                '{appointment_end_time_client}'             => Date::time(Date::epoch( $appointmentCustomerData->getAppointmentInfo()->date . ' ' . $appointmentCustomerData->getAppointmentInfo()->start_time ) + $appointmentCustomerData->getAppointmentInfo()->duration * 60 +  $appointmentCustomerData->getAppointmentInfo()->extras_duration * 60, false, true, $appointmentCustomerData->getInfo()->client_timezone ),
-                '{appointment_duration}'                    => Helper::secFormat( $appointmentCustomerData->getAppointmentInfo()->duration * 60 + $appointmentCustomerData->getAppointmentInfo()->extras_duration * 60 ),
-                '{appointment_buffer_before}'               => Helper::secFormat( $appointmentCustomerData->getAppointmentInfo()->buffer_before * 60 ),
-                '{appointment_buffer_after}'                => Helper::secFormat( $appointmentCustomerData->getAppointmentInfo()->buffer_after * 60 ),
-                '{appointment_status}'                      => $appointmentCustomerData->getInfo()->status_name,
-                '{appointment_service_price}'               => Helper::price( $appointmentCustomerData->getPrice('service_price')->price ),
-                '{appointment_extras_price}'                => Helper::price( $appointmentCustomerData->getPrice('service_extra')->price ),
+                '{appointment_id}'                          => $appointmentInf->id,
+
+                '{appointment_date}'                        => Date::datee( $appointmentInf->starts_at ),
+                '{appointment_date_time}'                   => Date::dateTime( $appointmentInf->starts_at ),
+                '{appointment_start_time}'                  => Date::time( $appointmentInf->starts_at ),
+                '{appointment_end_time}'                    => Date::time( $appointmentInf->ends_at ),
+
+                '{appointment_date_client}'                 => Date::datee( $appointmentInf->starts_at, false, true, '+0000' ),
+                '{appointment_date_time_client}'            => Date::dateTime( $appointmentInf->starts_at, false, true, '+0000' ),
+                '{appointment_start_time_client}'           => Date::time( $appointmentInf->starts_at, false, true, '+0000' ),
+                '{appointment_end_time_client}'             => Date::time( $appointmentInf->ends_at, false, true, '+0000' ),
+
+                '{appointment_duration}'                    => Helper::secFormat($appointmentInf->ends_at - $appointmentInf->starts_at),
+                '{appointment_buffer_before}'               => Helper::secFormat($appointmentInf->starts_at - $appointmentInf->busy_from),
+                '{appointment_buffer_after}'                => Helper::secFormat($appointmentInf->busy_to - $appointmentInf->ends_at),
+                '{appointment_status}'                      => $appointmentInf->status_name,
+                '{appointment_service_price}'               => Helper::price( $appointmentSO->getPrice('service_price')->price ),
+                '{appointment_extras_price}'                => Helper::price( $appointmentSO->getPrice('service_extra')->price ),
                 '{appointment_extras_list}'                 => $serviceExtraList,
-                '{appointment_discount_price}'              => Helper::price( $appointmentCustomerData->getPrice('discount')->price ),
-                '{appointment_sum_price}'                   => Helper::price( $appointmentCustomerData->getTotalAmount() ),
-                '{appointments_total_price}'                => Helper::price( $appointmentCustomerData->getTotalAmount( true ) ),
-                '{appointment_paid_price}'                  => Helper::price( $appointmentCustomerData->getInfo()->paid_amount ),
-                '{appointment_payment_method}'              => Helper::paymentMethod( $appointmentCustomerData->getInfo()->payment_method ),
-                '{appointment_created_date}'                => Date::datee( $appointmentCustomerData->getInfo()->created_at ),
-                '{appointment_created_time}'                => Date::time($appointmentCustomerData->getInfo()->created_at ),
-                '{appointment_created_date_client}'         => Date::datee( $appointmentCustomerData->getInfo()->created_at, false, true, $appointmentCustomerData->getInfo()->client_timezone ),
-                '{appointment_created_time_client}'         => Date::time($appointmentCustomerData->getInfo()->created_at, false, true, $appointmentCustomerData->getInfo()->client_timezone ),
+                '{appointment_discount_price}'              => Helper::price( $appointmentSO->getPrice('discount')->price ),
+                '{appointment_sum_price}'                   => Helper::price( $appointmentSO->getTotalAmount() ),
+                '{appointments_total_price}'                => Helper::price( $appointmentSO->getTotalAmount(true) ),
+                '{appointment_paid_price}'                  => Helper::price( $appointmentSO->getPaidAmount() ),
+                '{appointment_payment_method}'              => Helper::paymentMethod( $appointmentSO->getInfo()->payment_method ),
+
+                '{appointment_created_date}'                => Date::datee( $appointmentInf->created_at ),
+                '{appointment_created_time}'                => Date::time( $appointmentInf->created_at ),
+                '{appointment_created_date_client}'         => Date::datee( $appointmentInf->created_at ),
+                '{appointment_created_time_client}'         => Date::time( $appointmentInf->created_at ),
+
                 '{add_to_google_calendar_link}'             => $addToGoogleCalendarURL,
-                '{appointment_brought_people}'              => $appointmentCustomerData->getInfo()->number_of_customers
+
+                '{appointment_brought_people}'              => $appointmentInf->weight,
             ];
 
-            $text = str_replace( array_keys($arr), array_values($arr), $text );
-
-            $billingData = AppointmentCustomer::getData($data['appointment_customer_id'], 'customer_billing_data');
-            if (!empty($billingData))
-            {
-                $billingData = json_decode($billingData, true);
-
-                $arr = [
-                    '{customer_full_name}'          => $billingData['customer_first_name'] . ' ' . $billingData['customer_last_name'],
-                    '{customer_first_name}'         => $billingData['customer_first_name'],
-                    '{customer_last_name}'          => $billingData['customer_last_name'],
-                    '{customer_phone}'              => $billingData['customer_phone'],
-                ];
-
-                $text = str_replace(array_keys($arr), array_values($arr), $text);
-            }
+            $text = str_replace(array_keys($arr), array_values($arr), $text);
         }
 
         if( ! empty( $data['service_id'] ) )
@@ -149,7 +141,8 @@ class ShortCodeServiceImpl
                 '{location_address}'            => $locationInf->address,
                 '{location_image_url}'          => Helper::profileImage( $locationInf->image, 'Locations' ),
                 '{location_phone_number}'       => $locationInf->phone_number,
-                '{location_notes}'              => $locationInf->notes
+                '{location_notes}'              => $locationInf->notes,
+                '{location_google_maps_url}'    => 'https://maps.google.com/?q=' . $locationInf->latitude . ',' . $locationInf->longitude
             ];
 
             $text = str_replace(array_keys($arr) , array_values($arr), $text );

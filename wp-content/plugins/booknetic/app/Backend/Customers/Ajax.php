@@ -2,7 +2,7 @@
 
 namespace BookneticApp\Backend\Customers;
 
-use BookneticApp\Models\AppointmentCustomer;
+use BookneticApp\Models\Appointment;
 use BookneticApp\Models\Data;
 use BookneticApp\Models\Customer;
 use BookneticApp\Providers\Core\Backend;
@@ -74,9 +74,9 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
         $cid = Helper::_post('id', '0', 'integer');
 
         $customer = Customer::get($cid);
-        $customer_billing_datas = AppointmentCustomer::where('customer_id', $cid)
-            ->innerJoin(Data::getTableName(), ['data_value'], AppointmentCustomer::getField('id'), Data::getField('row_id'))
-            ->where(Data::getField('table_name'), 'appointment_customers')
+        $customer_billing_datas = Appointment::where('customer_id', $cid)
+            ->innerJoin(Data::getTableName(), ['data_value'], Appointment::getField('id'), Data::getField('row_id'))
+            ->where(Data::getField('table_name'), Appointment::getTableName())
             ->where(Data::getField('data_key'), 'customer_billing_data')
             ->fetchAll();
 
