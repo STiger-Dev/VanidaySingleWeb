@@ -120,8 +120,8 @@ class AppointmentService
 					[
 						'id'		=>	strval($appointmentId),
 						'location_id'	=>	strval($appointmentData->locationId),
-						'customer_id'	=>	strval($customerId),
-						"status"	=>	 $customer['status'],
+						'customer_id'	=>	strval($appointmentData->customerId),
+						"status"	=>	 $appointmentData->status,
 						"sales_item"	=>	[
 							array(
 								"product_id"	=>	strval($appointmentData->serviceId),

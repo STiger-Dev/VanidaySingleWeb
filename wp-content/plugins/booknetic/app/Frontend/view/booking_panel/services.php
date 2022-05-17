@@ -38,13 +38,13 @@ foreach ( $parameters['services'] AS $eq => $serviceInf )
                 <span <?php echo $serviceInf[ 'hide_duration' ] == 1 ? 'class="booknetic_hidden"' : ''; ?>><?php echo Helper::secFormat( $serviceInf[ 'duration' ] * 60 ); ?></span>
             </div>
 
-            <div class="booknetic_service_card_price <?php echo $serviceInf[ 'hide_price' ] == 1 ? 'booknetic_hidden' : ''; ?>">
-                <?php echo Helper::price( $serviceInf[ 'real_price' ] == -1 ? $serviceInf[ 'price' ] : $serviceInf[ 'real_price' ] ); ?>
+            <div class="booknetic_service_card_description">
+                <?php echo htmlspecialchars( Helper::cutText( $serviceInf[ 'notes' ], 200 ) ); ?>
             </div>
         </div>
 
-        <div class="booknetic_service_card_description">
-            <?php echo htmlspecialchars( Helper::cutText( $serviceInf[ 'notes' ], 200 ) ); ?>
+        <div class="booknetic_service_card_price <?php echo $serviceInf[ 'hide_price' ] == 1 ? 'booknetic_hidden' : ''; ?>">
+            <?php echo Helper::price( $serviceInf[ 'real_price' ] == -1 ? $serviceInf[ 'price' ] : $serviceInf[ 'real_price' ] ); ?>
         </div>
     </div>
 
