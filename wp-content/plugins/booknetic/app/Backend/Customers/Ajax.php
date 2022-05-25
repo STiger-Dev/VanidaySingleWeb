@@ -12,6 +12,7 @@ use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Core\Permission;
 use BookneticApp\Providers\UI\TabUI;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
 class Ajax extends \BookneticApp\Providers\Core\Controller
 {
@@ -327,12 +328,37 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 			}
 
 			Customer::where('id', $id)->update( $sqlData );
+
+			//Request of add customer from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->updateCustomer($id, 
+				[
+					'first_name'	=>	$sqlData['first_name'],
+					'last_name'		=>	$sqlData['last_name'],
+					'email'			=>	$sqlData['email'],
+					'phone_number'	=>	$sqlData['phone_number'],
+					'dob'			=>	$sqlData['birthdate']
+				]
+			);
 		}
 		else
 		{
 			$sqlData['created_by'] = Permission::userId();
 			$sqlData['created_at'] = date('Y-m-d H:i:s');
 			Customer::insert( $sqlData );
+
+			//Request of add customer from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->addCustomer(
+				[
+					'id'		=>	Customer::lastId(),
+					'first_name'	=>	$sqlData['first_name'],
+					'last_name'		=>	$sqlData['last_name'],
+					'email'			=>	$sqlData['email'],
+					'phone_number'	=>	$sqlData['phone_number'],
+					'dob'			=>	$sqlData['birthdate']
+				]
+			);
 		}
 
 		return $this->response(true );

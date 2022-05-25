@@ -8,6 +8,7 @@ use BookneticApp\Providers\UI\DataTableUI;
 use BookneticApp\Providers\Core\Capabilities;
 use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
 class Controller extends \BookneticApp\Providers\Core\Controller
 {
@@ -94,6 +95,10 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 			}
 
             Customer::where('id', $id)->delete();
+
+			//Request of add customer from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->deleteCustomer($id);
 		}
 	}
 

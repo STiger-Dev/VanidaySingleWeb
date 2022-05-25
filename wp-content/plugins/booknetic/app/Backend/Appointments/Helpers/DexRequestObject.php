@@ -29,7 +29,6 @@ class DexRequestObject
     }
 
     /**
-     * Reject Shopback Transaction
      *
      * @return void
      */
@@ -46,7 +45,6 @@ class DexRequestObject
     }
 
     /**
-     * Reject Shopback Transaction
      *
      * @return void
      */
@@ -63,7 +61,6 @@ class DexRequestObject
     }
 
     /**
-     * Reject Shopback Transaction
      *
      * @return void
      */
@@ -81,7 +78,6 @@ class DexRequestObject
     }
 
     /**
-     * Reject Shopback Transaction
      *
      * @return void
      */
@@ -98,7 +94,6 @@ class DexRequestObject
     }
 
     /**
-     * Reject Shopback Transaction
      *
      * @return void
      */
@@ -115,7 +110,6 @@ class DexRequestObject
     }
 
     /**
-     * Reject Shopback Transaction
      *
      * @return void
      */
