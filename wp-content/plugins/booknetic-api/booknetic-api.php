@@ -1,10 +1,10 @@
 <?php
 /**
- * @package Vaniday-api
+ * @package Booknetic-api
  * @version 1.0
  */
 /*
-Plugin Name: Vaniday-api
+Plugin Name: Booknetic-api
 Description: This is customize rest api for booknetic plugin.
 Author: FiveStarMobi
 Version: 1.0
@@ -25,6 +25,13 @@ class Booknetic_Custom_Route extends WP_REST_Controller {
               'callback'    => array( $this, 'updateBookneticCustomer' )
             )
         ) );
+
+        register_rest_route( 'booknetic/customer', 'delete/id=(?P<id>\d+)', array(
+          array(
+            'methods'     => WP_REST_Server::DELETABLE,
+            'callback'    => array( $this, 'deleteBookneticCustomer' )
+          )
+      ) );
     }
 
     /**
@@ -42,6 +49,25 @@ class Booknetic_Custom_Route extends WP_REST_Controller {
       }
 
       Customer::where('id', $id)->update( $params );
+   
+      return new WP_REST_Response( true, 200 );
+    }
+
+    /**
+     * Get one item from the collection
+     *
+     * @param WP_REST_Request $request Full data about the request.
+     * @return WP_Error|WP_REST_Response
+     */
+    public function deleteBookneticCustomer( $request ) {
+      $params = $request->get_params();
+      $id = $params['id'];
+
+      if (empty($id)) {
+        return new WP_Error( 'code', __( 'message', 'text-domain' ) );
+      }
+
+      Customer::where('id', $id)->delete( $params );
    
       return new WP_REST_Response( true, 200 );
     }
