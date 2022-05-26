@@ -259,10 +259,17 @@ class PaymentGatewayService
             ->groupBy(['recurring_id'])
             ->fetchAll();
 
-        foreach ($appointments as $appointment)
+        $appointmentsAll= Appointment::where('payment_id',$paymentId)
+            ->fetchAll();
+
+        foreach ($appointmentsAll as $appointment)
         {
             do_action('bkntc_appointment_before_mutation', null);
             do_action('bkntc_appointment_after_mutation', $appointment->id);
+        }
+
+        foreach ($appointments as $appointment)
+        {
             do_action('bkntc_payment_confirmed', $appointment->id);
         }
 	}

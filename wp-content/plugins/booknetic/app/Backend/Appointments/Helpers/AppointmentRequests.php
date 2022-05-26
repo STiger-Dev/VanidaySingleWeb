@@ -143,7 +143,7 @@ class AppointmentRequests
         return Math::floor( $subTotal );
     }
 
-    public function getPrices()
+    public function getPrices( $sumForAllRecurringAppointments = false )
     {
         if ( count($this->appointments) == 1)
         {
@@ -157,17 +157,18 @@ class AppointmentRequests
         {
             $topPrice = new AppointmentPriceObject('cart-item-' . $key);
             $topPrice->setLabel($appointment->serviceInf->name);
-            foreach ($appointment->getPrices() as $price)
+            $newSumForAllRecurringAppointments = $appointment->serviceInf->recurring_payment_type == 'full' && $sumForAllRecurringAppointments;
+            foreach ($appointment->getPrices($newSumForAllRecurringAppointments) as $price)
             {
                 if (!$price->isMergeable())
                 {
-                    $topPrice->setPrice( $topPrice->getPrice() + $price->getPrice() );
+                    $topPrice->setPrice( $topPrice->getPrice($newSumForAllRecurringAppointments) + $price->getPrice($newSumForAllRecurringAppointments) );
                 }
                 else
                 {
                     if (array_key_exists($price->getId(), $pricesMerged))
                     {
-                        $pricesMerged[$price->getId()]->setPrice( $pricesMerged[$price->getId()]->getPrice() + $price->getPrice() );
+                        $pricesMerged[$price->getId()]->setPrice( $pricesMerged[$price->getId()]->getPrice($newSumForAllRecurringAppointments) + $price->getPrice($newSumForAllRecurringAppointments) );
                     }
                     else
                     {
@@ -181,15 +182,15 @@ class AppointmentRequests
         return array_merge($pricesTop, array_values($pricesMerged));
     }
 
-    public function getPricesHTML()
+    public function getPricesHTML( $sumForAllRecurringAppointments = false )
     {
         $pricesHTML = '';
 
-        foreach ( $this->getPrices() AS $price )
+        foreach ( $this->getPrices($sumForAllRecurringAppointments) AS $price )
         {
             $pricesHTML .= '<div class="booknetic_confirm_details ' . ($price->isHidden() ? ' booknetic_hidden' : '') . '" data-price-id="' . htmlspecialchars($price->getId()) . '">
             <div class="booknetic_confirm_details_title">' . $price->getLabel() . '</div>
-            <div class="booknetic_confirm_details_price">' . $price->getPriceView( true ) . '</div>
+            <div class="booknetic_confirm_details_price">' . $price->getPriceView( $sumForAllRecurringAppointments ) . '</div>
         </div>';
         }
 

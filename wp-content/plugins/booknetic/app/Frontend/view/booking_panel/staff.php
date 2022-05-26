@@ -32,26 +32,28 @@ if( Helper::getOption('any_staff', 'off') == 'on' ) :
 <?php
 endif;
 
-foreach ( $parameters['staff'] AS $eq => $staffInf ) :
+$staffList = apply_filters('bkntc_booking_panel_render_staff_info' , $parameters['staff']);
+
+foreach ( $staffList AS $eq => $staffInf ) :
 	?>
 	<div class="booknetic_card booknetic_fade" data-id="<?php echo $staffInf['id']?>">
 		<div class="booknetic_card_image">
 			<img src="<?php echo Helper::profileImage($staffInf['profile_image'], 'Staff')?>">
 		</div>
 		<div class="booknetic_card_title">
-			<div><?php echo htmlspecialchars($staffInf['name'])?></div>
+			<div><?php echo $staffInf['name'] ?></div>
 			<div class="booknetic_card_description">
 
 				<?php if( !empty($staffInf['profession']) ) : ?>
-					<div class="booknetic_staff_profession"><?php echo htmlspecialchars($staffInf['profession'])?></div>
+					<div class="booknetic_staff_profession"><?php echo  $staffInf['profession'] ?></div>
 				<?php endif; ?>
 
 				<?php if( $footer_text_option == '1' || $footer_text_option == '2' ) : ?>
-					<div><?php echo htmlspecialchars($staffInf['email'])?></div>
+					<div><?php echo $staffInf['email'] ?></div>
 				<?php endif; ?>
 
 				<?php if( $footer_text_option == '1' || $footer_text_option == '3' ) : ?>
-					<div><?php echo htmlspecialchars($staffInf['phone_number'])?></div>
+					<div><?php echo $staffInf['phone_number'] ?></div>
 				<?php endif; ?>
 
 			</div>

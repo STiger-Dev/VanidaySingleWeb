@@ -77,8 +77,8 @@ class Ajax extends Controller
             ->where( Appointment::getField( 'ends_at' ), '<=', $end )
             ->where( Appointment::getField( 'status' ), 'IN', Helper::getBusyAppointmentStatuses() )->fetch();
 
-		$customers = Customer::where( Customer::getField('created_at' ) , '>=' , DB::field(Date::dateSQL($start)))
-            ->where( Customer::getField('created_at' ) , '<' , DB::field( Date::dateSQL( $end ) ) )
+		$customers = Customer::where( Customer::getField('created_at' ) , '>=' , Date::dateSQL($start))
+            ->where( Customer::getField('created_at' ) , '<' ,  Date::dateSQL( $end ) )
             ->count();
 
         $totalAccordingToStatus = Appointment::select(['count(status) as count' , 'status'] , true )

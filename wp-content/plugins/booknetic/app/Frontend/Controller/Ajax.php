@@ -145,6 +145,14 @@ class Ajax extends FrontendAjax
 			$staffList = $onlyAvailableStaffList;
 		}
 
+        $staffList = array_map(function ($staff){
+            $staff['name']          = htmlspecialchars($staff['name']);
+            $staff['email']         = htmlspecialchars($staff['email']);
+            $staff['phone_number']  = htmlspecialchars($staff['phone_number']);
+            $staff['profession']    = htmlspecialchars($staff['profession']);
+            return $staff;
+        } , $staffList);
+
 		return $this->view('booking_panel.staff', [
 			'staff'		=>	$staffList
 		]);
@@ -185,6 +193,8 @@ class Ajax extends FrontendAjax
 		foreach ( $services AS $k => $service )
 		{
 			$services[$k]['category_name'] = $this->__getServiceCategoryName( $service['category_id'] );
+            $services[$k]['name'] = htmlspecialchars($service['name']);
+            $services[$k]['notes'] = htmlspecialchars($service['notes']);
 		}
 
 		return $this->view('booking_panel.services', [
@@ -276,6 +286,8 @@ class Ajax extends FrontendAjax
         $appointmentRequests = AppointmentRequests::load();
 
         $appointmentObj = $appointmentRequests->currentRequest();
+
+        $appointmentObj->handleAnyStaffOption();
 
 		if( ! $appointmentObj->isRecurring() )
 		{
@@ -439,6 +451,17 @@ class Ajax extends FrontendAjax
             $arr[] = empty( $serviceCustomPaymentMethods ) ? PaymentGatewayService::getEnabledGatewayNames() : $serviceCustomPaymentMethods;
         }
 
+        if (!isset($showDepositLabel)) $showDepositLabel = false;
+        if (!isset($depositPrice)) $depositPrice = 0;
+        foreach ($appointmentRequests->appointments as $appointment) {
+            if ($appointment->hasDeposit()) {
+                $showDepositLabel = true;
+                $depositPrice += $appointment->getDepositPrice(true);
+            } else {
+                $depositPrice += $appointment->getSubTotal();
+            }
+        }
+
         $allowedPaymentMethods = call_user_func_array('array_intersect' , $arr);
 
 		return $this->view('booking_panel.confirm_details', [
@@ -448,6 +471,8 @@ class Ajax extends FrontendAjax
 			'hide_confirm_step'		    =>	$hide_confirm_step,
             'hide_payments'			    =>	$hideMethodSelecting,
             'hide_price_section'        =>  $hide_price_section == 'on',
+            'has_deposit'               =>  $showDepositLabel,
+            'deposit_price'             =>  $depositPrice,
 		], [
             'has_deposit'               =>  $appointmentObj->hasDeposit()
         ] );

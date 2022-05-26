@@ -2,7 +2,9 @@
 
 namespace BookneticApp\Providers\Core;
 
+use BookneticApp\Backend\Settings\Helpers\LocalizationService;
 use BookneticApp\Providers\Helpers\Helper;
+use BookneticApp\Providers\Helpers\Session;
 
 class AddonLoader
 {
@@ -23,8 +25,19 @@ class AddonLoader
 	{
 		$path = static::getAddonSlug() . '/languages';
 
-		load_plugin_textdomain( static::getAddonSlug(), false, $path );
-	}
+        if( Helper::isSaaSVersion() && ! Permission::isSuperAdministrator() && Permission::tenantId() > 0 && file_exists( WP_PLUGIN_DIR . '/' . $path . '/' . Permission::tenantId() . '/'.static::getAddonSlug().'-' . get_locale() . '.mo' ) )
+        {
+            $path .= '/' . Permission::tenantId();
+        }
+
+        load_plugin_textdomain( static::getAddonSlug(), false, $path );
+
+        if( Helper::isSaaSVersion() )
+        {
+            $language = Session::get('active_language');
+            LocalizationService::setLanguage( $language , static::getAddonSlug() );
+        }
+    }
 
 	final public static function getAddonSlug()
 	{

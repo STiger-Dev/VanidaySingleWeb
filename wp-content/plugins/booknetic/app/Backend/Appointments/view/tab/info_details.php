@@ -21,7 +21,7 @@ use BookneticApp\Providers\Helpers\Date;
     </div>
     <div class="form-group col-md-4">
         <label><?php echo bkntc__('Date, time')?></label>
-        <div class="form-control-plaintext"><?php echo ($parameters['info']['ends_at'] - $parameters['info']['starts_at']) >= 24*60*60 ? Date::datee( $parameters['info']['starts_at'] ) : (Date::dateTime( $parameters['info']['starts_at'] ) . ' - ' . Date::time(Date::dateTime( $parameters['info']['ends_at'])) )?></div>
+        <div class="form-control-plaintext"><?php echo ($parameters['info']['ends_at'] - $parameters['info']['starts_at']) >= 24*60*60 ? Date::datee( $parameters['info']['starts_at'] ) : (Date::dateTime( $parameters['info']['starts_at'] ) . ' - ' . Date::time(  $parameters['info']['ends_at'])  )?></div>
     </div>
 </div>
 <div class="form-row">

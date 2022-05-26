@@ -39,7 +39,7 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 
 		$dataTable->addFilter( Appointment::getField('date'), 'date', bkntc__('Date'), function ($val, $query)
         {
-            return $query->where('starts_at', '>=', Date::epoch($val))->where('ends_at', '<', Date::epoch($val, '+1 day'));
+            return $query->where('starts_at', '>=', Date::epoch($val))->where('ends_at', '<=', Date::epoch($val, '+1 day'));
         });
 		$dataTable->addFilter( Service::getField('id'), 'select', bkntc__('Service'), '=', [ 'model' => new Service() ] );
 		$dataTable->addFilter( Customer::getField('id'), 'select', bkntc__('Customer'), '=', [

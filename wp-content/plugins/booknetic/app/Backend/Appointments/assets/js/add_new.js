@@ -214,14 +214,15 @@
 					endDate = new Date( startDate );
 					endDate.setDate( endDate.getDate() + parseInt( serviceData['full_period_value'] ) * 7 - 1 );
 
+
 					$("#input_recurring_end_date").val( booknetic.convertDate( endDate.getFullYear() + '-' + booknetic.zeroPad( endDate.getMonth() + 1 ) + '-' + booknetic.zeroPad( endDate.getDate() ), 'Y-m-d' ) );
 				}
 				else if( serviceData['full_period_type'] == 'day' )
 				{
-					endDate = new Date( startDate );
-					endDate.setDate( endDate.getDate() + parseInt( serviceData['full_period_value'] ) - 1 );
+					endDate = new Date( startDate + " UTC" );
+					endDate.setUTCDate( endDate.getUTCDate() + parseInt( serviceData['full_period_value'] ) - 1 );
 
-					$("#input_recurring_end_date").val( booknetic.convertDate( endDate.getFullYear() + '-' + booknetic.zeroPad( endDate.getMonth() + 1 ) + '-' + booknetic.zeroPad( endDate.getDate() ), 'Y-m-d' ) );
+					$("#input_recurring_end_date").val( booknetic.convertDate( endDate.getUTCFullYear() + '-' + booknetic.zeroPad( endDate.getUTCMonth() + 1 ) + '-' + booknetic.zeroPad( endDate.getUTCDate() ), 'Y-m-d' ) );
 				}
 				else if( serviceData['full_period_type'] == 'time' )
 				{
@@ -841,6 +842,8 @@
 			calcRecurringTimes();
 		}).on('change', '#input_recurring_start_date, #input_recurring_end_date', function()
 		{
+			calcRecurringTimes();
+
 			var serviceId	= $("#input_service").val(),
 				staffId		= $("#input_staff").val(),
 				startDate	= $("#input_recurring_start_date").val(),

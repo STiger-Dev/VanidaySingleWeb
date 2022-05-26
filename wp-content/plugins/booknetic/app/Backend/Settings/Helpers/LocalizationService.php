@@ -121,18 +121,19 @@ class LocalizationService
         load_textdomain( 'booknetic', self::getMoFile( $defaultLng ) );
     }
 
-    public static function setLanguage( $language )
+    public static function setLanguage( $language , $slug = 'booknetic' )
     {
         if( empty( $language ) || !self::isLngCorrect( $language ) )
             return;
 
         global $l10n;
-        if(isset($l10n['booknetic']))
+        if(isset($l10n[$slug]))
         {
-            unset($l10n['booknetic']);
+            unset($l10n[$slug]);
         }
 
-        load_textdomain( 'booknetic', self::getMoFile( $language ) );
+
+        load_textdomain( $slug, self::getMoFile( $language , false , $slug ) );
     }
 
 }

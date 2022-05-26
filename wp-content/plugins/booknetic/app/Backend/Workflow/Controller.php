@@ -78,6 +78,11 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 
         $table = $dataTable->renderHTML();
 
+        add_filter('bkntc_localization' , function ($localization){
+            $localization['Edit'] = bkntc__('Edit');
+            return $localization;
+        });
+
         $this->view( 'index', ['table' => $table] );
     }
 
@@ -101,6 +106,12 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 
             $events = $this->workflowEventsManager->getAll();
 
+            add_filter('bkntc_localization' , function ($localization){
+                $localization['saved_changes'] = bkntc__('Saved changes');
+                $localization['SEND'] = bkntc__('SEND');
+                $localization['CLOSE'] = bkntc__('CLOSE');
+                return $localization;
+            });
             $this->view( 'edit', [
                 'id' => $workflowId,
                 'actions' => $workflowActions,

@@ -509,7 +509,6 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		{
 			return $this->response( false );
 		}
-		$translates = apply_filters( 'bkntc_save_booking_labels_settings' , $translates ,$language   );
 
         $translates = apply_filters( 'bkntc_save_booking_labels_settings' , $translates ,$language );
 
@@ -841,9 +840,13 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		{
 			if( is_string( $translation ) && !empty( $translation ) )
 			{
-				$result[ addslashes( $translation ) ] = bkntc__( $translation );
+				$result[ addslashes( $translation ) ] = html_entity_decode( bkntc__( $translation, [], false), ENT_QUOTES | ENT_XML1, 'UTF-8' );
 			}
 		}
+
+        $result = apply_filters('settings_booking_panel_labels_load' , $result );
+
+
 
 		return $this->response( true, [
 			'translations'  =>  $result

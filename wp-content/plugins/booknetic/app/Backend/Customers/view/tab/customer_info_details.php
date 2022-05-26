@@ -42,28 +42,28 @@ $customer = $parameters['customer'];
     <div class="row mt-3">
         <div class="col-lg-6">
             <div class="modal_payment-card">
-                <h6>Email</h6>
+                <h6><?php echo bkntc__('Email') ?></h6>
                 <span><?php echo empty($customer['email']) ? 'N/A' : $customer['email']; ?></span>
             </div>
         </div>
 
         <div class="col-lg-6">
             <div class="modal_payment-card">
-                <h6>Phone</h6>
+                <h6><?php echo bkntc__('Phone') ?></h6>
                 <span><?php echo empty($customer['phone_number']) ? 'N/A' : $customer['phone_number']; ?></span>
             </div>
         </div>
 
         <div class="col-lg-6">
             <div class="modal_payment-card">
-                <h6>Gender</h6>
+                <h6><?php echo bkntc__('Gender') ?></h6>
                 <span><?php echo bkntc__($customer['gender']); ?></span>
             </div>
         </div>
 
         <div class="col-lg-6">
             <div class="modal_payment-card">
-                <h6>Birthdate</h6>
+                <h6><?php echo bkntc__('Birthdate') ?></h6>
                 <span><?php echo empty($customer['birthdate']) ? 'N/A' : $customer['birthdate']; ?></span>
             </div>
         </div>

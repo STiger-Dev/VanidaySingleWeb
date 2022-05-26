@@ -18,7 +18,8 @@ else
     echo '<div class="bkntc_service_list">';
 
 $lastCategoryPrinted = null;
-foreach ( $parameters['services'] AS $eq => $serviceInf )
+$services = apply_filters('bkntc_booking_panel_render_services_info' , $parameters['services']);
+foreach ( $services AS $eq => $serviceInf )
 {
 	if( $lastCategoryPrinted != $serviceInf['category_id'] )
 	{
@@ -34,17 +35,17 @@ foreach ( $parameters['services'] AS $eq => $serviceInf )
             </div>
 
             <div class="booknetic_service_card_title">
-                <span><?php echo htmlspecialchars( $serviceInf[ 'name' ] ); ?></span>
+                <span><?php echo $serviceInf[ 'name' ]; ?></span>
                 <span <?php echo $serviceInf[ 'hide_duration' ] == 1 ? 'class="booknetic_hidden"' : ''; ?>><?php echo Helper::secFormat( $serviceInf[ 'duration' ] * 60 ); ?></span>
             </div>
 
-            <div class="booknetic_service_card_description">
-                <?php echo htmlspecialchars( Helper::cutText( $serviceInf[ 'notes' ], 200 ) ); ?>
+            <div class="booknetic_service_card_price <?php echo $serviceInf[ 'hide_price' ] == 1 ? 'booknetic_hidden' : ''; ?>">
+                <?php echo Helper::price( $serviceInf[ 'real_price' ] == -1 ? $serviceInf[ 'price' ] : $serviceInf[ 'real_price' ] ); ?>
             </div>
         </div>
 
-        <div class="booknetic_service_card_price <?php echo $serviceInf[ 'hide_price' ] == 1 ? 'booknetic_hidden' : ''; ?>">
-            <?php echo Helper::price( $serviceInf[ 'real_price' ] == -1 ? $serviceInf[ 'price' ] : $serviceInf[ 'real_price' ] ); ?>
+        <div class="booknetic_service_card_description">
+            <?php echo Helper::cutText( $serviceInf[ 'notes' ], 200 ); ?>
         </div>
     </div>
 

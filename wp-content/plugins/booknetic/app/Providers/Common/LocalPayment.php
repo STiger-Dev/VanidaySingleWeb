@@ -51,8 +51,11 @@ class LocalPayment extends PaymentGatewayService
     {
         foreach ($appointmentRequests->appointments as $appointment)
         {
-            do_action('bkntc_appointment_before_mutation', null);
-            do_action('bkntc_appointment_after_mutation', $appointment->getFirstAppointmentId());
+            foreach ($appointment->createdAppointments as $createdAppointmentId)
+            {
+                do_action('bkntc_appointment_before_mutation', null);
+                do_action('bkntc_appointment_after_mutation', $createdAppointmentId);
+            }
             do_action('bkntc_payment_confirmed', $appointment->getFirstAppointmentId());
         }
 

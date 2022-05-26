@@ -56,6 +56,13 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 
 		$edit = Helper::_get('edit', '0', 'int');
 
+        add_filter('bkntc_localization', function ($localization)
+        {
+            $localization['delete_associated_wordpress_account'] = bkntc__('Delete associated WordPress account');
+            $localization['link_copied'] = bkntc__('Link copied!');
+            return $localization;
+        });
+
 		$this->view( 'index', [
 			'table' => $table,
 			'edit'	=> $edit

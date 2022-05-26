@@ -49,6 +49,12 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 
 		$table = $dataTable->renderHTML();
 
+        add_filter('bkntc_localization', function ($localization)
+        {
+            $localization['link_copied'] = bkntc__('Link copied!');
+            return $localization;
+        });
+
 		$this->view( 'index', ['table' => $table] );
 	}
 

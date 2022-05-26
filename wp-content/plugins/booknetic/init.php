@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Booknetic
  * Description: WordPress Appointment Booking and Scheduling system
- * Version: 3.1.3
+ * Version: 3.1.4
  * Author: FS-Code
  * Author URI: https://www.booknetic.com
  * License: Commercial

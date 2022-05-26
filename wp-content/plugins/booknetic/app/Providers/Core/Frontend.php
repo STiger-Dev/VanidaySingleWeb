@@ -344,6 +344,7 @@ class Frontend
 			}
 		}
 
+        $serviceRecurringAttrs = '';
 		if(
 			(
 				( Capabilities::tenantCan( 'services' ) == false ) ||
@@ -354,7 +355,7 @@ class Frontend
 		{
 			$steps['service']['hidden'] = true;
 			$steps['service']['value'] = $service['id'];
-			$steps['service']['attrs'] .= ' data-is-recurring="' . (int)$service['is_recurring'] . '"';
+            $serviceRecurringAttrs = ' data-is-recurring="' . (int)$service['is_recurring'] . '"';
 
 			if( $service['is_recurring'] == 1 )
 			{
@@ -375,7 +376,7 @@ class Frontend
 			{
 				$steps['service']['hidden'] = true;
 				$steps['service']['value'] = $serviceInfo['id'];
-				$steps['service']['attrs'] .= ' data-is-recurring="' . (int)$serviceInfo['is_recurring'] . '"';
+                $serviceRecurringAttrs = ' data-is-recurring="' . (int)$serviceInfo['is_recurring'] . '"';
 
 				if( $serviceInfo['is_recurring'] == 1 )
 				{
@@ -383,6 +384,7 @@ class Frontend
 				}
 			}
 		}
+        $steps['service']['attrs'] .= $serviceRecurringAttrs;
 		$hide_confirmation_number = Helper::getOption('hide_confirmation_number', 'off') == 'on';
 
 		ob_start();

@@ -1,0 +1,177 @@
+.form-group-inline-dotted
+{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: relative;
+}
+.form-group-inline-dotted label
+{
+	background: #FFF;
+	z-index: 2;
+	margin: 0;
+	padding-right: 10px;
+}
+.form-group-inline-dotted input
+{
+	width: 60px;
+	text-align: center;
+	z-index: 2;
+}
+.form-group-inline-dotted:after
+{
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 0;
+	width: calc(100% - 70px);
+	height: 1px;
+	border-top: 1px dotted #CCD7DD;
+	z-index: 1;
+}
+
+
+.fs-modal #plan_color_panel .color-rounded
+{
+	width: 40px;
+	height: 40px;
+
+	background: #000;
+
+	margin-left: 7px;
+	margin-right: 7px;
+
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+
+	cursor: pointer;
+}
+
+.fs-modal #plan_color_panel .selected-color.color-rounded:after
+{
+	content: '\f00c';
+	font-family: "Font Awesome 5 Free";
+	color: #FFF;
+	font-weight: 600;
+	padding: 14px;
+	line-height: 40px;
+	font-size: 13px;
+}
+
+.fs-modal #plan_color_panel
+{
+	height: 360px;
+}
+
+.fs-modal #plan_color_panel > .fs-popover-content
+{
+	height: 305px;
+}
+
+.fs-modal .fs-plan-colors-line
+{
+	display: flex;
+	justify-content: center;
+}
+
+.fs-modal .color-r-1{ background: #53d56c !important; }
+.fs-modal .color-r-2{ background: #26c0d6 !important; }
+.fs-modal .color-r-3{ background: #fd9b78 !important; }
+.fs-modal .color-r-4{ background: #cc65aa !important; }
+.fs-modal .color-r-5{ background: #2078fa !important; }
+
+.fs-modal .color-r-6{ background: #947bbf !important; }
+.fs-modal .color-r-7{ background: #c9c2b8 !important; }
+.fs-modal .color-r-8{ background: #527dde !important; }
+.fs-modal .color-r-9{ background: #425a64 !important; }
+.fs-modal .color-r-10{ background: #ffbb44 !important; }
+
+.fs-modal .plan_color
+{
+	position: absolute;
+	right: 20px;
+	bottom: 8px;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+
+.note-toolbar
+{
+	background: #FFF;
+	border-color: #e3eaf3 !important;
+}
+.note-editor
+{
+	border-radius: 2px !important;
+	border-color: #e3eaf3 !important;
+}
+.note-btn
+{
+	height: 31px;
+	border-color: #e3eaf3;
+	border-radius: 2px !important;
+	color: #292d32;
+}
+.dropdown-toggle::after
+{
+	display: none;
+}
+.note-modal-footer
+{
+	padding: 0px 30px;
+
+}
+.note-form-group
+{
+	padding-bottom: 0 !important;
+}
+label > input[type='checkbox']
+{
+	margin-right: 10px;
+}
+.note-editor.fullscreen
+{
+	background: #FFF;
+}
+.note-editor .note-toolbar .note-dropdown-menu
+{
+	min-width: 190px;
+}
+.note-statusbar
+{
+	border-color: #e3eaf3;
+	background: #FFF;
+}
+
+.form-groups-list
+{
+	position: relative;
+}
+.form-groups-list:after
+{
+	content: "";
+	position: absolute;
+	left: 10px;
+	top: -33px;
+	width: 1px;
+	height: calc(100% + 10px);
+	border-left: 1px solid #e3eaf3;
+}
+.form-groups-list > div
+{
+	position: relative;
+}
+.form-groups-list > div:after
+{
+	content: "";
+	position: absolute;
+	left: 10px;
+	top: 22px;
+	height: 1px;
+	width: 14px;
+	border-top: 1px solid #e3eaf3;
+}

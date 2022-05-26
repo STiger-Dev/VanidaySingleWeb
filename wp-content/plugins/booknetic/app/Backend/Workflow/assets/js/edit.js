@@ -12,7 +12,7 @@
             form.append('is_active', $('#workflow_activated').prop('checked') ? 1 : 0);
             booknetic.ajax('save_workflow', form, function ()
             {
-                booknetic.toast(booknetic.__('Saved changes'), 'success', 2000);
+                booknetic.toast(booknetic.__('saved_changes'), 'success', 2000);
             });
         }).on('click', '#addBtn', function ()
         {

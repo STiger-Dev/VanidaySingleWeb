@@ -32,7 +32,7 @@
             let val = $('.bkntc_direct_booking_url .bkntc_link_output').text().trim();
             navigator.clipboard.writeText( val );
 
-            booknetic.toast( 'Link copied!', 'success' );
+            booknetic.toast( booknetic.__('link_copied'), 'success' );
         });
 
         link_generate();

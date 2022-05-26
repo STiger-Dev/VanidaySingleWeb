@@ -54,6 +54,12 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 
 		$table = $dataTable->renderHTML();
 
+        add_filter('bkntc_localization', function ($localization)
+        {
+            $localization['delete_associated_wordpress_account'] = bkntc__('Delete associated WordPress account');
+            return $localization;
+        });
+
 		$this->view( 'index', ['table' => $table] );
 	}
 

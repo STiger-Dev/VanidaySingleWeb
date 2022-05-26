@@ -18,7 +18,7 @@
 
 			if( fields.length === 0 || !input_csv )
 			{
-				booknetic.toast('Please fill all required fields!', 'unsuccess');
+				booknetic.toast(booknetic.__('fill_all_required'), 'unsuccess');
 				return;
 			}
 

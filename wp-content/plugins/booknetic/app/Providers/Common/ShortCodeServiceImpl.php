@@ -46,10 +46,10 @@ class ShortCodeServiceImpl
                 '{appointment_start_time}'                  => Date::time( $appointmentInf->starts_at ),
                 '{appointment_end_time}'                    => Date::time( $appointmentInf->ends_at ),
 
-                '{appointment_date_client}'                 => Date::datee( $appointmentInf->starts_at, false, true, '+0000' ),
-                '{appointment_date_time_client}'            => Date::dateTime( $appointmentInf->starts_at, false, true, '+0000' ),
-                '{appointment_start_time_client}'           => Date::time( $appointmentInf->starts_at, false, true, '+0000' ),
-                '{appointment_end_time_client}'             => Date::time( $appointmentInf->ends_at, false, true, '+0000' ),
+                '{appointment_date_client}'                 => Date::datee( $appointmentInf->starts_at, false, true, $appointmentInf->client_timezone ),
+                '{appointment_date_time_client}'            => Date::dateTime( $appointmentInf->starts_at, false, true, $appointmentInf->client_timezone ),
+                '{appointment_start_time_client}'           => Date::time( $appointmentInf->starts_at, false, true, $appointmentInf->client_timezone ),
+                '{appointment_end_time_client}'             => Date::time( $appointmentInf->ends_at, false, true, $appointmentInf->client_timezone ),
 
                 '{appointment_duration}'                    => Helper::secFormat($appointmentInf->ends_at - $appointmentInf->starts_at),
                 '{appointment_buffer_before}'               => Helper::secFormat($appointmentInf->starts_at - $appointmentInf->busy_from),
@@ -72,6 +72,8 @@ class ShortCodeServiceImpl
                 '{add_to_google_calendar_link}'             => $addToGoogleCalendarURL,
 
                 '{appointment_brought_people}'              => $appointmentInf->weight,
+
+                '{appointment_notes}'                       => $appointmentInf->note,
             ];
 
             $text = str_replace(array_keys($arr), array_values($arr), $text);

@@ -256,7 +256,7 @@ if( !$dataTable['hide_search'] )
             <?php endforeach; ?>
         </select>
 
-        <button type="button" class="btn btn-primary btn-lg btn-info ml-2 datatable_apply_btn">Apply</button>
+        <button type="button" class="btn btn-primary btn-lg btn-info ml-2 datatable_apply_btn"><?php echo bkntc__('Apply') ?></button>
     </div>
 
     <script>

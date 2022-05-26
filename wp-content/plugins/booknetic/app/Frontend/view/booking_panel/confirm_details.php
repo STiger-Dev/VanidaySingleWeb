@@ -50,7 +50,7 @@ defined( 'ABSPATH' ) or die();
 		<div class="booknetic_portlet">
 			<div class="booknetic_portlet_content">
 				<div class="booknetic_prices_box">
-					<?php echo $parameters['appointment_requests']->getPricesHTML();?>
+					<?php echo $parameters['appointment_requests']->getPricesHTML(true);?>
 				</div>
 
 				<div class="booknetic_show_balance"></div>
@@ -109,14 +109,14 @@ defined( 'ABSPATH' ) or die();
 			</div>
 
             <div class="booknetic_payment_methods_footer">
-                <?php if( $parameters['appointmentData']->hasDeposit() ): ?>
+                <?php if( $parameters['has_deposit'] ): ?>
                     <div class="booknetic_deposit_price booknetic_hide_on_local <?php echo $first_is_local_method ? 'booknetic_hidden' : '';?>">
                         <div><?php echo bkntc__('Deposit')?>:</div>
-                        <div class="booknetic_deposit_amount_txt"><?php echo Helper::price( $parameters['appointmentData']->getDepositPrice( true ) )?></div>
+                        <div class="booknetic_deposit_amount_txt"><?php echo Helper::price( $parameters['deposit_price'] )?></div>
                     </div>
                 <?php endif; ?>
 
-			<?php if( Helper::getOption('deposit_can_pay_full_amount', 'on') == 'on' && $parameters['appointmentData']->hasDeposit() ): ?>
+			<?php if( Helper::getOption('deposit_can_pay_full_amount', 'on') == 'on' && $parameters['has_deposit'] ): ?>
 				<div class="booknetic_deposit_radios booknetic_hide_on_local <?php echo $first_is_local_method ? 'booknetic_hidden' : '';?>">
 					<div><input type="radio" id="input_deposit_2" name="input_deposit" value="1" checked><label for="input_deposit_2"><?php echo bkntc__('Deposit')?></label></div>
 					<div><input type="radio" id="input_deposit_1" name="input_deposit" value="0"><label for="input_deposit_1"><?php echo bkntc__('Full amount')?></label></div>

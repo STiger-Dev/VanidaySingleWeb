@@ -1112,7 +1112,7 @@ var bookneticHooks = {
 							}
 							else if( $(this).find('.booknetic_data_has_error').length > 0 )
 							{
-								hasTimeError = true;
+								hasTimeError = ! booknetic.dateBasedService;
 							}
 
 							recurringDates.push([ sDate, sTime ]);
@@ -2022,11 +2022,11 @@ var bookneticHooks = {
 
 								}, false , function ( result )
 								{
-									if (typeof result['errors'] != undefined)
+									if (typeof result['errors'] != 'undefined')
 									{
 										let errors = result['errors'];
 										errors.filter(function (value,index){
-											return typeof value['cart_item'] !== undefined;
+											return typeof value['cart_item'] != 'undefined';
 										})
 										booknetic.cartErrors.error = errors;
 									}

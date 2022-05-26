@@ -213,7 +213,7 @@ class AppointmentRequestData
 
 		$this->paymentMethod			    =	$this->getData('payment_method', '', 'str' );
 
-		$this->clientTimezone			    =   $this->getData('client_time_zone', '-', 'string');
+		$this->clientTimezone			    =   Helper::_post('client_time_zone', '-', 'string');
 
 		$this->recurringStartDate		    =	$this->getData('recurring_start_date', '', 'string');
 		$this->recurringEndDate			    =	$this->getData('recurring_end_date', '', 'string');

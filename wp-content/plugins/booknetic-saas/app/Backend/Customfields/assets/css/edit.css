@@ -1,0 +1,129 @@
+.formbuilder_element
+{
+	position: relative;
+	height: 175px;
+	z-index: 9;
+	display: flex;
+	flex-direction: column;
+	cursor: move;
+
+	text-align: center;
+	color: #626C76;
+	font-size: 14px;
+
+	justify-content: center;
+	align-items: center;
+
+	border-right: 1px solid #E4EBF4;
+	border-bottom: 1px solid #E4EBF4;
+}
+.formbuilder_element:nth-child(2n)
+{
+	border-right: 0;
+}
+
+.formbuilder_element:hover:before
+{
+	position: absolute;
+	content: ' ';
+	top: 0;
+	left: 0;
+	width: calc(100% - 10px);
+	height: calc(100% - 10px);
+	margin: 5px;
+
+	-webkit-box-shadow: 0 0 60px 0 rgba(0,0,0,0.10);
+	-moz-box-shadow: 0 0 60px 0 rgba(0,0,0,0.10);
+	box-shadow: 0 0 60px 0 rgba(0,0,0,0.10);
+}
+
+
+.helper_box
+{
+	padding-left: 20px;
+	display: flex;
+	align-items: center;
+
+	-webkit-box-shadow: 0 0 60px 0 rgba(0,0,0,0.10);
+	-moz-box-shadow: 0 0 60px 0 rgba(0,0,0,0.10);
+	box-shadow: 0 0 60px 0 rgba(0,0,0,0.10);
+
+	min-width: 300px;
+	width: calc(100% - 30px);
+	height: 100px;
+
+	background: rgba(255, 255, 255, 0.8);
+	
+	margin-bottom: 10px;
+
+	color: #626C76;
+
+	z-index: 9;
+
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+#formbuilder_area .form_element
+{
+	position: relative;
+	padding: 10px 1px;
+	cursor: pointer;
+	margin: 0px -15px;
+}
+
+#formbuilder_area [data-required="true"]:after
+{
+	content: '*';
+	color: #fb3e6e;
+	padding-left: 5px;
+}
+
+#formbuilder_area .form_element .remove-element-btn
+{
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: auto;
+	top: -10px;
+	color: #fb3e6e;
+	width: 20px;
+	height: 20px;
+	background: #FFF;
+	border: 1px solid #FFF;
+}
+#formbuilder_area .form_element:not(.active_element) .remove-element-btn
+{
+	display: none;
+}
+#formbuilder_area .form_element .form-group
+{
+	margin-bottom: 5px !important;
+}
+#formbuilder_area .form-control[disabled]
+{
+	background: #FFF;
+}
+
+
+#choices_area .remove_choice
+{
+	cursor: pointer;
+}
+
+#choices_area .remove_choice img
+{
+	padding-top: 15px;
+}
+
+#formbuilder_options_add_new_choice
+{
+	cursor: pointer;
+	color: #828F9A;
+	font-size: 14px;
+	margin-top: 10px;
+}
+#formbuilder_options_add_new_choice > i
+{
+	padding-right: 5px;
+}

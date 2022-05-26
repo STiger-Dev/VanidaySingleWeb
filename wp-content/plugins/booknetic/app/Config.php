@@ -784,6 +784,12 @@ class Config
             'depends'   =>  'appointment_id'
         ] );
 
+        $shortCodeService->registerShortCode( 'appointment_notes', [
+            'name'      =>  bkntc__('Appointment notes'),
+            'category'  =>  'appointment_info',
+            'depends'   =>  'appointment_id'
+        ] );
+
 		$shortCodeService->registerShortCode( 'service_name', [
 			'name'      =>  bkntc__('Service name'),
 			'category'  =>  'service_info',
@@ -958,7 +964,7 @@ class Config
 
 		TabUI::get('payment_gateways_settings')
 		     ->item('local')
-		     ->setTitle('Local')
+		     ->setTitle(bkntc__('Local'))
 		     ->addView( Backend::MODULES_DIR . 'Settings/view/modal/local_payment_settings.php' );
 	}
 
