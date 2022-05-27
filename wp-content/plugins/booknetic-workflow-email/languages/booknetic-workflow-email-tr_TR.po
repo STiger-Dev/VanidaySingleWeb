@@ -1,0 +1,490 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: test\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-03-11 17:37+0400\n"
+"PO-Revision-Date: 2022-03-11 17:37+0400\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-Basepath: ../app\n"
+"X-Poedit-KeywordsList: bkntc__\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: Frontend/assets/js/datepicker.min.js\n"
+"X-Poedit-SearchPathExcluded-1: Frontend/assets/js/intlTelInput.min.js\n"
+"X-Poedit-SearchPathExcluded-2: Frontend/assets/js/jquery.nicescroll.min."
+"js\n"
+"X-Poedit-SearchPathExcluded-3: Frontend/assets/js/utilsIntlTelInput.js\n"
+
+#: Backend/Ajax.php:55
+msgid "Please fill the SMTP credentials!"
+msgstr ""
+
+#: Backend/Ajax.php:60
+msgid "Please type the sender name field!"
+msgstr ""
+
+#: Backend/Ajax.php:67
+msgid "Please type the sender email field!"
+msgstr ""
+
+#: Backend/view/email_settings.php:15
+msgid "SAVE CHANGES"
+msgstr ""
+
+#: Backend/view/email_settings.php:20 EmailWorkflowAddon.php:29
+#: EmailWorkflowAddon.php:49
+msgid "Email settings"
+msgstr ""
+
+#: Backend/view/email_settings.php:27
+msgid "Mail Gateway"
+msgstr ""
+
+#: Backend/view/email_settings.php:29
+msgid "WordPress Mail"
+msgstr ""
+
+#: Backend/view/email_settings.php:30
+msgid "SMTP"
+msgstr ""
+
+#: Backend/view/email_settings.php:38
+msgid "SMTP Hostname"
+msgstr ""
+
+#: Backend/view/email_settings.php:42
+msgid "SMTP Port"
+msgstr ""
+
+#: Backend/view/email_settings.php:46
+msgid "SMTP Secure"
+msgstr ""
+
+#: Backend/view/email_settings.php:48
+msgid "TLS"
+msgstr ""
+
+#: Backend/view/email_settings.php:49
+msgid "SSL"
+msgstr ""
+
+#: Backend/view/email_settings.php:50
+msgid "Disabled ( not recommend )"
+msgstr ""
+
+#: Backend/view/email_settings.php:57
+msgid "Username"
+msgstr ""
+
+#: Backend/view/email_settings.php:61
+msgid "Password"
+msgstr ""
+
+#: Backend/view/email_settings.php:69
+msgid "Sender E-mail"
+msgstr ""
+
+#: Backend/view/email_settings.php:73 Backend/view/email_settings.php:80
+msgid "Sender Name"
+msgstr ""
+
+#: Backend/view/workflow_action_edit.php:30
+msgid "Edit action"
+msgstr ""
+
+#: Backend/view/workflow_action_edit.php:40
+msgid "To"
+msgstr ""
+
+#: Backend/view/workflow_action_edit.php:51
+msgid "Subject"
+msgstr ""
+
+#: Backend/view/workflow_action_edit.php:58
+msgid "Body"
+msgstr ""
+
+#: Backend/view/workflow_action_edit.php:65
+msgid "Attachment(s)"
+msgstr ""
+
+#: Backend/view/workflow_action_edit.php:82
+msgid "Enabled"
+msgstr ""
+
+#: Backend/view/workflow_action_edit.php:85
+msgid "CANCEL"
+msgstr ""
+
+#: Backend/view/workflow_action_edit.php:86
+msgid "SAVE"
+msgstr ""
+
+#: EmailWorkflowAddon.php:24
+msgid "Email workflow integration"
+msgstr ""
+
+#: EmailWorkflowAddon.php:30
+msgid "Allowed maximum Email"
+msgstr ""
+
+#: EmailWorkflowAddon.php:50
+msgid ""
+"You must set this settings for email workflow action ( wp_mail or SMTP "
+"settings )"
+msgstr ""
+
+#: EmailWorkflowDriver.php:25
+#, fuzzy
+#| msgid "Email"
+msgid "Send Email"
+msgstr "E-posta"
+
+#~ msgid "Please fill in all required fields correctly!"
+#~ msgstr "Lütfen gerekli tüm alanları doğru bir şekilde doldurun!"
+
+#~ msgid "Location"
+#~ msgstr "Konum"
+
+#~ msgid "Staff"
+#~ msgstr "Personel"
+
+#~ msgid "Service"
+#~ msgstr "Hizmet"
+
+#~ msgid "Service Extras"
+#~ msgstr "Ek hizmet"
+
+#~ msgid "Date & Time"
+#~ msgstr "Tarih ve Saat"
+
+#~ msgid "Information"
+#~ msgstr "Bilgi"
+
+#~ msgid "Confirmation"
+#~ msgstr "Onay"
+
+#~ msgid "Have any questions?"
+#~ msgstr "Bir sorunuz mu var?"
+
+#~ msgid "Select service"
+#~ msgstr "Hizmet seçin"
+
+#~ msgid "BACK"
+#~ msgstr "GERİ"
+
+#~ msgid "NEXT STEP"
+#~ msgstr "İLERİ"
+
+#, php-format
+#~ msgid "Minimum length of \"%s\" field is %d!"
+#~ msgstr "Minimum length of \"%s\" field is %d!"
+
+#, php-format
+#~ msgid "Maximum length of \"%s\" field is %d!"
+#~ msgstr "Maximum length of \"%s\" field is %d!"
+
+#~ msgid "File extension is not allowed!"
+#~ msgstr "Dosya formatına izin verilmiyor!"
+
+#~ msgid "DATE"
+#~ msgstr "TARİH"
+
+#~ msgid "Days of week"
+#~ msgstr "Haftanın günleri"
+
+#~ msgid "Mon"
+#~ msgstr "Pt"
+
+#~ msgid "Tue"
+#~ msgstr "Sa"
+
+#~ msgid "Wed"
+#~ msgstr "Ça"
+
+#~ msgid "Thu"
+#~ msgstr "Pe"
+
+#~ msgid "Fri"
+#~ msgstr "Cu"
+
+#~ msgid "Sat"
+#~ msgstr "Ct"
+
+#~ msgid "Sun"
+#~ msgstr "Pz"
+
+#~ msgid "Monday"
+#~ msgstr "Pazaretsi"
+
+#~ msgid "Tuesday"
+#~ msgstr "Salı"
+
+#~ msgid "Wednesday"
+#~ msgstr "Çarşamna"
+
+#~ msgid "Thursday"
+#~ msgstr "Perşembe"
+
+#~ msgid "Friday"
+#~ msgstr "Cuma"
+
+#~ msgid "Saturday"
+#~ msgstr "Cumartesi"
+
+#~ msgid "Sunday"
+#~ msgstr "Pazar"
+
+#~ msgid "Every"
+#~ msgstr "Her"
+
+#~ msgid "DAYS"
+#~ msgstr "GÜNLER"
+
+#~ msgid "Time"
+#~ msgstr "Zaman"
+
+#~ msgid "On"
+#~ msgstr "On"
+
+#~ msgid "Specific day"
+#~ msgstr "Belirli gün"
+
+#~ msgid "First"
+#~ msgstr "İlk"
+
+#~ msgid "Second"
+#~ msgstr "İkinci"
+
+#~ msgid "Third"
+#~ msgstr "Üçüncü"
+
+#~ msgid "Fourth"
+#~ msgstr "Dördüncü"
+
+#~ msgid "Last"
+#~ msgstr "Son"
+
+#~ msgid "Start date"
+#~ msgstr "Başlama tarihi"
+
+#~ msgid "End date"
+#~ msgstr "Bitiş tarihi"
+
+#~ msgid "Times"
+#~ msgstr "Defa"
+
+#~ msgid "Select..."
+#~ msgstr "Seçin..."
+
+#~ msgid "TIME"
+#~ msgstr "SAAT"
+
+#~ msgid "EDIT"
+#~ msgstr "DÜZENLE"
+
+#~ msgid "Discount"
+#~ msgstr "İndirim"
+
+#~ msgid "January"
+#~ msgstr "Ocak"
+
+#~ msgid "February"
+#~ msgstr "Şubat"
+
+#~ msgid "March"
+#~ msgstr "Mart"
+
+#~ msgid "April"
+#~ msgstr "Nisan"
+
+#~ msgid "May"
+#~ msgstr "Mayıs"
+
+#~ msgid "June"
+#~ msgstr "Haziran"
+
+#~ msgid "July"
+#~ msgstr "Temmuz"
+
+#~ msgid "August"
+#~ msgstr "Ağustos"
+
+#~ msgid "September"
+#~ msgstr "Eylül"
+
+#~ msgid "October"
+#~ msgstr "Ekim"
+
+#~ msgid "November"
+#~ msgstr "Kasım"
+
+#~ msgid "December"
+#~ msgstr "Aralık"
+
+#~ msgid "Credit card"
+#~ msgstr "Kredi Kartı"
+
+#~ msgid "Phone"
+#~ msgstr "Telefon"
+
+#~ msgid "Daily"
+#~ msgstr "Günlük"
+
+#~ msgid "Name"
+#~ msgstr "İsim"
+
+#~ msgid "Deposit"
+#~ msgstr "Depozito"
+
+#~ msgid "Local"
+#~ msgstr "Nakit ödeme"
+
+#~ msgid "Paypal"
+#~ msgstr "Paypal"
+
+#~ msgid "Any staff"
+#~ msgstr "Herhangi Personel"
+
+#~ msgid "Select an available staff"
+#~ msgstr "Uygun olan personeli seçin"
+
+#~ msgid "Add coupon"
+#~ msgstr "Kupon ekle"
+
+#~ msgid "Please select location."
+#~ msgstr "Lütfen konum seçin."
+
+#~ msgid "Please select staff."
+#~ msgstr "Lütfen personel seçin."
+
+#~ msgid "Please select service"
+#~ msgstr "Lütfen hizmet seçin."
+
+#~ msgid "Please select week day(s)"
+#~ msgstr "Lütfen haftanın günlerini seçin"
+
+#~ msgid "Please select week day(s) and time(s) correctly"
+#~ msgstr "Lütfen haftanın günlerini ve saati doğru seçin"
+
+#~ msgid "Please select start date"
+#~ msgstr "Lütfen başlangıç tarihi seçin"
+
+#~ msgid "Please select end date"
+#~ msgstr "Lütfen bitiş tarihi seçin"
+
+#~ msgid "Please select date."
+#~ msgstr "Lütfen tarih seçin."
+
+#~ msgid "Please select time."
+#~ msgstr "Lütfen saati seçin."
+
+#~ msgid "Please select an available time"
+#~ msgstr "Lütfen uygun zamanı seçin."
+
+#~ msgid "Please enter a valid email address!"
+#~ msgstr "Lütfen doğru e-posta adresi yazınız."
+
+#~ msgid "Please enter a valid phone number!"
+#~ msgstr "Lütfen doğru telefon numarası yazınız."
+
+#~ msgid "CONFIRM BOOKING"
+#~ msgstr "REZERVASYONU BİTİR"
+
+#~ msgid "There is no any Location for select."
+#~ msgstr "Seçilecek bir konum bulunamadı."
+
+#~ msgid "Staff not found. Please go back and select a different option."
+#~ msgstr ""
+#~ "Personel bulunamadı. Lütfen geri dönün ve farklı bir seçenek belirleyin."
+
+#~ msgid "Service not found. Please go back and select a different option."
+#~ msgstr ""
+#~ "Hizmet bulunamadı. Lütfen geri dönün ve farklı bir seçenek belirleyin."
+
+#~ msgid "There isn't any available staff for the selected date/time."
+#~ msgstr "Seçilen tarih/saat için uygun personel bulunamadı."
+
+#~ msgid ""
+#~ "Extras not found in this service. You can select other service or click "
+#~ "the <span class=\"booknetic_text_primary\">\"Next step\"</span> button."
+#~ msgstr ""
+#~ "Bu hizmetde ek hizmet mevcut değil. Başka bir hizmet seçebilir ve ya "
+#~ "<span class=\"booknetic_text_primary\">\"İLERİ\"</span> yapabilirsiniz."
+
+#~ msgid "w"
+#~ msgstr "h"
+
+#~ msgid "d"
+#~ msgstr "g"
+
+#~ msgid "h"
+#~ msgstr "s"
+
+#~ msgid "m"
+#~ msgstr "a"
+
+#~ msgid "s"
+#~ msgstr "s"
+
+#~ msgid "Finish"
+#~ msgstr "Bitiş"
+
+#, fuzzy
+#~| msgid "Location"
+#~ msgid "Location ID"
+#~ msgstr "Konum"
+
+#~ msgid "Thank you for your request!"
+#~ msgstr "Rezervasyon başarıyla tamamlandı"
+
+#~ msgid "Your confirmation number:"
+#~ msgstr "Sizin onay kodunuz:"
+
+#~ msgid "ADD TO GOOGLE CALENDAR"
+#~ msgstr "GOOGLE TAKVİMİNE EKLE"
+
+#~ msgid "START NEW BOOKING"
+#~ msgstr "YENİ REZERVASYON"
+
+#~ msgid "FINISH BOOKING"
+#~ msgstr "TAMAMLA"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid "Total price"
+#~ msgstr "Toplam ücret"
+
+#~ msgid "Full amount"
+#~ msgstr "Tam miktar"
+
+#~ msgid "Select date"
+#~ msgstr "Saati seç"
+
+#~ msgid "Surname"
+#~ msgstr "Soyad"
+
+#~ msgid "Select staff"
+#~ msgstr "Personel seçin"
+
+#~ msgid "Select location"
+#~ msgstr "Konum seçin"
+
+#~ msgid "Select service extras"
+#~ msgstr "Ek hizmet seçin"
+
+#~ msgid "Fill information"
+#~ msgstr "Bilgileri doldurun"
+
+#~ msgid "Select Date & Time"
+#~ msgstr "Tarih ve Saati seçin"
+
+#~ msgid "Confirm Details"
+#~ msgstr "Ayrıntıları Onayla"
