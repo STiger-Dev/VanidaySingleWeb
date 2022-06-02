@@ -9,6 +9,7 @@ use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Core\Permission;
 use BookneticApp\Providers\UI\TabUI;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
 class Ajax extends \BookneticApp\Providers\Core\Controller
 {
@@ -144,11 +145,32 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 			}
 
 			Location::where( 'id', $id )->update( $sqlData );
+
+			//Request of update customer from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->updateLocation($id, 
+				[
+					'business_id'	=>	Permission::tenantId(),
+					'name'	=>	$sqlData['name'],
+					'phone_number'		=>	$sqlData['phone_number']
+				]
+			);
 		}
 		else
 		{
 			$sqlData['is_active'] = 1;
 			Location::insert( $sqlData );
+
+			//Request of add customer from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->addLocation(
+				[
+					'business_id'	=>	Permission::tenantId(),
+					'id'		=>	Location::lastId(),
+					'name'	=>	$sqlData['name'],
+					'phone_number'		=>	$sqlData['phone_number']
+				]
+			);
 		}
 
 		return $this->response(true );

@@ -113,6 +113,55 @@ class DexRequestObject
      *
      * @return void
      */
+    public function addLocation($params)
+    {
+        try {
+            $reqGetUrl = $this->API_REQUEST_URI . "/web/location";
+
+            $response = $this->doPostRequest($reqGetUrl, $params);
+        } catch (\Exception $e) {
+
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function updateLocation($id, $params)
+    {
+        try {
+            $reqGetUrl = $this->API_REQUEST_URI . "/web/location/{$id}";
+
+            $response = $this->doPatchRequest($reqGetUrl, $params);
+        } catch (\Exception $e) {
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function deleteLocation($id, $params)
+    {
+        try {
+            $reqDeleteUrl = $this->API_REQUEST_URI . "/web/location/{$id}";
+
+            $response = $this->doDeleteRequest($reqDeleteUrl, $params);
+        } catch (\Exception $e) {
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @return void
+     */
     public function addSales($params)
     {
         try {
@@ -130,7 +179,7 @@ class DexRequestObject
      * @param string $uri
      * @return Response
      */
-    private function doDeleteRequest($uri){
+    private function doDeleteRequest($uri, $params = array()){
         try
         {
             $this->zendClient->reset();
@@ -140,6 +189,9 @@ class DexRequestObject
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
             ]);
+            if (!empty ($params)) {
+                $this->zendClient->setRawBody(json_encode($params));
+            }
             $this->zendClient->send();
             $response = $this->zendClient->getResponse()->getContent();
         }

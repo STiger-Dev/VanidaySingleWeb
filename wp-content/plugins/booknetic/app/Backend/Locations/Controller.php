@@ -9,6 +9,8 @@ use BookneticApp\Providers\UI\DataTableUI;
 use BookneticApp\Providers\Core\Capabilities;
 use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
+use BookneticApp\Providers\Core\Permission;
 
 class Controller extends \BookneticApp\Providers\Core\Controller
 {
@@ -80,6 +82,14 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 			DB::DB()->query( DB::DB()->prepare("UPDATE `".DB::table('staff')."` SET locations=TRIM(BOTH ',' FROM REPLACE(CONCAT(',',`locations`,','),%s,',')) WHERE FIND_IN_SET(%d, `locations`)", [",{$id},", $id]) );
 
             Location::where('id', $id)->delete();
+
+			//Request of delete customer from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->deleteLocation($id, 
+				[
+					'business_id'	=>	Permission::tenantId(),
+				]
+			);
         }
 
 
