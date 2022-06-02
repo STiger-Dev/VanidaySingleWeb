@@ -1,0 +1,25 @@
+/*
+ Theme Name:     Divi Child Theme
+ Theme URI:      https://www.elegantthemes.com/gallery/divi/
+ Description:    Divi Child Theme
+ Author:         Elegant Themes
+ Author URI:     https://www.elegantthemes.com
+ Template:       Divi
+ Version:        1.0.0
+*/
+
+@font-face { 
+	font-family: Metropolis; 
+	src: url(http://web.sos.vaniday.com/wp-content/themes/Divi/fonts/Metropolis-Regular.ttf); 
+	font-weight: normal; 
+}
+
+@font-face { 
+	font-family: Metropolis; 
+	src: url(http://web.sos.vaniday.com/wp-content/themes/Divi/fonts/Metropolis-Bold.ttf); 
+	font-weight: bold; 
+}
+
+body {
+	font-family: Metropolis;
+}
