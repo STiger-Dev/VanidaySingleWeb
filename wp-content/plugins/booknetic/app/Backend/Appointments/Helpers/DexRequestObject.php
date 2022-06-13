@@ -175,6 +175,55 @@ class DexRequestObject
     }
 
     /**
+     *
+     * @return void
+     */
+    public function addService($params)
+    {
+        try {
+            $reqGetUrl = $this->API_REQUEST_URI . "/web/product";
+
+            $response = $this->doPostRequest($reqGetUrl, $params);
+        } catch (\Exception $e) {
+
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function updateService($id, $params)
+    {
+        try {
+            $reqGetUrl = $this->API_REQUEST_URI . "/web/product/{$id}";
+
+            $response = $this->doPatchRequest($reqGetUrl, $params);
+        } catch (\Exception $e) {
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function deleteService($id)
+    {
+        try {
+            $reqDeleteUrl = $this->API_REQUEST_URI . "/web/product/{$id}";
+
+            $response = $this->doDeleteRequest($reqDeleteUrl);
+        } catch (\Exception $e) {
+        }
+
+        return;
+    }
+
+    /**
      * Do API request with provided params
      * @param string $uri
      * @return Response

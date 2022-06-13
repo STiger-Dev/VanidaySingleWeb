@@ -18,6 +18,7 @@ use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Math;
 use BookneticApp\Providers\UI\TabUI;
 use BookneticApp\Providers\Common\PaymentGatewayService;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
 class Ajax extends \BookneticApp\Providers\Core\Controller
 {
@@ -577,6 +578,54 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 			}
 		}
 
+		if ($isEdit) {
+			//Get location Id
+			$location = array();
+			$staffList = ServiceStaff::where('service_id', $id)->fetchAll();
+			foreach($staffList as $staffItem) {
+				$staffInfo =Staff::where('id', $staffItem['staff_id'])->fetch();
+				foreach(explode(",", $staffInfo['locations']) as $locationId) {
+					array_push($location, $locationId);
+				}
+			}
+			$location = array_unique($location);
+			// Request of update customer from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->updateService( $id, 
+				[
+					"name"			=> $sqlData["name"],
+					"category_id" 	=> $sqlData["category_id"],
+					"location_id"	=> implode(",", $location),
+					"description"	=> $sqlData["notes"],
+					"price"			=> $sqlData["price"]
+				]
+			);
+		} else {
+			//Get location Id
+			$location = array();
+			$staffList = ServiceStaff::where('service_id', $id)->fetchAll();
+			foreach($staffList as $staffItem) {
+				$staffInfo =Staff::where('id', $staffItem['staff_id'])->fetch();
+				foreach(explode(",", $staffInfo['locations']) as $locationId) {
+					array_push($location, $locationId);
+				}
+			}
+			$location = array_unique($location);
+			// Request of update customer from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->addService( 
+				[
+					'id'			=> $id,
+					"name"			=> $sqlData["name"],
+					"sku"			=> "web_" . $this->guidv4(),
+					"category_id" 	=> $sqlData["category_id"],
+					"location_id"	=> implode(",", $location),
+					"description"	=> $sqlData["notes"],
+					"price"			=> $sqlData["price"]
+				]
+			);
+		}
+
 		return $this->response(true, [ 'id' => $id ] );
 	}
 
@@ -1036,6 +1085,20 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 				self::getSubCategs( $cId, $categories, $subCategories );
 			}
 		}
+	}
+
+	private static function guidv4($data = null) {
+		// Generate 16 bytes (128 bits) of random data or use the data passed into the function.
+		$data = $data ?? random_bytes(16);
+		assert(strlen($data) == 16);
+	
+		// Set version to 0100
+		$data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+		// Set bits 6-7 to 10
+		$data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+	
+		// Output the 36 character UUID.
+		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 	}
 
 }

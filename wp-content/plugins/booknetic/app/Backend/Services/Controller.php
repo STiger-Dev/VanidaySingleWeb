@@ -16,6 +16,7 @@ use BookneticApp\Providers\Core\Capabilities;
 use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Session;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
 class Controller extends \BookneticApp\Providers\Core\Controller
 {
@@ -148,6 +149,8 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 	public static function _delete( $deletedIds )
 	{
 		Capabilities::must( 'services_delete' );
+		$dexRequestObject = new DexRequestObject();
+
 
 		foreach ( $deletedIds as $id )
 		{
@@ -168,6 +171,8 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 			Timesheet::where('service_id' , $id )->delete();
             Data::where('table_name', 'services')->where('row_id', $id)->delete();
             Service::where('id', $id)->delete();
+
+			$dexRequestObject->deleteService( $id );
 		}
 	}
 
