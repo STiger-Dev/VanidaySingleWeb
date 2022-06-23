@@ -21,6 +21,8 @@ use BookneticApp\Models\Timesheet;
 use BookneticApp\Models\Holiday;
 use BookneticApp\Models\Data;
 use BookneticApp\Models\Appointment;
+use BookneticApp\Models\AppointmentPrice;
+use BookneticApp\Models\AppointmentExtra;
 
 class Booknetic_Custom_Route extends WP_REST_Controller {
 
@@ -80,6 +82,22 @@ class Booknetic_Custom_Route extends WP_REST_Controller {
             array(
               'methods'     => WP_REST_Server::DELETABLE,
               'callback'    => array( $this, 'deleteBookneticService' )
+            )
+          )
+        );
+
+        register_rest_route( 'booknetic/appointments', 'update/id=(?P<id>\d+)', array(
+            array(
+              'methods'     => WP_REST_Server::EDITABLE,
+              'callback'    => array( $this, 'updateBookneticAppointments' )
+            )
+          )
+        );
+
+        register_rest_route( 'booknetic/appointments', 'delete/id=(?P<id>\d+)', array(
+            array(
+              'methods'     => WP_REST_Server::DELETABLE,
+              'callback'    => array( $this, 'deleteBookneticAppointments' )
             )
           )
         );
@@ -189,7 +207,7 @@ class Booknetic_Custom_Route extends WP_REST_Controller {
         return new WP_Error( 'code', __( 'message', 'text-domain' ) );
       }
 
-      Location::where('id', $id)->noTenant(true)->delete( $params );
+      Location::where('id', $id)->noTenant(true)->delete( );
    
       return new WP_REST_Response( true, 200 );
     }
@@ -241,6 +259,58 @@ class Booknetic_Custom_Route extends WP_REST_Controller {
       Data::where('table_name', 'services')->where('row_id', $id)->noTenant(true)->delete();
       Service::where('id', $id)->noTenant(true)->delete();
    
+      return new WP_REST_Response( true, 200 );
+    }
+
+    /**
+     * Get one item from the collection
+     *
+     * @param WP_REST_Request $request Full data about the request.
+     * @return WP_Error|WP_REST_Response
+     */
+    public function updateBookneticAppointments( $request ) {
+      $params = $request->get_params();
+      $id = $params['id'];
+
+      if (empty($id)) {
+        return new WP_Error( 'code', __( 'message', 'text-domain' ) );
+      }
+
+      $updateParam = array();
+      if (isset($params['customer_id'])) {
+        $updateParam["customer_id"] = $params['customer_id'];
+      }
+      if (isset($params['service_id'])) {
+        $updateParam['service_id'] = $params['service_id'];
+      }
+      $appointment = Appointment::where( 'id', $id )->noTenant(true)->update( $updateParam );
+      if (isset($params['price'])) {
+        AppointmentPrice::where( 'unique_key', 'service_price' )->where( 'appointment_id', $id )->noTenant(true)->update( array(
+          'price' =>  $params['price']
+        ));
+      }
+
+      return new WP_REST_Response( $appointment, 200 );
+    }
+
+    /**
+     * Get one item from the collection
+     *
+     * @param WP_REST_Request $request Full data about the request.
+     * @return WP_Error|WP_REST_Response
+     */
+    public function deleteBookneticAppointments( $request ) {
+      $params = $request->get_params();
+      $id = $params['id'];
+
+      if (empty($id)) {
+        return new WP_Error( 'code', __( 'message', 'text-domain' ) );
+      }
+
+      AppointmentExtra::where( 'appointment_id', $id )->noTenant(true)->delete();
+      AppointmentPrice::where('appointment_id', $id)->noTenant(true)->delete();
+      Appointment::where('id', $id)->noTenant(true)->delete();
+
       return new WP_REST_Response( true, 200 );
     }
   }
