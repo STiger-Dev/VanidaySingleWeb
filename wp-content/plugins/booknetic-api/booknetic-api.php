@@ -23,6 +23,7 @@ use BookneticApp\Models\Data;
 use BookneticApp\Models\Appointment;
 use BookneticApp\Models\AppointmentPrice;
 use BookneticApp\Models\AppointmentExtra;
+use BookneticApp\Models\ServiceCategory;
 
 class Booknetic_Custom_Route extends WP_REST_Controller {
 
@@ -98,6 +99,22 @@ class Booknetic_Custom_Route extends WP_REST_Controller {
             array(
               'methods'     => WP_REST_Server::DELETABLE,
               'callback'    => array( $this, 'deleteBookneticAppointments' )
+            )
+          )
+        );
+
+        register_rest_route( 'booknetic/category', 'update/id=(?P<id>\d+)', array(
+            array(
+              'methods'     => WP_REST_Server::EDITABLE,
+              'callback'    => array( $this, 'updateBookneticCategory' )
+            )
+          )
+        );
+
+        register_rest_route( 'booknetic/category', 'delete/id=(?P<id>\d+)', array(
+            array(
+              'methods'     => WP_REST_Server::DELETABLE,
+              'callback'    => array( $this, 'deleteBookneticCategory' )
             )
           )
         );
@@ -312,6 +329,44 @@ class Booknetic_Custom_Route extends WP_REST_Controller {
       Appointment::where('id', $id)->noTenant(true)->delete();
 
       return new WP_REST_Response( true, 200 );
+    }
+
+    /**
+     * Get one item from the collection
+     *
+     * @param WP_REST_Request $request Full data about the request.
+     * @return WP_Error|WP_REST_Response
+     */
+    public function updateBookneticCategory( $request ) {
+      $params = $request->get_params();
+      $id = $params['id'];
+
+      if (empty($id)) {
+        return new WP_Error( 'code', __( 'message', 'text-domain' ) );
+      }
+
+      $categoryInfo = ServiceCategory::where('id', $id)->noTenant(true)->update(['name' =>  $params['name']]);
+
+      return new WP_REST_Response( $categoryInfo, 200 );
+    }
+
+    /**
+     * Get one item from the collection
+     *
+     * @param WP_REST_Request $request Full data about the request.
+     * @return WP_Error|WP_REST_Response
+     */
+    public function deleteBookneticCategory( $request ) {
+      $params = $request->get_params();
+      $id = $params['id'];
+
+      if (empty($id)) {
+        return new WP_Error( 'code', __( 'message', 'text-domain' ) );
+      }
+
+      $result = ServiceCategory::where( 'id', $id )->noTenant(true)->delete();
+
+      return new WP_REST_Response( $result, 200 );
     }
   }
 
