@@ -224,6 +224,55 @@ class DexRequestObject
     }
 
     /**
+     *
+     * @return void
+     */
+    public function addCategory($params)
+    {
+        try {
+            $reqGetUrl = $this->API_REQUEST_URI . "/web/category";
+
+            $response = $this->doPostRequest($reqGetUrl, $params);
+        } catch (\Exception $e) {
+
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function updateCategory($id, $params)
+    {
+        try {
+            $reqGetUrl = $this->API_REQUEST_URI . "/web/category/{$id}";
+
+            $response = $this->doPatchRequest($reqGetUrl, $params);
+        } catch (\Exception $e) {
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function deleteCategory($id)
+    {
+        try {
+            $reqDeleteUrl = $this->API_REQUEST_URI . "/web/category/{$id}";
+
+            $response = $this->doDeleteRequest($reqDeleteUrl);
+        } catch (\Exception $e) {
+        }
+
+        return;
+    }
+
+    /**
      * Do API request with provided params
      * @param string $uri
      * @return Response

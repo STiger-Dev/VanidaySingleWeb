@@ -19,6 +19,7 @@ use BookneticApp\Providers\Helpers\Math;
 use BookneticApp\Providers\UI\TabUI;
 use BookneticApp\Providers\Common\PaymentGatewayService;
 use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
+use BookneticApp\Providers\Core\Permission;
 
 class Ajax extends \BookneticApp\Providers\Core\Controller
 {
@@ -726,6 +727,12 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
 		ServiceCategory::where('id', $id)->delete();
 
+		//Request of delete category from booknetic to DEX.
+		$dexRequestObject = new DexRequestObject();
+		$dexRequestObject->deleteCategory(
+			$id
+		);
+
 		return $this->response(true);
 	}
 
@@ -753,6 +760,15 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 		if( $id > 0 )
 		{
 			ServiceCategory::where('id', $id)->update(['name' => $name]);
+
+			//Request of add category from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->updateCategory($id, 
+				[
+					'name'		=>	$name,
+					'business_id'	=>	Permission::tenantId()
+				]
+			);
 		}
 		else
 		{
@@ -769,6 +785,16 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 			]);
 
 			$id = DB::lastInsertedId();
+
+			//Request of add category from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->addCategory(
+				[
+					'name'		=>	$name,
+					'id'		=>	$id,
+					'business_id'	=>	Permission::tenantId()
+				]
+			);
 		}
 
 		return $this->response(true, ['id' => $id]);
