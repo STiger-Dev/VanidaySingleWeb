@@ -337,7 +337,8 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 					'last_name'		=>	$sqlData['last_name'],
 					'email'			=>	$sqlData['email'],
 					'phone_number'	=>	$sqlData['phone_number'],
-					'dob'			=>	$sqlData['birthdate']
+					'dob'			=>	$sqlData['birthdate'],
+					'business_id'	=>	Permission::tenantId()
 				]
 			);
 		}
@@ -356,7 +357,8 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 					'last_name'		=>	$sqlData['last_name'],
 					'email'			=>	$sqlData['email'],
 					'phone_number'	=>	$sqlData['phone_number'],
-					'dob'			=>	$sqlData['birthdate']
+					'dob'			=>	$sqlData['birthdate'],
+					'business_id'	=>	Permission::tenantId()
 				]
 			);
 		}

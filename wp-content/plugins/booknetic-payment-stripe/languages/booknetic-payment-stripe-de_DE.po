@@ -1,0 +1,3142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: test\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-03-11 17:52+0400\n"
+"PO-Revision-Date: 2022-03-11 17:52+0400\n"
+"Last-Translator: Maximilian Mende <info@dixmind.com>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-Basepath: ../app\n"
+"X-Poedit-KeywordsList: bkntc__\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: Frontend/assets/js/datepicker.min.js\n"
+"X-Poedit-SearchPathExcluded-1: Frontend/assets/js/intlTelInput.min.js\n"
+"X-Poedit-SearchPathExcluded-2: Frontend/assets/js/jquery.nicescroll.min.js\n"
+"X-Poedit-SearchPathExcluded-3: Frontend/assets/js/utilsIntlTelInput.js\n"
+
+#: Backend/view/settings.php:9
+msgid "Publishable key"
+msgstr "Publishable Key"
+
+#: Backend/view/settings.php:14
+msgid "Secret key"
+msgstr "Geheimer Schlüssel"
+
+#: Listener.php:19
+#, fuzzy
+msgid "Please, fill all fields to enable Stripe payment gateway!"
+msgstr "Bitte aktivieren Sie mindestens ein Zahlungsgateway."
+
+#: Stripe.php:28
+msgid "Credit card"
+msgstr "Kreditkarte"
+
+#: Stripe.php:195
+#, fuzzy
+msgid "Couldn't create a payment!"
+msgstr "Zahlung konnte nicht erstellt werden!"
+
+#: StripeAddon.php:20
+msgid "Stripe integration"
+msgstr ""
+
+#: StripeAddon.php:25
+#, fuzzy
+#| msgid "Settings"
+msgid "Stripe settings"
+msgstr "Einstellungen"
+
+#~ msgid "Please fill in all required fields correctly!"
+#~ msgstr "Bitte fülle alle Pflichtfelder aus"
+
+#~ msgid "Theme not found!"
+#~ msgstr "Design nicht gefunden!"
+
+#~ msgid "You can not delete default theme!"
+#~ msgstr "Sie können das Standarddesign nicht löschen!"
+
+#~ msgid "Appearance"
+#~ msgstr "Aussehen"
+
+#~ msgid "GO BACK"
+#~ msgstr "Zurück"
+
+#~ msgid "Options"
+#~ msgstr "Optionen"
+
+#~ msgid "Style name"
+#~ msgstr "Theme-Name"
+
+#~ msgid "Type name..."
+#~ msgstr "Name eingeben..."
+
+#~ msgid "Panel height"
+#~ msgstr "Fenster-Höhe"
+
+#~ msgid "Font family"
+#~ msgstr "Schriftart"
+
+#~ msgid "Panel background"
+#~ msgstr "Fenster-Hintergrund"
+
+#~ msgid "Primary BG / text color"
+#~ msgstr "Primäre BG / Textfarbe"
+
+#~ msgid "Compleated steps BG / label color"
+#~ msgstr "Vervollständigte Schritte Hintergrund / Beschriftung-Farbe"
+
+#~ msgid "Active steps BG / label color"
+#~ msgstr "Aktive Schritte Hintergrund / Beschriftungs-Farbe"
+
+#~ msgid "Other steps BG / label color"
+#~ msgstr "Weitere Schritte Hintergrund / Beschriftungs-Farbe"
+
+#~ msgid "Title color"
+#~ msgstr "Titelfarbe"
+
+#~ msgid "Border color"
+#~ msgstr "Rahmenfarbe"
+
+#~ msgid "Price color"
+#~ msgstr "Preis Farbe"
+
+#, fuzzy
+#~ msgid "Custom CSS"
+#~ msgstr "Benutzerdefiniertes CSS"
+
+#~ msgid "DELETE"
+#~ msgstr "Löschen"
+
+#~ msgid "SAVE"
+#~ msgstr "Speichern"
+
+#, php-format
+#~ msgid "Theme ID: %d"
+#~ msgstr "Themen-ID: %d"
+
+#~ msgid "Design"
+#~ msgstr "Design"
+
+#~ msgid "Location"
+#~ msgstr "Ort"
+
+#~ msgid "Staff"
+#~ msgstr "Personal"
+
+#~ msgid "Service"
+#~ msgstr "Dienstleistung"
+
+#~ msgid "Service Extras"
+#~ msgstr "Zusatzleistungen"
+
+#~ msgid "Date & Time"
+#~ msgstr "Datum & Uhrzeit"
+
+#~ msgid "Information"
+#~ msgstr "Persönliche Daten"
+
+#~ msgid "Confirmation"
+#~ msgstr "Übersicht"
+
+#~ msgid "Have any questions?"
+#~ msgstr "Haben Sie Fragen?"
+
+#~ msgid "Select service"
+#~ msgstr "Wähle eine Dienstleistung"
+
+#~ msgid "Category 1"
+#~ msgstr "Kategorie 1"
+
+#~ msgid "Service 1"
+#~ msgstr "Dienstleistung 1"
+
+#~ msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+#~ msgstr "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+
+#~ msgid "Service 2"
+#~ msgstr "Dienstleistung 2"
+
+#~ msgid "Category 2"
+#~ msgstr "Kategorie 2"
+
+#~ msgid "Service 3"
+#~ msgstr "Dienstleistung 3"
+
+#~ msgid "BACK"
+#~ msgstr "Zurück"
+
+#~ msgid "NEXT STEP"
+#~ msgstr "Weiter"
+
+#~ msgid "SELECTED"
+#~ msgstr "Ausgewählt"
+
+#~ msgid "SELECT"
+#~ msgstr "Auswählen"
+
+#~ msgid "Create new style"
+#~ msgstr "Erstellen eines neuen Themes"
+
+#~ msgid "Selected appointment not found!"
+#~ msgstr "Ausgewählter Termin nicht gefunden!"
+
+#~ msgid "Appointment not found!"
+#~ msgstr "Termin nicht gefunden!"
+
+#~ msgid "Please fill the \"Date\" and \"Time\" field correctly!"
+#~ msgstr "Bitte füllen Sie die Felder \"Datum\" und \"Uhrzeit\" korrekt aus!"
+
+#~ msgid "Please select customers!"
+#~ msgstr "Bitte wählen Sie Kunden aus!"
+
+#~ msgid "Selected service is not group service. So you cannot add more than 1 customer."
+#~ msgstr "Die ausgewählte Dienstleistung ist keine Gruppen-Dienstleistung. Sie können nicht mehr als 1 Kunden hinzufügen"
+
+#, php-format
+#~ msgid "The maximum capacity of the service is %d. You cannot add more than %d customers."
+#~ msgstr "Die maximale Kapazität der Dienstleistung beträgt %d. Sie können nicht mehr als %d Kunden hinzufügen"
+
+#~ msgid "Selected service extra doesn't exist!"
+#~ msgstr "Die ausgewählte Zusatzleistung existiert nicht!"
+
+#, php-format
+#~ msgid "Max quantity of selected service extra (%s) is %d"
+#~ msgstr "Die maximale Menge der ausgewählten Zusatzleistung (%s) beträgt %d"
+
+#, php-format
+#~ msgid "Limited booking days is %d"
+#~ msgstr "Begrenzte Buchungstage beträgt %d"
+
+#, php-format
+#~ msgid "Please select a valid time! ( %s %s is busy! )"
+#~ msgstr "Bitte wählen Sie eine gültige Uhrzeit! ( %s %s ist ausgelastet! )"
+
+#, php-format
+#~ msgid "%s can not be empty, because it's a required field!"
+#~ msgstr "%s darf nicht leer sein, da es sich um ein erforderliches Feld handelt!"
+
+#~ msgid "Please fill custom fields form correctly!"
+#~ msgstr "Bitte füllen Sie benutzerdefinierte Felder richtig aus!"
+
+#~ msgid "Selected custom field not found!"
+#~ msgstr "Ausgewähltes benutzerdefiniertes Feld wurde nicht gefunden!"
+
+#, php-format
+#~ msgid "\"%s\" can not be empty, because it's a required field!"
+#~ msgstr "\"%s\" kann nicht leer sein, da es ein erforderliches Feld ist!"
+
+#, php-format
+#~ msgid "Minimum length of \"%s\" field is %d!"
+#~ msgstr "Die Mindestlänge des Felds \"%s\" ist %d!"
+
+#, php-format
+#~ msgid "Maximum length of \"%s\" field is %d!"
+#~ msgstr "Die maximale Länge des Felds \"%s\" ist %d!"
+
+#~ msgid "File extension is not allowed!"
+#~ msgstr "Dateien mit diesem Dateityp sind nicht erlaubt!"
+
+#~ msgid "Payment not found!"
+#~ msgstr "Zahlung nicht gefunden!"
+
+#~ msgid "Appointment not found or permission denied!"
+#~ msgstr "Termin nicht gefunden oder Erlaubnis verweigert!"
+
+#~ msgid "Due amound can't be a negative number!"
+#~ msgstr "Fälliger Betrag kann keine negative Zahl sein!"
+
+#~ msgid "Date"
+#~ msgstr "Datum"
+
+#~ msgid "Customer"
+#~ msgstr "Kunde"
+
+#~ msgid "Status"
+#~ msgstr "Status"
+
+#~ msgid "Approved"
+#~ msgstr "Genehmigt"
+
+#~ msgid "Pending"
+#~ msgstr "Ausstehend"
+
+#~ msgid "Canceled"
+#~ msgstr "Storniert"
+
+#~ msgid "Rejected"
+#~ msgstr "Abgelehnt"
+
+#~ msgid "Appointments"
+#~ msgstr "Termine"
+
+#~ msgid "NEW APPOINTMENT"
+#~ msgstr "NEUER TERMIN"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "DATE"
+#~ msgstr "DATUM"
+
+#~ msgid "CUSTOMER(S)"
+#~ msgstr "KUNDE(N)"
+
+#, php-format
+#~ msgid "+ %d MORE"
+#~ msgstr "+ %d MEHR"
+
+#, fuzzy
+#~ msgid "Customer (s)"
+#~ msgstr "Kunde(n)"
+
+#~ msgid "STAFF"
+#~ msgstr "PERSONAL"
+
+#~ msgid "SERVICE"
+#~ msgstr "DIENSTLEISTUNG"
+
+#~ msgid "PAYMENT"
+#~ msgstr "ZAHLUNG"
+
+#~ msgid "DURATION"
+#~ msgstr "DAUER"
+
+#~ msgid "CREATED AT"
+#~ msgstr "ERSTELLT AM"
+
+#~ msgid "Permission denied!"
+#~ msgstr "Zugriff verweigert!"
+
+#~ msgid "Please fill \"Start date\" and \"End date\" fields!"
+#~ msgstr "Bitte füllen Sie die Felder \"Startdatum\" und \"Enddatum\" aus!"
+
+#, php-format
+#~ msgid "Repeat frequency is %d for selected service!"
+#~ msgstr "Die Wiederholungshäufigkeit ist %d für die ausgewählte Dienstleistung!"
+
+#~ msgid "Repeat frequency is is invalid!"
+#~ msgstr "Wiederholungshäufigkeit ist ungültig!"
+
+#~ msgid "Please fill \"Time\" field!"
+#~ msgstr "Bitte füllen Sie das Feld \"Uhrzeit\" aus!"
+
+#~ msgid "Error! Full period is wrong on Service options! Please edit your service info!"
+#~ msgstr "Fehler! Volle Dauer ist falsch in den Dienstleistungsoptionen! Bitte bearbeiten Sie Ihre Dienstleistungsinformationen!"
+
+#~ msgid "Coupon not found!"
+#~ msgstr "Gutschein nicht gefunden!"
+
+#~ msgid "Coupon usage limit exceeded!"
+#~ msgstr "Coupon-Nutzungslimit überschritten!"
+
+#, fuzzy
+#~ msgid "Giftcard not found!"
+#~ msgstr "Geschenkkarte nicht gefunden!"
+
+#~ msgid "Giftcard balance is not enough!"
+#~ msgstr "Das Guthaben der Geschenkkarte ist nicht ausreichend!"
+
+#~ msgid "Selected date and time have not enough capacity"
+#~ msgstr "Ausgewähltes Datum und Uhrzeit hat nicht genügend Kapazität"
+
+#, php-format
+#~ msgid "This service requires minimum %d customers"
+#~ msgstr "Diese Dienstleistung erfordert mindestens %d Kunde(n)"
+
+#~ msgid "Customer name"
+#~ msgstr "Kundenname"
+
+#~ msgid "New appointment"
+#~ msgstr "Neue Termin"
+
+#~ msgid "Appointment details"
+#~ msgstr "Termin Details"
+
+#~ msgid "Extras"
+#~ msgstr "Zusatzleistungen"
+
+#~ msgid "Category"
+#~ msgstr "Kategorie"
+
+#~ msgid "Days of week"
+#~ msgstr "Wochentage"
+
+#~ msgid "Mon"
+#~ msgstr "Mo"
+
+#~ msgid "Tue"
+#~ msgstr "Di"
+
+#~ msgid "Wed"
+#~ msgstr "Mi"
+
+#~ msgid "Thu"
+#~ msgstr "Do"
+
+#~ msgid "Fri"
+#~ msgstr "Fr"
+
+#~ msgid "Sat"
+#~ msgstr "Sa"
+
+#~ msgid "Sun"
+#~ msgstr "So"
+
+#~ msgid "Monday"
+#~ msgstr "Montag"
+
+#~ msgid "Copy to all"
+#~ msgstr "An alle kopieren"
+
+#~ msgid "Tuesday"
+#~ msgstr "Dienstag"
+
+#~ msgid "Wednesday"
+#~ msgstr "Mittwoch"
+
+#~ msgid "Thursday"
+#~ msgstr "Donnerstag"
+
+#~ msgid "Friday"
+#~ msgstr "Freitag"
+
+#~ msgid "Saturday"
+#~ msgstr "Samstag"
+
+#~ msgid "Sunday"
+#~ msgstr "Sonntag"
+
+#~ msgid "Every"
+#~ msgstr "Jede(n)"
+
+#~ msgid "DAYS"
+#~ msgstr "TAGE"
+
+#~ msgid "Time"
+#~ msgstr "Uhrzeit"
+
+#~ msgid "On"
+#~ msgstr "Am"
+
+#~ msgid "Specific day"
+#~ msgstr "Bestimmter Tag"
+
+#~ msgid "First"
+#~ msgstr "Erster"
+
+#~ msgid "Second"
+#~ msgstr "Zweiter"
+
+#~ msgid "Third"
+#~ msgstr "Dritter"
+
+#~ msgid "Fourth"
+#~ msgstr "Vierter"
+
+#~ msgid "Last"
+#~ msgstr "Letzter"
+
+#~ msgid "Start date"
+#~ msgstr "Startdatum"
+
+#~ msgid "End date"
+#~ msgstr "Enddatum"
+
+#~ msgid "Times"
+#~ msgstr "Uhrzeiten"
+
+#~ msgid "Select..."
+#~ msgstr "Auswählen"
+
+#~ msgid "Customers"
+#~ msgstr "Kunden"
+
+#~ msgid "Add Customer"
+#~ msgstr "Kunde hinzufügen"
+
+#~ msgid "Extras not found!"
+#~ msgstr "Zusatzleistungen nicht gefunden!"
+
+#~ msgid "#"
+#~ msgstr "#"
+
+#~ msgid "TIME"
+#~ msgstr "UHRZEIT"
+
+#~ msgid "Send notifications"
+#~ msgstr "Senden von Benachrichtigungen"
+
+#~ msgid "CANCEL"
+#~ msgstr "ABBRECHEN"
+
+#~ msgid "Payment"
+#~ msgstr "Zahlung"
+
+#~ msgid "Staff:"
+#~ msgstr "Personal:"
+
+#~ msgid "Location:"
+#~ msgstr "Ort:"
+
+#~ msgid "Service:"
+#~ msgstr "Dienstleistung:"
+
+#~ msgid "Date, time:"
+#~ msgstr "Datum, Uhrzeit:"
+
+#~ msgid "CUSTOMER"
+#~ msgstr "Kunde"
+
+#~ msgid "SUM AMOUNT"
+#~ msgstr "GESAMTBETRAG"
+
+#~ msgid "DISCOUNT"
+#~ msgstr "RABATT"
+
+#~ msgid "GIFTCARD"
+#~ msgstr "GUTSCHEINKARTE"
+
+#~ msgid "PAID"
+#~ msgstr "BEZAHLT"
+
+#~ msgid "DUE"
+#~ msgstr "FÄLLIG"
+
+#~ msgid "STATUS"
+#~ msgstr "STATUS"
+
+#~ msgid "PAY"
+#~ msgstr "BEZAHLEN"
+
+#~ msgid "CLOSE"
+#~ msgstr "SCHLIESSEN"
+
+#~ msgid "No custom data found!"
+#~ msgstr "Keine benutzerdefinierten Daten gefunden!"
+
+#~ msgid "Waiting"
+#~ msgstr "Warten"
+
+#~ msgid "Edit Appointment"
+#~ msgstr "Termin bearbeiten"
+
+#~ msgid "Custom fields"
+#~ msgstr "Benutzerdefinierte Felder"
+
+#~ msgid "Appointment info"
+#~ msgstr "Termininformationen"
+
+#~ msgid "APPOINTMENT INFO"
+#~ msgstr "TERMININFO"
+
+#~ msgid "CUSTOM FIELDS"
+#~ msgstr "BENUTZERDEFINIERTE FELDER"
+
+#~ msgid "EXTRAS"
+#~ msgstr "ZUSATZLEISTUNGEN"
+
+#~ msgid "Date, time"
+#~ msgstr "Datum, Uhrzeit"
+
+#~ msgid "Extra name"
+#~ msgstr "Name der Zusatzleistung"
+
+#~ msgid "Duration"
+#~ msgstr "Dauer"
+
+#~ msgid "Price"
+#~ msgstr "Preis"
+
+#, fuzzy
+#~ msgid "START MEETING"
+#~ msgstr "MEETING STARTEN"
+
+#~ msgid "EDIT"
+#~ msgstr "BEARBEITEN"
+
+#~ msgid "PAYMENTS"
+#~ msgstr "ZAHLUNGEN"
+
+#~ msgid "Service amount"
+#~ msgstr "Dienstleistung Betrag"
+
+#~ msgid "Extras amount"
+#~ msgstr "Zusatzleistungen Betrag"
+
+#~ msgid "Discount"
+#~ msgstr "Rabatt"
+
+#, fuzzy
+#~ msgid "Tax amount"
+#~ msgstr "MwSt. Betrag"
+
+#~ msgid "Paid amount"
+#~ msgstr "Ausbezahlter Betrag"
+
+#~ msgid "Payment status"
+#~ msgstr "Zahlungsstatus"
+
+#~ msgid "Paid"
+#~ msgstr "Bezahlt"
+
+#~ msgid "Paid (deposit)"
+#~ msgstr "Bezahlt (Anzahlung)"
+
+#~ msgid "EXPORT TO CSV"
+#~ msgstr "CSV EXPORTIEREN"
+
+#~ msgid "IMPORT"
+#~ msgstr "IMPORTIEREN"
+
+#~ msgid "Quick search"
+#~ msgstr "Schnellsuche"
+
+#~ msgid "Info"
+#~ msgstr "Details"
+
+#~ msgid "Edit"
+#~ msgstr "Bearbeiten"
+
+#~ msgid "Delete"
+#~ msgstr "Löschen"
+
+#~ msgid "No any data!"
+#~ msgstr "Keine Daten!"
+
+#, php-format
+#~ msgid "Showing %d of %d total"
+#~ msgstr "%d von %d insgesamt Datensätze"
+
+#~ msgid "Need Help?"
+#~ msgstr "Brauchen Sie Hilfe?"
+
+#~ msgid "Selected"
+#~ msgstr "Ausgewählt"
+
+#~ msgid "Loading..."
+#~ msgstr "Laden..."
+
+#~ msgid "( it can take some time, please wait... )"
+#~ msgstr "( es kann einige Zeit dauern, bitte warten... )"
+
+#~ msgid "Your plugin is disabled. Please activate the plugin."
+#~ msgstr "Ihr Plugin ist deaktiviert. Bitte aktivieren Sie das Plugin"
+
+#, php-format
+#~ msgid "Reason: %s"
+#~ msgstr "Grund: %s"
+
+#~ msgid "Enter the purchase key"
+#~ msgstr "Bitte tragen Sie den Lizenz-Schlüssel ein"
+
+#~ msgid "RE-ACTIVATE"
+#~ msgstr "ERNEUT AKTIVIEREN"
+
+#~ msgid "Are you sure?"
+#~ msgstr "Sind Sie sicher?"
+
+#, fuzzy
+#~ msgid "Searching..."
+#~ msgstr "Suchen..."
+
+#~ msgid "Please firstly choose a service!"
+#~ msgstr "Bitte wählen Sie zuerst eine Dienstleistung!"
+
+#~ msgid "This time slot is not available!"
+#~ msgstr "Dieses Zeitfenster ist nicht verfügbar!"
+
+#, fuzzy
+#~ msgid "Deleted"
+#~ msgstr "Gelöscht"
+
+#~ msgid "Are you sure you want to delete?"
+#~ msgstr "Wollen Sie dies wirklich löschen?"
+
+#~ msgid "Rows deleted!"
+#~ msgstr "Zeilen gelöscht!"
+
+#~ msgid "Dear user"
+#~ msgstr "Sehr geehrter Benutzer"
+
+#~ msgid "Group appointment"
+#~ msgstr "Gruppentermin"
+
+#~ msgid "Select services..."
+#~ msgstr "Dienstleistungen auswählen..."
+
+#~ msgid "Changes has been saved!"
+#~ msgstr "Änderungen wurden gespeichert!"
+
+#~ msgid "Apply"
+#~ msgstr "Anwenden"
+
+#~ msgid "Cancel"
+#~ msgstr "Stornieren"
+
+#~ msgid "From"
+#~ msgstr "Von"
+
+#~ msgid "To"
+#~ msgstr "Bis"
+
+#, fuzzy
+#~ msgid "Appointment count"
+#~ msgstr "Anzahl der Termine"
+
+#~ msgid "Fill the form correctly!"
+#~ msgstr "Füllen Sie das Formular richtig aus!"
+
+#~ msgid "Saved succesfully!"
+#~ msgstr "Erfolgreich gespeichert!"
+
+#~ msgid "Please type email!"
+#~ msgstr "Bitte geben Sie die E-Mail ein!"
+
+#~ msgid "Please type phone number!"
+#~ msgstr "Bitte geben Sie Telefonnummer ein!"
+
+#~ msgid "Are you sure that you want to delete this service extra?"
+#~ msgstr "Möchten Sie diese Zusatzleistung wirklich löschen?"
+
+#~ msgid "No more Staff exists for select!"
+#~ msgstr "Es existiert kein weiteres Personal zur Auswahl!"
+
+#~ msgid "Are you sure to delete this special day?"
+#~ msgstr "Sind Sie sicher, diesen besonderen Tag zu löschen?"
+
+#~ msgid "time(s) per month"
+#~ msgstr "Zeit(en) pro Monat"
+
+#~ msgid "time(s) per week"
+#~ msgstr "Zeit(en) pro Woche"
+
+#~ msgid "Every n day(s)"
+#~ msgstr "Alle n Tag(e)"
+
+#~ msgid "Are you sure you want to delete this service?"
+#~ msgstr "Möchten Sie diese Dienstleistung wirklich löschen?"
+
+#~ msgid "Are you sure you want to delete this category?"
+#~ msgstr "Möchten Sie diese Kategorie wirklich löschen?"
+
+#~ msgid "Category name"
+#~ msgstr "Kategoriename"
+
+#, fuzzy
+#~ msgid "ADD CATEGORY"
+#~ msgstr "KATEGORIE HINZUFÜGEN"
+
+#~ msgid "January"
+#~ msgstr "Januar"
+
+#~ msgid "February"
+#~ msgstr "Februar"
+
+#~ msgid "March"
+#~ msgstr "März"
+
+#~ msgid "April"
+#~ msgstr "April"
+
+#~ msgid "May"
+#~ msgstr "Mai"
+
+#~ msgid "June"
+#~ msgstr "Juni"
+
+#~ msgid "July"
+#~ msgstr "Juli"
+
+#~ msgid "August"
+#~ msgstr "August"
+
+#~ msgid "September"
+#~ msgstr "September"
+
+#~ msgid "October"
+#~ msgstr "Oktober"
+
+#~ msgid "November"
+#~ msgstr "November"
+
+#~ msgid "December"
+#~ msgstr "Dezember"
+
+#, fuzzy
+#~ msgid "Your session has expired. Please refresh the page and try again."
+#~ msgstr "Die Sitzung ist abgelaufen. Bitte aktualisieren Sie die Seite und versuchen Sie es erneut."
+
+#~ msgid "Graphic view"
+#~ msgstr "Grafische Ansicht"
+
+#~ msgid "Back to WordPress"
+#~ msgstr "Zurück zu WordPress"
+
+#, fuzzy
+#~ msgid "Share your page "
+#~ msgstr "Teilen Sie Ihre Seite"
+
+#~ msgid "WORDPRESS"
+#~ msgstr "WORDPRESS"
+
+#~ msgid "Share your page"
+#~ msgstr "Teilen Sie Ihre Seite"
+
+#, php-format
+#~ msgid "Hello %s"
+#~ msgstr "Hallo %s"
+
+#~ msgid "Log out"
+#~ msgstr "Ausloggen"
+
+#~ msgid "Starting guide"
+#~ msgstr "Startanleitung"
+
+#~ msgid "Company details"
+#~ msgstr "Firmendetails"
+
+#~ msgid "Business hours"
+#~ msgstr "Geschäftszeiten"
+
+#~ msgid "Create location"
+#~ msgstr "Standort erstellen"
+
+#~ msgid "Create staff"
+#~ msgstr "Personal erstellen"
+
+#~ msgid "Create service"
+#~ msgstr "Dienstleistung erstellen"
+
+#~ msgid "Installing..."
+#~ msgstr "Installieren..."
+
+#~ msgid "Purchase code"
+#~ msgstr "Lizenz - Code"
+
+#~ msgid "Where did You find us?"
+#~ msgstr "Wie haben Sie uns gefunden?"
+
+#~ msgid "Email | Subscribe newsletter"
+#~ msgstr "E-Mail | Newsletter abonnieren"
+
+#~ msgid "INSTALL"
+#~ msgstr "INSTALLIEREN"
+
+#~ msgid "Install process can take 30-60 sec., please wait..."
+#~ msgstr "Der Installationsvorgang kann 30-60 Sek. dauern, bitte warten..."
+
+#~ msgid "Upgrade needed!"
+#~ msgstr "Upgrade erforderlich"
+
+#~ msgid "UPGRADE NOW"
+#~ msgstr "JETZT UPGRADEN"
+
+#~ msgid "Billing"
+#~ msgstr "Rechnung"
+
+#~ msgid "Plan"
+#~ msgstr "Paket"
+
+#~ msgid "AMOUNT"
+#~ msgstr "BETRAG"
+
+#~ msgid "PAYMENT METHOD"
+#~ msgstr "ZAHLUNGSMETHODE"
+
+#, php-format
+#~ msgid "Your current plan is %s."
+#~ msgstr "Ihr aktuelles Paket ist %s"
+
+#, php-format
+#~ msgid "The plan expiration date is %s."
+#~ msgstr "Ablaufdatum des Pakets ist am %s."
+
+#~ msgid "CANCEL SUBSCRIPTION"
+#~ msgstr "ABONNEMENT STORNIEREN"
+
+#~ msgid "UPGRADE PLAN"
+#~ msgstr "PAKET UPGRADEN"
+
+#~ msgid "Choose a plan"
+#~ msgstr "Wählen Sie ein Paket"
+
+#~ msgid "Upgrade your account"
+#~ msgstr "Konto-Upgrade durchführen"
+
+#~ msgid "Monthly"
+#~ msgstr "Monatlich"
+
+#~ msgid "Annually"
+#~ msgstr "Jährlich"
+
+#, php-format
+#~ msgid "%d%% off ( Normally %s )"
+#~ msgstr "%d%% Rabatt ( Normalerweise %s )"
+
+#~ msgid "per month"
+#~ msgstr "pro Monat"
+
+#~ msgid "per year"
+#~ msgstr "pro Jahr"
+
+#~ msgid "CHOOSE"
+#~ msgstr "WÄHLEN"
+
+#~ msgid "back"
+#~ msgstr "zurück"
+
+#~ msgid "Select payment method"
+#~ msgstr "Wählen Sie die Zahlungsmethode"
+
+#, php-format
+#~ msgid "You have chosen %s plan"
+#~ msgstr "Sie haben das Paket %s gewählt"
+
+#~ msgid "No available payment methods!"
+#~ msgstr "Keine verfügbaren Zahlungsmethoden!"
+
+#, fuzzy
+#~ msgid "Payment Successful"
+#~ msgstr "Zahlungsstatus"
+
+#~ msgid "It might take some time to activate your new plan."
+#~ msgstr "Es könnte eine Weile dauern, bis Ihr neuer Tarfi aktiv ist"
+
+#, fuzzy
+#~ msgid "Payment Canceled"
+#~ msgstr "Zahlung storniert"
+
+#, fuzzy
+#~ msgid "We aren't able to process your payment. Please try again."
+#~ msgstr "Wir sind nicht in der Lage, Ihre Zahlung zu verarbeiten. Bitte versuchen Sie es erneut."
+
+#, fuzzy
+#~ msgid "Are you sure you want to cancel subscription?"
+#~ msgstr "Wollen Sie das Abonnement wirklich löschen?"
+
+#~ msgid "YES"
+#~ msgstr "JA"
+
+#, fuzzy
+#~ msgid "NO"
+#~ msgstr "NEIN"
+
+#~ msgid "Your page URL"
+#~ msgstr "Ihre Website URL"
+
+#~ msgid "Schedule time with me"
+#~ msgstr "Vereinbare Zeit mit mir"
+
+#, php-format
+#~ msgid "You can see my real-time availability and schedule time with me at %s"
+#~ msgstr "Sie können meine Echtzeit-Verfügbarkeit einsehen und eine Zeit mit mir vereinbaren %s"
+
+#, fuzzy
+#~ msgid "Send link via Email"
+#~ msgstr "Link per E-Mail senden"
+
+#, fuzzy
+#~ msgid "The QR for your page"
+#~ msgstr "QR Code für Ihre Website"
+
+#~ msgid "Click to download QR"
+#~ msgstr "Klicken, um den QR Code herunterzuladen"
+
+#, fuzzy
+#~ msgid "Customer panel URL"
+#~ msgstr "Kundenansicht URL"
+
+#~ msgid "Add to your Website"
+#~ msgstr "Zur Website hinzufügen"
+
+#~ msgid "Calendar"
+#~ msgstr "Kalender"
+
+#~ msgid "Location filter"
+#~ msgstr "Standortfilter"
+
+#~ msgid "Service filter"
+#~ msgstr "Dienstleistungsfilter"
+
+#~ msgid "TODAY"
+#~ msgstr "HEUTE"
+
+#~ msgid "month"
+#~ msgstr "Monat"
+
+#~ msgid "week"
+#~ msgstr "Woche"
+
+#~ msgid "day"
+#~ msgstr "Tag"
+
+#~ msgid "list"
+#~ msgstr "Liste"
+
+#~ msgid "all-day"
+#~ msgstr "Ganztag"
+
+#~ msgid "Discount cannot be negative number!"
+#~ msgstr "Rabatt darf keine negative Zahl sein!"
+
+#~ msgid "Discount percent count cannot be more than 100%!"
+#~ msgstr "Die Prozentzahl des Rabatts kann nicht mehr als 100 % betragen!"
+
+#~ msgid "Please type the coupon code field!"
+#~ msgstr "Bitte geben Sie das Gutschein-Feld ein!"
+
+#~ msgid "Coupons"
+#~ msgstr "Gutscheine"
+
+#~ msgid "ADD COUPON"
+#~ msgstr "GUTSCHEIN HINZUFÜGEN"
+
+#~ msgid "№"
+#~ msgstr "Nummer"
+
+#~ msgid "CODE"
+#~ msgstr "CODE"
+
+#~ msgid "USAGE LIMIT"
+#~ msgstr "NUTZUNGSLIMIT"
+
+#~ msgid "Times Used"
+#~ msgstr "Mal benutzt"
+
+#~ msgid "Add Coupon"
+#~ msgstr "Gutschein hinzufügen"
+
+#~ msgid "Type"
+#~ msgstr "Typ"
+
+#~ msgid "One coupon"
+#~ msgstr "Ein Gutschein"
+
+#~ msgid "Coupon series"
+#~ msgstr "Gutscheinserie"
+
+#~ msgid "Amount"
+#~ msgstr "Menge"
+
+#~ msgid "Code"
+#~ msgstr "Code"
+
+#~ msgid "Applies date from"
+#~ msgstr "Gilt ab"
+
+#~ msgid "Life time"
+#~ msgstr "Lebenszeit"
+
+#~ msgid "Applies date to"
+#~ msgstr "Gilt bis"
+
+#~ msgid "Usage limit"
+#~ msgstr "Begrenzte Zahl an Einsätzen"
+
+#~ msgid "No limit"
+#~ msgstr "Kein Limit"
+
+#~ msgid "Once per customer"
+#~ msgstr "Einmalig pro Kunde"
+
+#~ msgid "Services filter"
+#~ msgstr "Dienstleistungsfilter"
+
+#~ msgid "Staff filter"
+#~ msgstr "Personalfilter"
+
+#, fuzzy
+#~ msgid "Customer not found or permission denied!"
+#~ msgstr "Kunde nicht gefunden oder Erlaubnis verweigert!"
+
+#~ msgid "There is another customer with the same email adress!"
+#~ msgstr "Es existiert bereits ein Kunde mit dieser E-Mail Adresse"
+
+#, fuzzy
+#~ msgid "Please select WordPress user!"
+#~ msgstr "Bitte wählen Sie einen Wordpress-Nutzer aus!"
+
+#, fuzzy
+#~ msgid "Please type the password of the WordPress user!"
+#~ msgstr "Bitte geben Sie das Gutschein-Feld ein!"
+
+#~ msgid "Only JPG and PNG images allowed!"
+#~ msgstr "Nur JPG- und PNG-Bilder erlaubt!"
+
+#~ msgid "Please select CSV file!"
+#~ msgstr "Bitte wählen Sie eine CSV-Datei!"
+
+#~ msgid "Too many fields detected on CSV file!"
+#~ msgstr "Zu viele Felder in der CSV-Datei erkannt!"
+
+#~ msgid "ADD CUSTOMER"
+#~ msgstr "KUNDE HINZUFÜGEN"
+
+#~ msgid "CUSTOMER NAME"
+#~ msgstr "KUNDENNAME"
+
+#, fuzzy
+#~ msgid "First name"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "Last name"
+#~ msgstr "Nachname"
+
+#~ msgid "Email"
+#~ msgstr "E-Mail"
+
+#~ msgid "PHONE"
+#~ msgstr "Telefon"
+
+#~ msgid "LAST APPOINTMENT"
+#~ msgstr "LETZTER TERMIN"
+
+#~ msgid "GENDER"
+#~ msgstr "GESCHLECHT"
+
+#~ msgid "Date of birth"
+#~ msgstr "Geburtsdatum"
+
+#~ msgid "Note"
+#~ msgstr "Hinweis"
+
+#, fuzzy
+#~ msgid "The Customer has been added some Appointments. Firstly remove them!"
+#~ msgstr "Dem Kunden wurden einige Termine hinzugefügt. Entfernen Sie sie zuerst!"
+
+#~ msgid "First Name"
+#~ msgstr "Vorname"
+
+#~ msgid "Last Name"
+#~ msgstr "Nachname"
+
+#~ msgid "Phone"
+#~ msgstr "Telefon"
+
+#~ msgid "Allow to log in"
+#~ msgstr "Einloggen erlauben"
+
+#, fuzzy
+#~ msgid "Use existing WordPress user"
+#~ msgstr "Bestehenden WordPress-Benutzer verwenden"
+
+#, fuzzy
+#~ msgid "Create new WordPress user"
+#~ msgstr "Neuen WordPress-Benutzer erstellen"
+
+#~ msgid "WordPress user"
+#~ msgstr "WordPress-Benutzer"
+
+#, fuzzy
+#~ msgid "User password"
+#~ msgstr "Passwort"
+
+#~ msgid "Image"
+#~ msgstr "Bild"
+
+#~ msgid "BROWSE"
+#~ msgstr "DURCHSUCHEN"
+
+#~ msgid "PNG, JPG, max 800x800 to 5mb)"
+#~ msgstr "PNG, JPG, max. 800x800 bis 5mb)"
+
+#~ msgid "Gender"
+#~ msgstr "Geschlecht"
+
+#~ msgid "Male"
+#~ msgstr "Männlich"
+
+#~ msgid "Female"
+#~ msgstr "Weiblich"
+
+#~ msgid "Import"
+#~ msgstr "Importieren"
+
+#~ msgid "You may import list of clients in CSV format."
+#~ msgstr "Sie können eine Liste der Nutzer im CSV-Format importieren."
+
+#~ msgid "Select file"
+#~ msgstr "Datei auswählen"
+
+#~ msgid "(CSV, max 10k customers)"
+#~ msgstr "(CSV, max. 10k Kunden)"
+
+#~ msgid "Delimiter"
+#~ msgstr "Trennzeichen"
+
+#~ msgid "Comma ( , )"
+#~ msgstr "Komma ( , )"
+
+#~ msgid "Semicolon ( ; )"
+#~ msgstr "Semikolon ( ; )"
+
+#~ msgid "Custom forms"
+#~ msgstr "Benutzerdefinierte Formulare"
+
+#~ msgid "CREATE NEW FORM"
+#~ msgstr "NEUES FORMULAR ERSTELLEN"
+
+#~ msgid "NAME"
+#~ msgstr "NAME"
+
+#~ msgid "Choice 1"
+#~ msgstr "Wahl 1"
+
+#~ msgid "Choice 2"
+#~ msgstr "Wahl 2"
+
+#~ msgid "Custom Forms"
+#~ msgstr "Benutzerdefinierte Formulare"
+
+#~ msgid "Customize"
+#~ msgstr "Anpassen"
+
+#~ msgid "Form name"
+#~ msgstr "Formular Name"
+
+#~ msgid "SAVE FORM"
+#~ msgstr "FORMULAR SPEICHERN"
+
+#, fuzzy
+#~ msgid "Elements"
+#~ msgstr "Elemente"
+
+#~ msgid "Label"
+#~ msgstr "Beschriftung"
+
+#~ msgid "Text input"
+#~ msgstr "Text-Feld"
+
+#~ msgid "Textarea"
+#~ msgstr "Text-Bereich"
+
+#~ msgid "Number input"
+#~ msgstr "Zahlen-Feld"
+
+#~ msgid "Date input"
+#~ msgstr "Datums-Feld"
+
+#~ msgid "Time input"
+#~ msgstr "Uhrzeit-Feld"
+
+#~ msgid "Select"
+#~ msgstr "Auswählen"
+
+#~ msgid "Check-box"
+#~ msgstr "Check-Box"
+
+#~ msgid "Radio buttons"
+#~ msgstr "Radio Buttons"
+
+#~ msgid "File"
+#~ msgstr "Datei"
+
+#~ msgid "Link"
+#~ msgstr "Link"
+
+#, fuzzy
+#~ msgid "Form"
+#~ msgstr "Formular Name"
+
+#~ msgid "Max: 255 symbol"
+#~ msgstr "Max: 255 Zeichen"
+
+#~ msgid "Placeholder"
+#~ msgstr "Platzhalter"
+
+#~ msgid "Max: 200 symbol"
+#~ msgstr "Max: 200 Zeichen"
+
+#~ msgid "Min length"
+#~ msgstr "Min. Länge"
+
+#~ msgid "Max length"
+#~ msgstr "Maximale Länge"
+
+#~ msgid "Help text"
+#~ msgstr "Hilfetext"
+
+#~ msgid "Max: 500 symbol"
+#~ msgstr "Max: 500 Zeichen"
+
+#~ msgid "Allowed file formats"
+#~ msgstr "Erlaubte Dateiformate"
+
+#~ msgid "Is required"
+#~ msgstr "Erforderlich"
+
+#~ msgid "URL"
+#~ msgstr "URL"
+
+#~ msgid "Choices"
+#~ msgstr "Auswahlmöglichkeiten"
+
+#~ msgid "Add new"
+#~ msgstr "Neu hinzufügen"
+
+#~ msgid "Dashboard"
+#~ msgstr "Dashboard"
+
+#~ msgid "Today"
+#~ msgstr "Heute"
+
+#~ msgid "Yesterday"
+#~ msgstr "Gestern"
+
+#~ msgid "Tomorrow"
+#~ msgstr "Morgen"
+
+#~ msgid "This week"
+#~ msgstr "Diese Woche"
+
+#~ msgid "Last week"
+#~ msgstr "Letzte Woche"
+
+#~ msgid "This month"
+#~ msgstr "Diesen Monat"
+
+#~ msgid "This year"
+#~ msgstr "Dieses Jahr"
+
+#~ msgid "Custom"
+#~ msgstr "Benutzerdefiniert"
+
+#~ msgid "Durations"
+#~ msgstr "Dauer"
+
+#~ msgid "Revenue"
+#~ msgstr "Einnahmen"
+
+#, fuzzy
+#~ msgid "Upcoming"
+#~ msgstr "Kommende"
+
+#~ msgid "APPOINTMENT DATE"
+#~ msgstr "TERMINDATUM"
+
+#~ msgid "INFO"
+#~ msgstr "DETAILS"
+
+#~ msgid "You have reached your allowed maximum Email limit. Please upgrade your plan."
+#~ msgstr "Sie haben Ihr zulässiges maximales E-Mail-Limit erreicht. Bitte aktualisieren Sie Ihr Paket."
+
+#~ msgid "Couldn't send email."
+#~ msgstr "E-Mail konnte nicht gesendet werden."
+
+#~ msgid "Waiting for payment"
+#~ msgstr "Auf Zahlung wartend"
+
+#~ msgid "Email Notifications"
+#~ msgstr "E-Mail Benachrichtigungen"
+
+#~ msgid "Notifications"
+#~ msgstr "Benachrichtigungen"
+
+#~ msgid "New Appointment"
+#~ msgstr "Neuer Termin"
+
+#~ msgid "Appointment re-scheduled"
+#~ msgstr "Termin neu geplant"
+
+#~ msgid "Appointment approved"
+#~ msgstr "Termin genehmigt"
+
+#~ msgid "Appointment pending"
+#~ msgstr "Termin ausstehend"
+
+#~ msgid "Appointment rejected"
+#~ msgstr "Termin abgelehnt"
+
+#~ msgid "Appointment canceled"
+#~ msgstr "Termin storniert"
+
+#~ msgid "Reminder before appointment"
+#~ msgstr "Erinnerung vor Termin"
+
+#~ msgid "Reminder after appointment"
+#~ msgstr "Erinnerung nach Termin"
+
+#~ msgid "Access to Customer Panel"
+#~ msgstr "Zugang zur Kunden-Übersicht"
+
+#, php-format
+#~ msgid "Your monthly balance is %s/%s."
+#~ msgstr "Ihr monatliches Githaben beträgt %s/%s."
+
+#~ msgid "SAVE CHANGES"
+#~ msgstr "ÄNDERUNGEN SPEICHERN"
+
+#~ msgid "SEND TEST EMAIL"
+#~ msgstr "TEST-E-MAIL SENDEN"
+
+#~ msgid "DEFAULT"
+#~ msgstr "STANDARD"
+
+#~ msgid "TO CUSTOMER"
+#~ msgstr "AN DEN KUNDEN"
+
+#~ msgid "TO STAFF"
+#~ msgstr "AN DAS PERSONAL"
+
+#~ msgid "Appointment Notifications"
+#~ msgstr "Terminbenachrichtigungen"
+
+#~ msgid "Email subject"
+#~ msgstr "E-Mail Betreff"
+
+#~ msgid "Remind after"
+#~ msgstr "Hinterher erinnern"
+
+#~ msgid "Remind before"
+#~ msgstr "Vorher erinnern"
+
+#~ msgid "Email body"
+#~ msgstr "Email Text"
+
+#~ msgid "Attach PDF"
+#~ msgstr "PDF anhängen"
+
+#~ msgid "To send reminders on time, you need to configure the following cron task:"
+#~ msgstr "Um rechtzeitig Erinnerungen zu senden, müssen Sie den folgende Cron-Task konfigurieren:"
+
+#~ msgid "Every 15 minutes"
+#~ msgstr "Alle 15 Minuten"
+
+#~ msgid "SHORT TAGS"
+#~ msgstr "KURZE TAGS"
+
+#~ msgid "Appointment Info"
+#~ msgstr "Termin-Info"
+
+#~ msgid "Service Info"
+#~ msgstr "Dienstleistungs-Info"
+
+#~ msgid "Customer Info"
+#~ msgstr "Kunden-Info"
+
+#~ msgid "Staff Info"
+#~ msgstr "Personal-Info"
+
+#~ msgid "Location Info"
+#~ msgstr "Ort-Info"
+
+#~ msgid "Company Info"
+#~ msgstr "Unternehmens-Info"
+
+#, fuzzy
+#~ msgid "Zoom Info"
+#~ msgstr "Zoom-Info"
+
+#~ msgid "Find custom field ID"
+#~ msgstr "Benutzerdefinierte Feld-ID suchen"
+
+#~ msgid "Custom field:"
+#~ msgstr "Benutzerdefiniertes Feld:"
+
+#~ msgid "Keyword to use:"
+#~ msgstr "Zu verwendendes Schlüsselwort:"
+
+#~ msgid "Fistly select the custom field"
+#~ msgstr "Wählen Sie zunächst das benutzerdefinierte Feld aus"
+
+#~ msgid "Send test email"
+#~ msgstr "Test-E-Mail senden"
+
+#~ msgid "SEND"
+#~ msgstr "SENDEN"
+
+#~ msgid "The code already exists!"
+#~ msgstr "Der Code existiert bereits"
+
+#, fuzzy
+#~ msgid "Amount cannot be zero or negative number!"
+#~ msgstr "Der Betrag darf nicht null oder eine negative Zahl sein!"
+
+#, fuzzy
+#~ msgid "Please type the giftcard code field!"
+#~ msgstr "Bitte geben Sie das Gutschein-Feld ein!"
+
+#~ msgid "The gift card balance cannot be less than the amount spent!"
+#~ msgstr "Das Guthaben der Geschenkkarte darf den ausgegebenen Betrag nicht unterschreiten!"
+
+#~ msgid "Giftcard is not used yet!"
+#~ msgstr "Geschenkkarte wird noch nicht verwendet!"
+
+#~ msgid "Giftcards"
+#~ msgstr "Geschenkkarten"
+
+#~ msgid "ADD GIFTCARD"
+#~ msgstr "GESCHENKKARTE HINZUFÜGEN"
+
+#, fuzzy
+#~ msgid "BALANCE"
+#~ msgstr "GUTHABEN"
+
+#~ msgid "SPENT"
+#~ msgstr "AUSGEGEBEN"
+
+#~ msgid "LEFTOVER"
+#~ msgstr "RESTLICHES GUTHABEN"
+
+#, fuzzy
+#~ msgid "USAGE HISTORY"
+#~ msgstr "NUTZUNGSHISTORIE"
+
+#~ msgid "Add Giftcard"
+#~ msgstr "Gesch hinzufügen"
+
+#, fuzzy
+#~ msgid "Amount ("
+#~ msgstr "Betrag"
+
+#, fuzzy
+#~ msgid "Usage history"
+#~ msgstr "Nutzungshistorie"
+
+#, fuzzy
+#~ msgid "USED AMOUNT"
+#~ msgstr "VERBRAUCHTER BETRAG"
+
+#, fuzzy
+#~ msgid "Invoices"
+#~ msgstr "Rechnungen"
+
+#, fuzzy
+#~ msgid "ADD INVOICE"
+#~ msgstr "RECHNUNG HINZUFÜGEN"
+
+#~ msgid "SAVE & DOWNLOAD PREVIEW"
+#~ msgstr "SPEICHERN & VORANSICHT HERUNTERLADEN"
+
+#~ msgid "INVOICE"
+#~ msgstr "RECHNUNG"
+
+#, fuzzy
+#~ msgid "PDF Name"
+#~ msgstr "PDF Name"
+
+#~ msgid "Content"
+#~ msgstr "Inhalt"
+
+#~ msgid "Locations"
+#~ msgstr "Standorte"
+
+#~ msgid "ADD LOCATION"
+#~ msgstr "STANDORT HINZUFÜGEN"
+
+#~ msgid "ADDRESS"
+#~ msgstr "ADRESSE"
+
+#~ msgid "This location is using some Appointments. Firstly remove them!"
+#~ msgstr "Dieser Standort verwendet einige Termine. Entfernen Sie sie zuerst!"
+
+#~ msgid "Add Location"
+#~ msgstr "Ort hinzufügen"
+
+#~ msgid "Location Name"
+#~ msgstr "Standortname"
+
+#~ msgid "(PNG, JPG, max 800x800 to 5mb)"
+#~ msgstr "(PNG, JPG, max. 800x800 bis 5mb)"
+
+#~ msgid "Address"
+#~ msgstr "Adresse"
+
+#~ msgid "Description"
+#~ msgstr "Beschreibung"
+
+#~ msgid "UNHIDE LOCATION"
+#~ msgstr "ORT EINBLENDEN"
+
+#~ msgid "HIDE LOCATION"
+#~ msgstr "ORT AUSBLENDEN"
+
+#~ msgid "SMS Notifications"
+#~ msgstr "SMS-Benachrichtigungen"
+
+#~ msgid "WhatsApp Notifications"
+#~ msgstr "WhatsApp-Benachrichtigungen"
+
+#~ msgid "You did not choose a notification type!"
+#~ msgstr "Sie haben keinen Benachrichtigungstyp ausgewählt!"
+
+#, fuzzy
+#~ msgid "Tab Edit"
+#~ msgstr "Registerkarte bearbeiten"
+
+#, fuzzy
+#~ msgid "Add Tab"
+#~ msgstr "Registerkarte hinzufügen"
+
+#, fuzzy
+#~ msgid "Select Type"
+#~ msgstr "Typ auswählen"
+
+#, fuzzy
+#~ msgid "Tab Name"
+#~ msgstr "Name der Registerkarte"
+
+#, fuzzy
+#~ msgid "Enter Tab Name"
+#~ msgstr "Namen der Registerkarte eingeben"
+
+#, fuzzy
+#~ msgid "Select Language"
+#~ msgstr "Sprache auswählen"
+
+#, fuzzy
+#~ msgid "Select Service"
+#~ msgstr "Dienstleistung auswählen"
+
+#, fuzzy
+#~ msgid "Select Staff"
+#~ msgstr "Personal auswählen"
+
+#, fuzzy
+#~ msgid "Select Location"
+#~ msgstr "Ort auswählen"
+
+#, fuzzy
+#~ msgid "ADD TAB"
+#~ msgstr "REGISTERKARTE HINZUFÜGEN"
+
+#~ msgid "Payments"
+#~ msgstr "Zahlungen"
+
+#~ msgid "METHOD"
+#~ msgstr "ART"
+
+#~ msgid "Paid from giftcard: "
+#~ msgstr "Mit Gutscheinkarte bezahlt: "
+
+#~ msgid "SERVICE AMOUNT"
+#~ msgstr "DIENSTLEISTUNG BETRAG"
+
+#~ msgid "EXTRAS AMOUNT"
+#~ msgstr "ZUSATZLEISTUNGEN BETRAG"
+
+#, fuzzy
+#~ msgid "TAX AMOUNT"
+#~ msgstr "MWST. BETRAG"
+
+#~ msgid "PAID AMOUNT"
+#~ msgstr "BEZAHLTER BETRAG"
+
+#~ msgid "Payment info"
+#~ msgstr "Zahlungs-Info"
+
+#~ msgid "COMPLETE PAYMENT"
+#~ msgstr "VOLLSTÄNDIGE ZAHLUNG"
+
+#, fuzzy
+#~ msgid "Reports"
+#~ msgstr "Berichte"
+
+#, fuzzy
+#~ msgid "Reports by the number of appointments"
+#~ msgstr "Berichte nach Anzahl der Termine"
+
+#~ msgid "Daily"
+#~ msgstr "Täglich"
+
+#~ msgid "Annualy"
+#~ msgstr "Jährlich"
+
+#, fuzzy
+#~ msgid "Reports by appointment earnings"
+#~ msgstr "Berichte nach Terminverdienst"
+
+#~ msgid "Most earning locations"
+#~ msgstr "Standorte mit den meisten Einnahmen"
+
+#, fuzzy
+#~ msgid "Previous week"
+#~ msgstr "Vorherige Woche"
+
+#, fuzzy
+#~ msgid "Previous month"
+#~ msgstr "Vorheriger Monat"
+
+#, fuzzy
+#~ msgid "Previous year"
+#~ msgstr "Vorheriges Jahr"
+
+#~ msgid "Most earning staffs"
+#~ msgstr "Das meistverdienende Personal"
+
+#~ msgid "Firstly remove sub categories!"
+#~ msgstr "Entfernen Sie zuerst Unterkategorien!"
+
+#~ msgid "Firstly delete sub services."
+#~ msgstr "Löschen Sie zunächst Unterdienste."
+
+#~ msgid "This category is already exist! Please choose an other name."
+#~ msgstr "Diese Kategorie ist bereits vorhanden! Bitte wählen Sie einen anderen Namen."
+
+#~ msgid "Deposit can not exceed the price!"
+#~ msgstr "Anzahlung darf den Preis nicht überschreiten!"
+
+#~ msgid "Please fill \"Full period\" field!"
+#~ msgstr "Bitte Feld \"Voller Zeitraum\" ausfüllen!"
+
+#~ msgid "Please fill \"Repeat\" field!"
+#~ msgstr "Bitte füllen Sie das Feld \"Wiederholen\" aus!"
+
+#~ msgid "Please fill \"Frequency\" field!"
+#~ msgstr "Bitte füllen Sie das Feld \"Frequenz\" aus!"
+
+#~ msgid "Capacity field is wrong!"
+#~ msgstr "Kapazitätsfeld ist falsch!"
+
+#~ msgid "Please fill the weekly schedule correctly!"
+#~ msgstr "Bitte füllen Sie den Wochenplan korrekt aus!"
+
+#~ msgid "This service name is already exist! Please choose an other name."
+#~ msgstr "Dieser Dienstleistungsname ist bereits vorhanden! Bitte wählen Sie einen anderen Namen."
+
+#, fuzzy
+#~ msgid "Duplicate Staff selected!"
+#~ msgstr "Doppeltes Personal ausgewählt!"
+
+#~ msgid "Max quantity can not be zero!"
+#~ msgstr "Maximale Menge kann nicht Null sein!"
+
+#, php-format
+#~ msgid "This extra is using some Appointments (ID: %d). Firstly remove them!"
+#~ msgstr "Diese Zusatzleistung verwendet einige Termine (ID: %d). Entfernen Sie sie zuerst!"
+
+#~ msgid "There is no category or service attached with this extra!"
+#~ msgstr "Mit dieser Zusatzleistung ist keine Kategorie oder Dienstleistung verbunden!"
+
+#~ msgid "Success!"
+#~ msgstr "Erfolg!"
+
+#~ msgid "Requested Service Extra not found!"
+#~ msgstr "Angeforderte Zusatzleistung nicht gefunden!"
+
+#~ msgid "Services"
+#~ msgstr "Dienstleistungen"
+
+#~ msgid "ADD SERVICE"
+#~ msgstr "HINZUFÜGEN VON SERVICE"
+
+#~ msgid "CATEGORY"
+#~ msgstr "KATEGORIE"
+
+#~ msgid "PRICE"
+#~ msgstr "PREIS"
+
+#~ msgid "This service is using some Appointments. Firstly remove them!"
+#~ msgstr "Diese Dienstleistung verwendet einige Termine. Entfernen Sie sie zuerst!"
+
+#~ msgid "Staff not selected"
+#~ msgstr "Personal nicht ausgewählt"
+
+#~ msgid "Go to center"
+#~ msgstr "Zur Mitte gehen"
+
+#~ msgid "Categories"
+#~ msgstr "Kategorien"
+
+#~ msgid "What do you want to create?"
+#~ msgstr "Was möchten Sie erstellen?"
+
+#~ msgid "Breaks"
+#~ msgstr "Pausen"
+
+#~ msgid "Specific price"
+#~ msgstr "Spezifischer Preis"
+
+#~ msgid "Start time"
+#~ msgstr "Startzeit"
+
+#~ msgid "End time"
+#~ msgstr "Endzeit"
+
+#~ msgid "Add break"
+#~ msgstr "Pause hinzufügen"
+
+#~ msgid "Remove special day"
+#~ msgstr "Entfernen Sie einen speziellen Tag"
+
+#~ msgid "Name"
+#~ msgstr "Vorname"
+
+#~ msgid "Max. quantity"
+#~ msgstr "Max. Anzahl"
+
+#, fuzzy
+#~ msgid "Copy to all services"
+#~ msgstr "In alle Dienstleistungen kopieren"
+
+#~ msgid "Copy to the same category services"
+#~ msgstr "In dieselbe Kategorie Dienste kopieren"
+
+#~ msgid "Add Service"
+#~ msgstr "Dienstleistung hinzufügen"
+
+#~ msgid "SERVICE DETAILS"
+#~ msgstr "DIENSTLEISTUNGSDETAILS"
+
+#~ msgid "TIME SHEET"
+#~ msgstr "ARBEITSZEITTABELLE"
+
+#~ msgid "Service name"
+#~ msgstr "Dienstleistungsname"
+
+#~ msgid "Deposit"
+#~ msgstr "Anzahlung"
+
+#~ msgid "Tax"
+#~ msgstr "MwSt."
+
+#~ msgid "Time slot length"
+#~ msgstr "Länge Zeitintervall"
+
+#~ msgid "Default"
+#~ msgstr "Standard"
+
+#~ msgid "Slot length as service duration"
+#~ msgstr "Slotlänge als Dienstleistungsdauer"
+
+#~ msgid "Buffer Time Before"
+#~ msgstr "Pufferzeit vor"
+
+#~ msgid "Buffer Time After"
+#~ msgstr "Pufferzeit nach"
+
+#~ msgid "Hide price in booking panel:"
+#~ msgstr "Preis im Buchungsbereich ausblenden:"
+
+#~ msgid "Hide duration in booking panel:"
+#~ msgstr "Dauer im Buchungsbereichausblenden:"
+
+#~ msgid "Recurring"
+#~ msgstr "Wiederkehrend"
+
+#~ msgid "Repeat"
+#~ msgstr "Wiederholen"
+
+#~ msgid "Weekly"
+#~ msgstr "Wöchentlich"
+
+#~ msgid "Fixed full period"
+#~ msgstr "Feste volle Periode"
+
+#~ msgid "time(s)"
+#~ msgstr "Deine Zeit: %s"
+
+#~ msgid "Fixed frequency"
+#~ msgstr "Feste Frequenz"
+
+#~ msgid "time per week"
+#~ msgstr "Zeit pro Woche"
+
+#, fuzzy
+#~ msgid "The Customer pays separately for each appointment"
+#~ msgstr "Der Kunde zahlt für jeden Termin separat"
+
+#, fuzzy
+#~ msgid "The Customer pays full amount of recurring appointments"
+#~ msgstr "Der Kunde zahlt den vollen Betrag zu wiederkehrenden Terminen"
+
+#~ msgid "Fix time"
+#~ msgstr "Fixzeit"
+
+#~ msgid "Capacity"
+#~ msgstr "Kapazität"
+
+#~ msgid "Alone"
+#~ msgstr "Allein"
+
+#~ msgid "Group"
+#~ msgstr "Gruppe"
+
+#~ msgid "Min. / Max. capacity"
+#~ msgstr "Min. / Max. Kapazität"
+
+#~ msgid "Activate Zoom for the service"
+#~ msgstr "Zoom für den Dienst aktivieren"
+
+#~ msgid "WEEKLY SCHEDULE"
+#~ msgstr "WOCHENPLAN"
+
+#~ msgid "SPECIAL DAYS"
+#~ msgstr "BESONDERE TAGE"
+
+#~ msgid "Configure specific timesheet"
+#~ msgstr "Konfigurieren einer bestimmten Arbeitszeittabelle"
+
+#~ msgid "Add day off"
+#~ msgstr "Hinzufügen eines freien Tages"
+
+#~ msgid "ADD SPECIAL DAY"
+#~ msgstr "SPEZIELLEN TAG HINZUFÜGEN"
+
+#~ msgid "Add staff"
+#~ msgstr "Personal hinzufügen"
+
+#~ msgid "NEW EXTRA"
+#~ msgstr "NEUE ZUSATZLEISTUNG"
+
+#~ msgid "SAVE EXTRA"
+#~ msgstr "ZUSATZLEISTUNG SPEICHERN"
+
+#, fuzzy
+#~ msgid "UNHIDE SERVICE"
+#~ msgstr "DIENST EINBLENDEN"
+
+#, fuzzy
+#~ msgid "HIDE SERVICE"
+#~ msgstr "DIENST AUSBLENDEN"
+
+#~ msgid "SAVE SERVICE"
+#~ msgstr "DIENSTLEISTUNG SPEICHERN"
+
+#~ msgid "Select colors"
+#~ msgstr "Farben auswählen"
+
+#~ msgid "Hex"
+#~ msgstr "Hex"
+
+#, fuzzy
+#~ msgid "Add Category"
+#~ msgstr "Kategorie hinzufügen"
+
+#, fuzzy
+#~ msgid "Parent category"
+#~ msgstr "Eltern-Kategorie"
+
+#, fuzzy
+#~ msgid "Root category"
+#~ msgstr "Ober-Kategorie"
+
+#~ msgid "Selected settings not found!"
+#~ msgstr "Ausgewählte Einstellungen nicht gefunden!"
+
+#, fuzzy
+#~ msgid "Local"
+#~ msgstr "Zahlung Vor Ort"
+
+#~ msgid "Paypal"
+#~ msgstr "PayPal"
+
+#, fuzzy
+#~ msgid "Any staff"
+#~ msgstr "Beliebiges Personal"
+
+#, fuzzy
+#~ msgid "Select an available staff"
+#~ msgstr "Bitte wähle ein verfügbares Personal aus"
+
+#, fuzzy
+#~ msgid "Add coupon"
+#~ msgstr "Gutschein hinzufügen"
+
+#~ msgid "Please select location."
+#~ msgstr "Bitte wähle einen Ort"
+
+#~ msgid "Please select staff."
+#~ msgstr "Bitte wähle ein Personal aus"
+
+#, fuzzy
+#~ msgid "Please select service"
+#~ msgstr "Bitte wähle einen Kurs"
+
+#~ msgid "Please select week day(s)"
+#~ msgstr "Bitte wähle einen Wochentag"
+
+#~ msgid "Please select week day(s) and time(s) correctly"
+#~ msgstr "Bitte wähle einen Wochentag und Uhrzeit"
+
+#~ msgid "Please select start date"
+#~ msgstr "Bitte wähle eine Startzeit"
+
+#~ msgid "Please select end date"
+#~ msgstr "Bitte wähle eine Endzeit"
+
+#~ msgid "Please select date."
+#~ msgstr "Bitte wähle ein Datum"
+
+#~ msgid "Please select time."
+#~ msgstr "Bitte wähle eine Uhrzeit"
+
+#~ msgid "Please select an available time"
+#~ msgstr "Bitte wähle eine verfügbare Uhrzeit"
+
+#~ msgid "Please enter a valid email address!"
+#~ msgstr "Bitte gib eine gültige E-Mail Adresse an"
+
+#~ msgid "Please enter a valid phone number!"
+#~ msgstr "Bitte gib eine gültige Telefonnummer an"
+
+#~ msgid "CONFIRM BOOKING"
+#~ msgstr "BUCHUNG BESTÄTIGEN"
+
+#~ msgid "There is no any Location for select."
+#~ msgstr "Es gibt keinen Standort für die Auswahl."
+
+#~ msgid "Staff not found. Please go back and select a different option."
+#~ msgstr "Personal nicht gefunden. Bitte gehe zurück und wähle eine andere Option."
+
+#~ msgid "Service not found. Please go back and select a different option."
+#~ msgstr "Dienstleistung nicht gefunden. Bitte gehe zurück und wähle eine andere Option."
+
+#~ msgid "There isn't any available staff for the selected date/time."
+#~ msgstr "Für das/die ausgewählte Datum/Uhrzeit ist kein Personal verfügbar."
+
+#~ msgid "Extras not found in this service. You can select other service or click the <span class=\"booknetic_text_primary\">\"Next step\"</span> button."
+#~ msgstr "Keine Zusatzleistung für diesen Dienst gefunden. Wähle einen anderen Dienst oder klicke den Button  <span class=\"booknetic_text_primary\">\"Weiter\"</span>."
+
+#~ msgid "w"
+#~ msgstr " w"
+
+#~ msgid "d"
+#~ msgstr " d"
+
+#~ msgid "h"
+#~ msgstr " Std"
+
+#~ msgid "m"
+#~ msgstr " Min"
+
+#~ msgid "s"
+#~ msgstr " Sek"
+
+#~ msgid "The Extra step cannot be ordered before the Service step."
+#~ msgstr "Der Zusatzleistungs-Schritt kann nicht vor dem Dienstleistungs-Schritt angeordnet werden."
+
+#~ msgid "The Date & Time step cannot be ordered before the Service step."
+#~ msgstr "Der Datum/Uhrzeit-Schritt kann nicht vor dem Dienstleistungs-Schritt angeordnet werden."
+
+#~ msgid "You must add at least one Location to hide the Location step."
+#~ msgstr "Sie müssen mindestens einen Standort hinzufügen, um den Standort-Schritt auszublenden."
+
+#~ msgid "You must add at least one Staff to hide the Staff step."
+#~ msgstr "Sie müssen mindestens ein Personal hinzufügen, um den Personal-Schritt auszublenden."
+
+#~ msgid "You must add at least one Service to hide the Service step."
+#~ msgstr "Sie müssen mindestens einen Dienst hinzufügen, um den Dienstleistungs-Schritt auszublenden."
+
+#, fuzzy
+#~ msgid "Confirmation number is invalid!"
+#~ msgstr "Die Bestätigungsnummer ist ungültig!"
+
+#~ msgid "Other payment cannot be activated. Please contact the service provider."
+#~ msgstr "Andere Zahlungen können nicht aktiviert werden. Bitte wenden Sie sich an den Dienstanbieter."
+
+#~ msgid "Please fill the SMTP credentials!"
+#~ msgstr "Bitte füllen Sie die SMTP-Anmeldeinformationen aus!"
+
+#~ msgid "Please type the sender name field!"
+#~ msgstr "Bitte geben Sie das Feld Absendername ein!"
+
+#~ msgid "Please type the sender email field!"
+#~ msgstr "Bitte geben Sie das E-Mail-Feld des Absenders ein!"
+
+#, fuzzy
+#~ msgid "Could not create a zip file!"
+#~ msgstr "Es konnte keine ZIP-Datei erstellt werden!"
+
+#, fuzzy
+#~ msgid "Unable to read the backup file!1"
+#~ msgstr "Die Sicherungsdatei kann nicht gelesen werden!"
+
+#, fuzzy
+#~ msgid "Unable to read the backup file!2"
+#~ msgstr "Die Sicherungsdatei kann nicht gelesen werden!"
+
+#~ msgid "General settings"
+#~ msgstr "Allgemeine Einstellungen"
+
+#~ msgid "You can customize general settings about booking from here"
+#~ msgstr "Sie können die allgemeinen Einstellungen zur Buchung von hier aus anpassen"
+
+#~ msgid "Front-end panels"
+#~ msgstr "Front-end Bereiche"
+
+#, fuzzy
+#~ msgid "You can customize booking and customer panel and change labels from here"
+#~ msgstr "Von hier aus können Sie die Buchungs- und Kundenbereiche anpassen und Beschriftungen ändern"
+
+#~ msgid "Booking Steps"
+#~ msgstr "Buchungsschritte"
+
+#, fuzzy
+#~ msgid "Customer Panel"
+#~ msgstr "Kundenbereich"
+
+#, fuzzy
+#~ msgid "Labels"
+#~ msgstr "Beschriftung"
+
+#~ msgid "Payment settings"
+#~ msgstr "Zahlungseinstellungen"
+
+#~ msgid "Currency, price format , general settings about payment , paypal, stripe and so on"
+#~ msgstr "Währung, Preisformat, allgemeine Einstellungen über Zahlung , Paypal, Stripe und so weiter"
+
+#~ msgid "General"
+#~ msgstr "Allgemeines"
+
+#, fuzzy
+#~ msgid "Payment methods"
+#~ msgstr "Zahlungsmethoden"
+
+#~ msgid "Enter your company name, logo, address, phone number, website from here"
+#~ msgstr "Geben Sie hier Ihren Firmennamen, Logo, Adresse, Telefonnummer, Website ein"
+
+#~ msgid "Business Hours"
+#~ msgstr "Öffnungszeiten"
+
+#~ msgid "You will be able to co-ordinate your company's overall work schedule"
+#~ msgstr "Sie können den Gesamtarbeitsplan Ihres Unternehmens koordinieren"
+
+#~ msgid "Holidays"
+#~ msgstr "Urlaub"
+
+#~ msgid "You can select dates that you are unavailable or on holiday"
+#~ msgstr "Sie können Daten auswählen, an denen Sie nicht verfügbar sind oder Urlaub haben"
+
+#~ msgid "Email settings"
+#~ msgstr "E-Mail Einstellungen"
+
+#, fuzzy
+#~ msgid "You must set this settings for email notifications"
+#~ msgstr "Sie müssen diese Einstellungen für E-Mail-Benachrichtigungen ( wp_mail oder SMTP-Einstellungen ) festlegen."
+
+#, fuzzy
+#~ msgid "Integrations settings"
+#~ msgstr "Integration Einstellungen"
+
+#, fuzzy
+#~ msgid "You can change settings for integrated services from here."
+#~ msgstr "Sie können die Einstellungen für \"Twilio\" von hier aus ändern."
+
+#~ msgid "Google calendar"
+#~ msgstr "Google Kalender"
+
+#~ msgid "SMS / WhatsApp"
+#~ msgstr "SMS / WhatsApp"
+
+#~ msgid "Zoom"
+#~ msgstr "Zoom"
+
+#~ msgid "Continue with Facebook"
+#~ msgstr "Mit Facebook fortfahren"
+
+#~ msgid "Continue with Google"
+#~ msgstr "Mit Google fortfahren"
+
+#~ msgid "Export & Import data"
+#~ msgstr "Daten exportieren und importieren"
+
+#~ msgid "You can export all Booknetic data and import from here."
+#~ msgstr "Von hier aus können Sie alle Booknetic-Daten exportieren und importieren."
+
+#~ msgid "Integration with Zoom"
+#~ msgstr "Zoom-Integration"
+
+#, fuzzy
+#~ msgid "You can change settings for zoom integration from here."
+#~ msgstr "Sie können die Einstellungen für \"Twilio\" von hier aus ändern."
+
+#~ msgid "You can easily set with selecting special days, holidays over the calendar"
+#~ msgstr "Sie können ganz einfach Sonder- und Feiertagen per Auswahl über den Kalender einstellen"
+
+#, fuzzy
+#~ msgid "EXPORT DATA"
+#~ msgstr "DATEN EXPORTIEREN"
+
+#, fuzzy
+#~ msgid "Select file to restore"
+#~ msgstr "Datei zum Wiederherstellen auswählen"
+
+#, fuzzy
+#~ msgid "IMPORT DATA"
+#~ msgstr "DATEN IMPORTIEREN"
+
+#~ msgid "TRANSLATE"
+#~ msgstr "ÜBERSETZEN"
+
+#~ msgid "SET AS DEFAULT LANGUAGE"
+#~ msgstr "ALS STANDARDSPRACHE FESTLEGEN"
+
+#~ msgid "Other"
+#~ msgstr "Andere"
+
+#~ msgid "Finish"
+#~ msgstr "Bestätigung"
+
+#~ msgid "Steps"
+#~ msgstr "Schritte"
+
+#, fuzzy
+#~ msgid "Hide address of Location"
+#~ msgstr "Adresse des Orts verbergen"
+
+#~ msgid "No settings found for this step."
+#~ msgstr "Für diesen Schritt wurden keine Einstellungen gefunden."
+
+#~ msgid "Footer text per staff"
+#~ msgstr "Fußzeilentext pro Personal"
+
+#~ msgid "Show both phone number and emaill address"
+#~ msgstr "Sowohl Telefonnummer als auch E-Mail-Adresse anzeigen"
+
+#~ msgid "Show only Staff email address"
+#~ msgstr "Nur Personal-E-Mail-Adresse anzeigen"
+
+#, fuzzy
+#~ msgid "Show only Staff phone number"
+#~ msgstr "Nur Personal-Telefonnummer anzeigen"
+
+#~ msgid "Don't show both phone number and emaill address"
+#~ msgstr "Sowohl Telefonnummer als auch E-Mail-Adresse ausblenden"
+
+#~ msgid "Enable Any staff option"
+#~ msgstr "Aktivieren Sie alle Mitarbeiteroptionen"
+
+#~ msgid "Auto assignment rule"
+#~ msgstr "Regel für die automatische Zuweisung"
+
+#~ msgid "Least assigned by the day"
+#~ msgstr "Am wenigsten belegt nach Tag"
+
+#~ msgid "Most assigned by the day"
+#~ msgstr "Am meisten belegt nach Tag"
+
+#~ msgid "Least assigned by the week"
+#~ msgstr "Am wenigsten belegt nach Woche"
+
+#~ msgid "Most assigned by the week"
+#~ msgstr "Am meisten belegt nach Woche"
+
+#~ msgid "Least assigned by the month"
+#~ msgstr "Am wenigsten belegt nach Monat"
+
+#~ msgid "Most assigned by the month"
+#~ msgstr "Am meisten belegt nach Monat"
+
+#~ msgid "Most expensive"
+#~ msgstr "Am teuersten"
+
+#~ msgid "Least expensive"
+#~ msgstr "Am günstigstens"
+
+#~ msgid "If a Service does not have an extra skip the step"
+#~ msgstr "Schritt überspringen, wenn ein Dienst keine Zusatzleistung hat"
+
+#, fuzzy
+#~ msgid "The time format for the booking form"
+#~ msgstr "Zeitformat im Buchungsformular"
+
+#, fuzzy
+#~ msgid "Show both Start and End time (e.g.: 10:00 - 11:00)"
+#~ msgstr "Start- und Endzeit anzeigen (z.B.: 10:00 - 11:00)"
+
+#~ msgid "Show only Start time (e.g.: 10:00)"
+#~ msgstr "Nur Startzeit anzeigen (z.B.: 10:00)"
+
+#~ msgid "Hide the number of available slots"
+#~ msgstr "Anzahl der verfügbaren Slots verbergen"
+
+#~ msgid "Separate First and Last name inputs"
+#~ msgstr "Getrennte Felder für Vor- und Nachname"
+
+#~ msgid "Set Email as a required field"
+#~ msgstr "Festlegen von E-Mail als erforderliches Feld"
+
+#~ msgid "Set Phone number as a required field"
+#~ msgstr "Festlegen der Telefonnummer als erforderliches Feld"
+
+#~ msgid "Default phone country code"
+#~ msgstr "Standard-Landeskennzahl"
+
+#~ msgid "Hide payment methods section"
+#~ msgstr "Abschnitt \"Zahlungsmethoden\" ausblenden"
+
+#, fuzzy
+#~ msgid "Hide coupon section"
+#~ msgstr "Abschnitt \"Coupon\" ausblenden"
+
+#, fuzzy
+#~ msgid "Hide giftcard section"
+#~ msgstr "Abschnitt \"Geschenkgutschein\" ausblenden"
+
+#~ msgid "Do not show the discount row if a coupon is not added"
+#~ msgstr "Rabattzeile nicht anzeigen, wenn kein Gutschein hinzugefügt wurde"
+
+#, fuzzy
+#~ msgid "Hide price section"
+#~ msgstr "Abschnitt \"Preis\" ausblenden"
+
+#, fuzzy
+#~ msgid "URL of \"FINISH BOOKING\" button"
+#~ msgstr "URL für den \"BUCHUNG ABSCHLIEßEN\" Button"
+
+#~ msgid "Default: Reload current page."
+#~ msgstr "Aktuelle Seite neu laden."
+
+#, fuzzy
+#~ msgid "Hide the \"ADD TO GOOGLE CALENDAR\" button"
+#~ msgstr "\"ZU GOOGLE KALENDER HINZUFÜGEN\"-Button verbergen"
+
+#, fuzzy
+#~ msgid "Hide the \"START NEW BOOKING\" button"
+#~ msgstr "\"NEUE BUCHUNG STARTEN\"-Button verbergen"
+
+#, fuzzy
+#~ msgid "Hide a confirmation number"
+#~ msgstr "Bestätigungsnummer verbergen"
+
+#, fuzzy
+#~ msgid "Starting confirmation number"
+#~ msgstr "Start-Bestätigungsnummer"
+
+#~ msgid "Break start"
+#~ msgstr "Pausenstart"
+
+#~ msgid "Break end"
+#~ msgstr "Pausen-Ende"
+
+#~ msgid "Company name"
+#~ msgstr "Firmenname"
+
+#~ msgid "Website"
+#~ msgstr "Homepage"
+
+#~ msgid "Display a company logo on the  Booking panel"
+#~ msgstr "Firmenlogo im Buchungsbereich anzeigen"
+
+#~ msgid "CLICK TO CONNECT ZOOM ACCOUNT"
+#~ msgstr "KLICKEN, UM EIN ZOOM-KONTO ZU VERBINDEN"
+
+#, php-format
+#~ msgid "Zoom account ( %s ) has been connected successfully."
+#~ msgstr "Zoom-Konto ( %s ) wurde erfolgreich verbunden."
+
+#, fuzzy
+#~ msgid "DISCONNECT"
+#~ msgstr "TRENNEN"
+
+#~ msgid "Disabled"
+#~ msgstr "Deaktiviert"
+
+#~ msgid "Enabled"
+#~ msgstr "Aktiviert"
+
+#, fuzzy
+#~ msgid "Page of Customer Panel"
+#~ msgstr "Kundenbereich-Seite"
+
+#, fuzzy
+#~ msgid "Time restriction to change appointments"
+#~ msgstr "Zeitbeschränkung für Terminänderungen"
+
+#, fuzzy
+#~ msgid "Allow customers to reschedule their appointments"
+#~ msgstr "Ermöglichen Sie Kunden, ihre Termine zu verschieben"
+
+#, fuzzy
+#~ msgid "Allow customers to cancel their appointments"
+#~ msgstr "Kunden erlauben, ihre Termine abzusagen"
+
+#~ msgid "Allow customers to delete their account"
+#~ msgstr "Kunden erlauben, ihr Konto zu löschen"
+
+#~ msgid "Mail Gateway"
+#~ msgstr "Mail-Gateway"
+
+#~ msgid "WordPress Mail"
+#~ msgstr "WordPress Mail"
+
+#~ msgid "SMTP"
+#~ msgstr "SMTP"
+
+#~ msgid "SMTP Hostname"
+#~ msgstr "SMTP Hostname"
+
+#~ msgid "SMTP Port"
+#~ msgstr "SMTP Port"
+
+#~ msgid "SMTP Secure"
+#~ msgstr "SMTP Secure"
+
+#~ msgid "TLS"
+#~ msgstr "TLS"
+
+#~ msgid "SSL"
+#~ msgstr "SSL"
+
+#~ msgid "Disabled ( not recommend )"
+#~ msgstr "Deaktiviert ( nicht empfohlen )"
+
+#~ msgid "Username"
+#~ msgstr "Benutzername"
+
+#~ msgid "Password"
+#~ msgstr "Passwort"
+
+#~ msgid "Sender E-mail"
+#~ msgstr "Absender-E-Mail"
+
+#~ msgid "Sender Name"
+#~ msgstr "Absender Name"
+
+#~ msgid "Set slot length as service duration"
+#~ msgstr "Legen Sie die Slotlänge als Servicedauer fest"
+
+#~ msgid "Minimum time requirement prior to booking"
+#~ msgstr "Mindestzeit vor der Anmeldung"
+
+#~ msgid "Limited booking days"
+#~ msgstr "Begrenzte Buchungstage"
+
+#, fuzzy
+#~ msgid "Week starts on"
+#~ msgstr "Woche startet am"
+
+#~ msgid "Date format"
+#~ msgstr "Datumsformat"
+
+#~ msgid "Time format"
+#~ msgstr "Zeitformat"
+
+#, fuzzy
+#~ msgid "24 hour format"
+#~ msgstr "24-Stunden-Format"
+
+#, fuzzy
+#~ msgid "12 hour format"
+#~ msgstr "12-Stunden-Format"
+
+#~ msgid "Default appointment status"
+#~ msgstr "Standard-Terminstatus"
+
+#~ msgid "Show time slots in client time-zone"
+#~ msgstr "Zeitfenster in der Zeitzone des Benutzers anzeigen"
+
+#~ msgid "Google Maps API Key"
+#~ msgstr "Google Maps-API-Schlüssel"
+
+#~ msgid "Activate Google reCAPTCHA"
+#~ msgstr "Google reCAPTCHA aktivieren"
+
+#~ msgid "Site Key"
+#~ msgstr "Site-Schlüssel"
+
+#, fuzzy
+#~ msgid "Secret Key"
+#~ msgstr "Geheimer Schlüssel"
+
+#~ msgid "Allow admins to book appointments outside working hours"
+#~ msgstr "Administratoren erlauben, Termine außerhalb der Arbeitszeit zu buchen"
+
+#~ msgid "Only registered users can book"
+#~ msgstr "Nur registrierte Benutzer können buchen"
+
+#~ msgid "Remove branding"
+#~ msgstr "Branding entfernen"
+
+#, fuzzy
+#~ msgid "Timezone"
+#~ msgstr "Zeitzone"
+
+#~ msgid "Redirect URI"
+#~ msgstr "Weiterleitungs-URI"
+
+#~ msgid "Client ID"
+#~ msgstr "Client ID"
+
+#~ msgid "Client Secret"
+#~ msgstr "Client Secret"
+
+#~ msgid "Event title"
+#~ msgstr "Veranstaltungstitel"
+
+#~ msgid "Event description"
+#~ msgstr "Veranstaltungsbeschreibung"
+
+#~ msgid "List of keywords"
+#~ msgstr "Liste der Schlüsselwörter"
+
+#, fuzzy
+#~ msgid "Sync method for busy slots from Google Calendar"
+#~ msgstr "Synchronisierungsmethode für belegte Slots von Google Kalender"
+
+#~ msgid "1. Live sync;<br/>If you have a few staff, this method would be more convenient for you. When your customers are booking, the plugin will connect to the google calendar and sync busy slots in real-time.<br/>2. Background sync;<br/>For this method, first, you must configure the Cron jobs ( <a href='https://www.booknetic.com/documentation/cron-job' target='_blank'>How to?</a> ). The shorter you set the Cron jobs interval, the more accuracy you will get. This method is usually designed for businesses with a large number of employees and using the \"Any Staff\" option. Because in this case, when your customer selects Any staff option, it might take more than 30-60 seconds to sync all Staff busy slots with Google calendar. By choosing this method, the plugin Cron Jobs will connect to the Google Calendars in the background at the interval you set up and will store the busy slots of all your employees in your local databases. During booking, it will read the information directly from your database. Errors in this method are inevitable. For example, if you configure your cron jobs to run every 15 minutes, the busy slot you add to your Google calendar will be stored in the plugin's local database every 15 minutes. That is, within these 15 minutes, someone can book an appointment in that time slot. Therefore, the shorter you configure the Cron jobs, the less likely there will be errors."
+#~ msgstr "1. Live-Synchronisierung;<br/>Wenn Sie nur wenige Mitarbeiter haben, ist diese Methode für Sie bequemer. Wenn Ihre Kunden buchen, verbindet sich das Plug-in mit dem Google-Kalender und synchronisiert belegte Slots in Echtzeit.<br/>2. Hintergrundsynchronisierung;<br/>Für diese Methode müssen Sie zunächst die Cron-Jobs konfigurieren ( <a href='https://www.booknetic.com/documentation/cron-job' target='_blank'>How to? </a> ). Je kürzer Sie das Intervall für Cron-Jobs einstellen, desto mehr Genauigkeit erhalten Sie. Diese Methode ist normalerweise für Unternehmen mit einer großen Anzahl von Mitarbeitern gedacht, die die Option \"Beliebige Mitarbeiter\" verwenden. Wenn Ihr Kunde in diesem Fall die Option Beliebiger Mitarbeiter auswählt, kann es mehr als 30-60 Sekunden dauern, bis alle besetzten Zeitfenster mit dem Google-Kalender synchronisiert sind. Wenn Sie diese Methode wählen, verbindet sich das Plugin Cron Jobs im Hintergrund in dem von Ihnen eingerichteten Intervall mit den Google Kalendern und speichert die besetzten Plätze aller Ihrer Mitarbeiter in Ihren lokalen Datenbanken. Während der Buchung liest es die Informationen direkt aus Ihrer Datenbank. Fehler bei dieser Methode sind unvermeidlich. Wenn Sie beispielsweise Ihre Cron-Jobs so konfigurieren, dass sie alle 15 Minuten ausgeführt werden, wird der belegte Slot, den Sie Ihrem Google-Kalender hinzufügen, alle 15 Minuten in der lokalen Datenbank des Plugins gespeichert. Das heißt, innerhalb dieser 15 Minuten kann jemand einen Termin in diesem Zeitfenster buchen. Je kürzer Sie daher die Cron-Jobs konfigurieren, desto geringer ist die Wahrscheinlichkeit, dass Fehler auftreten."
+
+#, fuzzy
+#~ msgid "Live sync"
+#~ msgstr "Live-Synchronisierung"
+
+#~ msgid "Background sync"
+#~ msgstr "Hintergrundsynchronisierung"
+
+#~ msgid "Don't sync busy slots"
+#~ msgstr "Keine belegten Slots synchronisieren"
+
+#~ msgid "Since what date do events in Google calendar sync?"
+#~ msgstr "Ab welchem ​​Datum Termine im Google-Kalender synchronisieren?"
+
+#~ msgid "Events up to 1 month"
+#~ msgstr "Veranstaltungen bis 1 Monat"
+
+#~ msgid "Events up to 2 month"
+#~ msgstr "Veranstaltungen bis 2 Monate"
+
+#~ msgid "Events up to 3 month"
+#~ msgstr "Veranstaltungen bis 3 Monate"
+
+#~ msgid "Add customers as attendees in your calendar events"
+#~ msgstr "Kunden als Teilnehmer in Ihren Kalenderereignissen hinzufügen"
+
+#~ msgid "Send email invitations to attendees by Google"
+#~ msgstr "E-Mail-Einladungen an Teilnehmer von Google senden"
+
+#~ msgid "Customers can see other attendees"
+#~ msgstr "Kunden können andere Teilnehmer sehen"
+
+#~ msgid "Facebook API / Continue with Facebook button"
+#~ msgstr "Facebook API / Weiter mit Facebook-Button"
+
+#~ msgid "App ID"
+#~ msgstr "App ID"
+
+#, fuzzy
+#~ msgid "App Secret"
+#~ msgstr "App Secret"
+
+#~ msgid "Google API / Continue with Google button"
+#~ msgstr "Google API / Weiter mit Google-Button"
+
+#~ msgid "API Key"
+#~ msgstr "API Schlüssel"
+
+#, fuzzy
+#~ msgid "API Secret"
+#~ msgstr "API Secret"
+
+#~ msgid "Meeting topic"
+#~ msgstr "Besprechungsthema"
+
+#, fuzzy
+#~ msgid "Meeting description"
+#~ msgstr "Veranstaltungsbeschreibung"
+
+#~ msgid "Set random password for meetings"
+#~ msgstr "Zufälliges Passwort für Meetings festlegen"
+
+#~ msgid "Stripe"
+#~ msgstr "Stripe"
+
+#~ msgid "Local payment"
+#~ msgstr "Zahlung vor Ort"
+
+#, fuzzy
+#~ msgid "Woocommerce"
+#~ msgstr "WooCommerce Einstellungen"
+
+#, php-format
+#~ msgid "You can't use Paypal with the %s plan. Please upgrade your plan to use Paypal."
+#~ msgstr "Sie können Paypal nicht mit dem %s-Paket verwenden. Bitte aktualisieren Sie Ihr Paket, um Paypal zu verwenden."
+
+#~ msgid "Mode"
+#~ msgstr "Modus"
+
+#~ msgid "Sandbox"
+#~ msgstr "Sandbox"
+
+#~ msgid "Live"
+#~ msgstr "Live"
+
+#, php-format
+#~ msgid "You can't use Stripe with the %s plan. Please upgrade your plan to use Stripe."
+#~ msgstr "Sie können Stripe nicht mit dem %s-Paket verwenden. Bitte aktualisieren Sie Ihr Paket, um Stripe zu verwenden."
+
+#, fuzzy, php-format
+#~| msgid "You can't use Stripe with the %s plan. Please upgrade your plan to use Stripe."
+#~ msgid "You can't use Square with the %s plan. Please upgrade your plan to use Square."
+#~ msgstr "Sie können Stripe nicht mit dem %s-Paket verwenden. Bitte aktualisieren Sie Ihr Paket, um Stripe zu verwenden."
+
+#, fuzzy
+#~| msgid "Auth Token"
+#~ msgid "Access Token"
+#~ msgstr "Auth-Token"
+
+#, fuzzy
+#~| msgid "Location"
+#~ msgid "Location ID"
+#~ msgstr "Ort"
+
+#, fuzzy, php-format
+#~| msgid "You can't use Stripe with the %s plan. Please upgrade your plan to use Stripe."
+#~ msgid "You can't use Mollie with the %s plan. Please upgrade your plan to use Mollie."
+#~ msgstr "Sie können Stripe nicht mit dem %s-Paket verwenden. Bitte aktualisieren Sie Ihr Paket, um Stripe zu verwenden."
+
+#, fuzzy
+#~| msgid "API Key"
+#~ msgid "Api Key"
+#~ msgstr "API Schlüssel"
+
+#, fuzzy
+#~ msgid "Skip the Confirmation step"
+#~ msgstr "Schritt \"Bestätigung\" überspringen"
+
+#~ msgid "If you use Deposit Payments or Coupons, then you can have a confirmation step for your customers. Otherwise, it will redirect to WooCommerce by automatically skipping this step."
+#~ msgstr "Wenn Sie Anzahlungen oder Gutscheine verwenden, können Sie den Bestätigungsschritt für Ihre Kunden einrichten. Andernfalls wird dieser übersprungen und der Kunde zu WooCommerce weitergeleitet."
+
+#, fuzzy
+#~ msgid "Redirect customer to"
+#~ msgstr "Kunden weiterleiten an"
+
+#, fuzzy
+#~ msgid "Cart page"
+#~ msgstr "Warenkorb-Seite"
+
+#~ msgid "Checkout page"
+#~ msgstr "Checkout-Seite"
+
+#, fuzzy
+#~ msgid "Woocommerce order details"
+#~ msgstr "WooCommerce Buchungs-Details"
+
+#~ msgid "Other payment methods are not activated. Please contact the service provider."
+#~ msgstr "Andere Zahlungsmethoden sind nicht aktiviert. Bitte wenden Sie sich an den Dienstanbieter."
+
+#~ msgid "Set up"
+#~ msgstr "Einrichtung"
+
+#~ msgid "Currency"
+#~ msgstr "Währung"
+
+#, fuzzy
+#~ msgid "Currency symbol"
+#~ msgstr "Währungszeichen"
+
+#~ msgid "Currency format"
+#~ msgstr "Währungsformat"
+
+#~ msgid "Price number format"
+#~ msgstr "Preis-Format"
+
+#~ msgid "Price number of decimals"
+#~ msgstr "Anzahl Dezimalstellen des Preises"
+
+#~ msgid "How long to wait for payment"
+#~ msgstr "Wie lange auf die Zahlung warten"
+
+#~ msgid "Newly booked appointment default status will be \"Waiting for payment\" in the defined timeframe."
+#~ msgstr "Zeitraum für den Standardstatus \"Warten auf Zahlung\" eines neu gebuchten Termins."
+
+#~ msgid "Customer can pay full amount"
+#~ msgstr "Der Kunde kann den vollen Betrag bezahlen"
+
+#, fuzzy
+#~ msgid "SMS/WhatsApp settings"
+#~ msgstr "SMS-Einstellungen"
+
+#~ msgid "Account SID"
+#~ msgstr "Konto SID"
+
+#~ msgid "Auth Token"
+#~ msgstr "Auth-Token"
+
+#, fuzzy
+#~ msgid "Sender phone number for SMS"
+#~ msgstr "Absender-Telefonnummer"
+
+#, fuzzy
+#~ msgid "Sender phone number for WhatsApp"
+#~ msgstr "Absender-Telefonnummer"
+
+#~ msgid "You have reached your allowed maximum SMS limit. Please upgrade your plan."
+#~ msgstr "Sie haben Ihr zulässiges maximales SMS-Limit erreicht. Bitte aktualisieren Sie Ihr Paket."
+
+#~ msgid "Please configure SMS settings!"
+#~ msgstr "Bitte konfigurieren Sie die SMS-Einstellungen!"
+
+#~ msgid "SEND TEST SMS"
+#~ msgstr "TEST-SMS SENDEN"
+
+#~ msgid "APPOINTMENT APPROVED"
+#~ msgstr "TERMIN GENEHMIGT"
+
+#~ msgid "SMS body"
+#~ msgstr "SMS Textfeld"
+
+#~ msgid "Send test SMS"
+#~ msgstr "Test SMS senden"
+
+#~ msgid "Phone number"
+#~ msgstr "Telefonnummer"
+
+#~ msgid "Staff not found!"
+#~ msgstr "Personal nicht gefunden!"
+
+#~ msgid "You do not have sufficient permissions to perform this action"
+#~ msgstr "Sie haben nicht genügend Berechtigungen, um diese Aktion auszuführen"
+
+#~ msgid "Staff not found or permission denied!"
+#~ msgstr "Personal wurde nicht gefunden oder die Erlaubnis wurde verweigert!"
+
+#~ msgid "Please select location!"
+#~ msgstr "Bitte wählen Sie den Standort!"
+
+#~ msgid "The WordPress user with the same email address already exists!"
+#~ msgstr "Der WordPress-Benutzer mit dieser E-Mail-Adresse existiert bereits!"
+
+#~ msgid "Firstly click the login button!"
+#~ msgstr "Klicken Sie zuerst auf den Login-Button!"
+
+#~ msgid "ADD STAFF"
+#~ msgstr "PERSONAL HINZUFÜGEN"
+
+#~ msgid "STAFF NAME"
+#~ msgstr "PERSONALNAME"
+
+#~ msgid "EMAIL"
+#~ msgstr "E-MAIL"
+
+#~ msgid "This staff has been added some Appointments. Firstly remove them!"
+#~ msgstr "Diesem Personal wurden einige Termine hinzugefügt. Entfernen Sie sie zuerst!"
+
+#~ msgid "Add Staff"
+#~ msgstr "Personal hinzufügen"
+
+#~ msgid "DETAILS"
+#~ msgstr "DETAILS"
+
+#~ msgid "HOLIDAYS"
+#~ msgstr "URLAUB"
+
+#~ msgid "Full Name"
+#~ msgstr "Vollständiger Name"
+
+#~ msgid "Profession"
+#~ msgstr "Beruf"
+
+#~ msgid "Zoom user"
+#~ msgstr "Zoom Benutzer"
+
+#, fuzzy
+#~ msgid "UNHIDE STAFF"
+#~ msgstr "PERSONAL EINBLENDEN"
+
+#, fuzzy
+#~ msgid "HIDE STAFF"
+#~ msgstr "PERSONAL VERBERGEN"
+
+#~ msgid "SAVE STAFF"
+#~ msgstr "PERSONAL SPEICHERN"
+
+#~ msgid "You have reached your allowed maximum WhatsApp message limit. Please upgrade your plan."
+#~ msgstr "Sie haben Ihr zulässiges maximales WhatsApp-Nachrichtenlimit erreicht. Bitte aktualisieren Sie Ihren Paket."
+
+#, fuzzy
+#~ msgid "Please configure WhatsApp settings!"
+#~ msgstr "Bitte konfigurieren Sie die WhatsApp-Einstellungen!"
+
+#~ msgid "Whatsapp Notifications"
+#~ msgstr "WhatsApp-Benachrichtigungen"
+
+#, fuzzy
+#~ msgid "SEND TEST MESSAGE"
+#~ msgstr "TEST-NACHRICHT SENDEN"
+
+#, fuzzy
+#~ msgid "Message body"
+#~ msgstr "Nachricht Textfeld"
+
+#, fuzzy
+#~ msgid "Send test message"
+#~ msgstr "Test-Nachricht senden"
+
+#~ msgid "Fistly You have to select Service, Staff and Date fields!"
+#~ msgstr "Zuerst müssen Sie die Felder Dienstleistung, Personal und Datum auswählen!"
+
+#~ msgid "Please choose dates"
+#~ msgstr "Bitte wählen Sie Termine"
+
+#~ msgid "There is no Location to match your request."
+#~ msgstr "Es gibt keinen Ort, der Ihrer Anfrage entspricht."
+
+#~ msgid "Please select payment method!"
+#~ msgstr "Bitte Zahlungsmethode auswählen!"
+
+#~ msgid "Please refresh the page and try again."
+#~ msgstr "Bitte aktualisieren Sie die Seite und versuchen Sie es erneut."
+
+#, fuzzy
+#~| msgid "This service name is already exist! Please choose an other name."
+#~ msgid "This email address is already used by another customer."
+#~ msgstr "Dieser Dienstleistungsname ist bereits vorhanden! Bitte wählen Sie einen anderen Namen."
+
+#~ msgid "Profile data was saved successfully"
+#~ msgstr "Profildaten wurden erfolgreich gespeichert"
+
+#~ msgid "Password does not match!"
+#~ msgstr "Passwort stimmt nicht überein!"
+
+#~ msgid "Current password is wrong!"
+#~ msgstr "Das aktuelle Passwort ist falsch!"
+
+#~ msgid "Password was changed successfully"
+#~ msgstr "Passwort wurde erfolgreich geändert"
+
+#, fuzzy
+#~ msgid "You can not change the date and time to past."
+#~ msgstr "Datum und Uhrzeit können nicht in die Vergangenheit geändert werden."
+
+#, fuzzy, php-format
+#~ msgid "Minimum time requirement prior to change the appointment date and time is %s"
+#~ msgstr "Die Mindestzeit für die Änderung von Termindatum und -Zeit ist %s"
+
+#, fuzzy, php-format
+#~ msgid "You cannot change the appointment less than %s in advance"
+#~ msgstr "Sie können den Termin nicht weniger als %s im Voraus ändern"
+
+#~ msgid "You have not changed the date and time."
+#~ msgstr "Sie haben Datum und Uhrzeit nicht geändert."
+
+#~ msgid "Appointment was rescheduled successfully!"
+#~ msgstr "Termin wurde erfolgreich verschoben!"
+
+#~ msgid "You have canceled the appointment!"
+#~ msgstr "Sie haben den Termin abgesagt!"
+
+#~ msgid "You can't receive appointments. Please upgrade your plan to receive appointments."
+#~ msgstr "Sie können keine Termine empfangen. Bitte aktualisieren Sie Ihr Paket, um Termine zu erhalten."
+
+#~ msgid "We aren’t able to process your payment. Please, try again."
+#~ msgstr "Wir sind nicht in der Lage, Ihre Zahlung zu verarbeiten. Bitte versuchen Sie es erneut."
+
+#~ msgid "TRY AGAIN"
+#~ msgstr "VERSUCHEN SIE ES ERNEUT"
+
+#~ msgid "Thank you for your request!"
+#~ msgstr "Vielen Dank für Ihre Buchung!"
+
+#~ msgid "Your confirmation number:"
+#~ msgstr "Ihre Buchungsnummer:"
+
+#~ msgid "ADD TO GOOGLE CALENDAR"
+#~ msgstr "ZU GOOGLE KALENDER HINZUFÜGEN"
+
+#~ msgid "START NEW BOOKING"
+#~ msgstr "NEUE BUCHUNG STARTEN"
+
+#~ msgid "FINISH BOOKING"
+#~ msgstr "BUCHUNG ABSCHLIEßEN"
+
+#, php-format
+#~ msgid "Powered by %s"
+#~ msgstr "Powered by %s"
+
+#~ msgid "Charge for Gift Card"
+#~ msgstr "Gebühr für Geschenkkarte"
+
+#, fuzzy
+#~ msgid "Coupon"
+#~ msgstr "Gutschein"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid "Giftcard"
+#~ msgstr "Geschenkkarte"
+
+#, fuzzy
+#~ msgid "ADD"
+#~ msgstr "HINZUFÜGEN"
+
+#~ msgid "Total price"
+#~ msgstr "Gesamtpreis"
+
+#~ msgid "Full amount"
+#~ msgstr "Voller Betrag"
+
+#~ msgid "Please wait, You are automatically redirecting to order page..."
+#~ msgstr "Bitte warten Sie. Sie werden automatisch auf die Bestellseite weitergeleitet..."
+
+#~ msgid "Select date"
+#~ msgstr "Wählen Sie ein Datum"
+
+#~ msgid "Bring People with You"
+#~ msgstr "Weitere Personen mitbringen"
+
+#~ msgid "Number of people:"
+#~ msgstr "Anzahl der Personen"
+
+#~ msgid "CONTINUE WITH FACEBOOK"
+#~ msgstr "MIT FACEBOOK FORTFAHREN"
+
+#~ msgid "CONTINUE WITH GOOGLE"
+#~ msgstr "MIT GOOGLE FORTFAHREN"
+
+#~ msgid "Surname"
+#~ msgstr "Nachname"
+
+#~ msgid "LOGOUT"
+#~ msgstr "AUSLOGGEN"
+
+#~ msgid "Profile"
+#~ msgstr "Profil"
+
+#~ msgid "Change password"
+#~ msgstr "Passwort ändern"
+
+#, fuzzy
+#~ msgid "Company"
+#~ msgstr "Unternehmen"
+
+#~ msgid "Reschedule"
+#~ msgstr "Termin verschieben"
+
+#~ msgid "DELETE MY PROFILE"
+#~ msgstr "MEIN PROFIL LÖSCHEN"
+
+#~ msgid "Current password"
+#~ msgstr "Aktuelles Passwort"
+
+#~ msgid "New password"
+#~ msgstr "Neues Passwort"
+
+#~ msgid "Repeat new password"
+#~ msgstr "Wiederhole das neue Passwort"
+
+#~ msgid "CHANGE PASSWORD"
+#~ msgstr "PASSWORT ÄNDERN"
+
+#~ msgid "RESCHEDULE"
+#~ msgstr "TERMIN VERSCHIEBEN"
+
+#~ msgid "Are you sure you want to cancel the appointment?"
+#~ msgstr "Möchten Sie den Termin wirklich stornieren?"
+
+#~ msgid "Are you sure you want to delete your profile?"
+#~ msgstr "Möchten Sie Ihr Profil wirklich löschen?"
+
+#~ msgid "An error occurred while processing your request! Please close the window and try again!"
+#~ msgstr "Während Ihrer Anfrage ist ein Fehler aufgetreten! Bitte schließen Sie das Fenster und versuchen Sie es erneut!"
+
+#~ msgid "An error occurred, please try again later"
+#~ msgstr "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut"
+
+#~ msgid "Please enter the purchase code!"
+#~ msgstr "Bitte geben Sie den Kaufcode ein!"
+
+#, php-format
+#~ msgid "Your server can not access our license server via CURL! Our license server is \"%s\". Please contact your hosting provider/server administrator and ask them to solve the problem. If you are sure that problem is not your server/hosting side then contact FS Poster administrators."
+#~ msgstr "Ihr Server kann nicht über CURL auf unseren Lizenzserver zugreifen! Unser Lizenzserver ist \"%s\". Bitte wenden Sie sich an Ihren Hosting-Provider/Serveradministrator und bitten Sie ihn, das Problem zu lösen. Wenn Sie sicher sind, dass das Problem nicht auf Ihrer Server-/Hosting-Seite liegt, wenden Sie sich an die FS Poster-Administratoren."
+
+#, php-format
+#~ msgid "Reactivation failed! Response: %s"
+#~ msgstr "Reaktivierung fehlgeschlagen! Antwort: %s"
+
+#, php-format
+#~ msgid "Error! Response: %s"
+#~ msgstr "Error! Antwort: %s"
+
+#~ msgid "Plugin reactivated!"
+#~ msgstr "Plugin reaktiviert!"
+
+#, php-format
+#~ msgid "%s - action not exists in %s module!"
+#~ msgstr "%s - Aktion ist im %s-Modul nicht vorhanden!"
+
+#, php-format
+#~ msgid "Booknetic! Your server can not access our license server via CURL! Our license server is \"%s\". Please contact your hosting provider/server administrator and ask them to solve the problem. If you are sure that problem is not your server/hosting side then contact Booknetic administrators."
+#~ msgstr "Booknetic! Ihr Server kann nicht über CURL auf unseren Lizenzserver zugreifen! Unser Lizenzserver ist \"%s\". Bitte wenden Sie sich an Ihren Hosting-Provider/Serveradministrator und bitten Sie ihn, das Problem zu lösen. Wenn Sie sicher sind, dass das Problem nicht auf Ihrer Server-/Hosting-Seite liegt, wenden Sie sich an die Booknetic-Administratoren."
+
+#, php-format
+#~ msgid "Booknetic! Installation error! Rosponse error! Response: %s"
+#~ msgstr "Booknetic! Installationsfehler! Antwortfehler! Antwort: %s"
+
+#~ msgid "Booknetic Customers"
+#~ msgstr "Booknetic Kunden"
+
+#~ msgid "Booknetic Staff"
+#~ msgstr "Booknetic Personal"
+
+#~ msgid "Please set table name for deleting rows!"
+#~ msgstr "Bitte Tabellennamen zum Löschen von Zeilen wählen!"
+
+#~ msgid "Redirecting..."
+#~ msgstr "Weiterleitung..."
+
+#~ msgid "Select staff"
+#~ msgstr "Personal wählen"
+
+#~ msgid "Select location"
+#~ msgstr "Ort auswählen"
+
+#~ msgid "Select service extras"
+#~ msgstr "Zusatzleistung wählen"
+
+#~ msgid "Fill information"
+#~ msgstr "Informationen ausfüllen"
+
+#~ msgid "Select Date & Time"
+#~ msgstr "Datum & Uhrzeit wählen"
+
+#~ msgid "Recurring info"
+#~ msgstr "Wiederkehrende Informationen"
+
+#~ msgid "Confirm Details"
+#~ msgstr "Angaben bestätigen"
+
+#, fuzzy
+#~ msgid "weeks"
+#~ msgstr "Wochen"
+
+#, fuzzy
+#~ msgid "days"
+#~ msgstr "Tage"
+
+#~ msgid "hour"
+#~ msgstr "Stunde"
+
+#~ msgid "hours"
+#~ msgstr "Stunden"
+
+#~ msgid "minute"
+#~ msgstr "Minute"
+
+#~ msgid "minutes"
+#~ msgstr "Minuten"
+
+#, fuzzy
+#~ msgid "second"
+#~ msgstr "Sekunde"
+
+#, fuzzy
+#~ msgid "seconds"
+#~ msgstr "Sekunden"
+
+#~ msgid "\"allow_url_fopen\" disabled in your php.ini settings! Please actiavte id and try again!"
+#~ msgstr "\"allow_url_fopen\" in Ihren php.ini-Einstellungen deaktiviert! Bitte aktivieren Sie die ID und versuchen Sie es erneut!"
+
+#~ msgid "PayPal"
+#~ msgstr "PayPal"
+
+#~ msgid "On site"
+#~ msgstr "Vor Ort"
+
+#, php-format
+#~ msgid "View ( %s ) not found!"
+#~ msgstr "Ansicht (% s) nicht gefunden!"
+
+#, fuzzy
+#~ msgid "Show services as list view"
+#~ msgstr "Dienste als Listenansicht anzeigen"
+
+#, fuzzy
+#~ msgid "Other payment methods:"
+#~ msgstr "Andere Zahlungsmethoden:"
+
+#~ msgid "Google calendar settings"
+#~ msgstr "Google-Kalendereinstellungen"
+
+#~ msgid "Limit of fetched events"
+#~ msgstr "Limit der abgerufenen Ereignisse"
+
+#~ msgid "HTML"
+#~ msgstr "HTML"
+
+#~ msgid "Please fill in all required fields!"
+#~ msgstr "Bitte füllen Sie alle benötigten Felder aus!"
+
+#, fuzzy
+#~ msgid "Confirmation number"
+#~ msgstr "Ihre Bestätigungsnummer:"
+
+#~ msgid "Select services"
+#~ msgstr "Dienstleistungen auswählen"
+
+#~ msgid "Mon."
+#~ msgstr "Mo"
+
+#~ msgid "Tue."
+#~ msgstr "Di"
+
+#~ msgid "Wed."
+#~ msgstr "Mi"
+
+#~ msgid "Thu."
+#~ msgstr "Do"
+
+#~ msgid "Fri."
+#~ msgstr "Fr"
+
+#~ msgid "Sat."
+#~ msgstr "Sa"
+
+#~ msgid "Sun."
+#~ msgstr "So"
+
+#~ msgid "1. Monday"
+#~ msgstr "1. Montag"
+
+#~ msgid "2. Tuesday"
+#~ msgstr "2. Dienstag"
+
+#~ msgid "3. Wednesday"
+#~ msgstr "3. Mittwoch"
+
+#~ msgid "4. Thursday"
+#~ msgstr "4. Donnerstag"
+
+#~ msgid "5. Friday"
+#~ msgstr "5. Freitag"
+
+#~ msgid "6. Saturday"
+#~ msgstr "6. Samstag"
+
+#~ msgid "7. Sunday"
+#~ msgstr "7. Sonntag"
+
+#~ msgid "Please fill all required fields!"
+#~ msgstr "Bitte füllen Sie alle benötigen Felder aus!"
+
+#~ msgid "Please fill all required fields"
+#~ msgstr "Bitte alle notwendigen Felder ausfüllen"
+
+#~ msgid "Customers must pay for all appointments in series"
+#~ msgstr "Kunden müssen für alle Serientermine bezahlen"
+
+#~ msgid "Date & Time:"
+#~ msgstr "Datum & Uhrzeit:"
+
+#~ msgid "Deposit:"
+#~ msgstr "Anzahlung:"
+
+#~ msgid "Please select service."
+#~ msgstr "Bitte wählen Sie eine Dienstleistung."
+
+#~ msgid "Sum price"
+#~ msgstr "Summe"
+
+#~ msgid "Extras:"
+#~ msgstr "Zusatzleistungen:"
+
+#~ msgid "You can enable WooCommerce payment gateway from here"
+#~ msgstr "Sie können WooCommerce Payment Gateway von hier aus aktivieren"
+
+#~ msgid "Hide Locations step if there is only 1 location"
+#~ msgstr "Schritt \"Standorte\" ausblenden, wenn nur 1 Standort vorhanden ist"
+
+#~ msgid "Hide Staff step if there is only 1 staff"
+#~ msgstr "Schritt \"Personal\" ausblenden, wenn nur 1 Personal vorhanden ist"
+
+#~ msgid "Please type the \"Date\" field!"
+#~ msgstr "Bitte geben Sie das Feld \"Datum\" ein!"
