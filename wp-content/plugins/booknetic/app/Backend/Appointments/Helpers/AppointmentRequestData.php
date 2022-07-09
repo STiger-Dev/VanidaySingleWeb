@@ -399,7 +399,8 @@ class AppointmentRequestData
 					'first_name'	=>	$this->customerData['first_name'],
 					'last_name'		=>	$this->customerData['last_name'],
 					'email'			=>	$this->customerData['email'],
-					'phone_number'	=>	$this->customerData['phone']
+					'phone_number'	=>	$this->customerData['phone'],
+					'business_id'	=>	Permission::tenantId()
 				]
 			);
 
