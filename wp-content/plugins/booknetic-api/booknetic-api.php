@@ -24,6 +24,7 @@ use BookneticApp\Models\Appointment;
 use BookneticApp\Models\AppointmentPrice;
 use BookneticApp\Models\AppointmentExtra;
 use BookneticApp\Models\ServiceCategory;
+use BookneticApp\Models\Staff;
 
 class Booknetic_Custom_Route extends WP_REST_Controller {
 
@@ -115,6 +116,14 @@ class Booknetic_Custom_Route extends WP_REST_Controller {
             array(
               'methods'     => WP_REST_Server::DELETABLE,
               'callback'    => array( $this, 'deleteBookneticCategory' )
+            )
+          )
+        );
+
+        register_rest_route( 'booknetic/staff', 'delete/id=(?P<id>\d+)', array(
+            array(
+              'methods'     => WP_REST_Server::DELETABLE,
+              'callback'    => array( $this, 'deleteBookneticStaff' )
             )
           )
         );
@@ -365,6 +374,25 @@ class Booknetic_Custom_Route extends WP_REST_Controller {
       }
 
       $result = ServiceCategory::where( 'id', $id )->noTenant(true)->delete();
+
+      return new WP_REST_Response( $result, 200 );
+    }
+
+    /**
+     * Get one item from the collection
+     *
+     * @param WP_REST_Request $request Full data about the request.
+     * @return WP_Error|WP_REST_Response
+     */
+    public function deleteBookneticStaff( $request ) {
+      $params = $request->get_params();
+      $id = $params['id'];
+
+      if (empty($id)) {
+        return new WP_Error( 'code', __( 'message', 'text-domain' ) );
+      }
+
+      $result = Staff::where( 'id', $id )->noTenant(true)->delete();
 
       return new WP_REST_Response( $result, 200 );
     }

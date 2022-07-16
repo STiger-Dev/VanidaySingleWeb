@@ -17,6 +17,7 @@ use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Helpers\Math;
 use BookneticApp\Providers\Core\Permission;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
 class Ajax extends \BookneticApp\Providers\Core\Controller
 {
@@ -429,6 +430,17 @@ class Ajax extends \BookneticApp\Providers\Core\Controller
 
 			Staff::insert( $sqlData );
 			$id = DB::lastInsertedId();
+
+			//Request of add staff from booknetic to DEX.
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->addStaff(
+				[
+					'business_id'	=>	Permission::tenantId(),
+					'id'		=>	$id,
+					'name'	=>	$sqlData['name'],
+					'email'		=>	$sqlData['email']
+				]
+			);
 		}
 
 		foreach ( $servicesArr AS $serviceId )

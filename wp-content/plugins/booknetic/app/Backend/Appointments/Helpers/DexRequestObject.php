@@ -273,6 +273,39 @@ class DexRequestObject
     }
 
     /**
+     *
+     * @return void
+     */
+    public function addStaff($params)
+    {
+        try {
+            $reqGetUrl = $this->API_REQUEST_URI . "/web/employee";
+
+            $response = $this->doPostRequest($reqGetUrl, $params);
+        } catch (\Exception $e) {
+
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function deleteStaff($id)
+    {
+        try {
+            $reqDeleteUrl = $this->API_REQUEST_URI . "/web/employee/{$id}";
+
+            $response = $this->doDeleteRequest($reqDeleteUrl);
+        } catch (\Exception $e) {
+        }
+
+        return;
+    }
+
+    /**
      * Do API request with provided params
      * @param string $uri
      * @return Response

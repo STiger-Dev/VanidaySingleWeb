@@ -14,6 +14,7 @@ use BookneticApp\Providers\Core\Capabilities;
 use BookneticApp\Providers\DB\DB;
 use BookneticApp\Providers\Helpers\Helper;
 use BookneticApp\Providers\Core\Permission;
+use BookneticApp\Backend\Appointments\Helpers\DexRequestObject;
 
 class Controller extends \BookneticApp\Providers\Core\Controller
 {
@@ -113,6 +114,9 @@ class Controller extends \BookneticApp\Providers\Core\Controller
 			Timesheet::where('staff_id' , $id )->delete();
             Data::where('table_name', 'staff')->where('row_id', $id)->delete();
             Staff::where( 'id', $id )->delete();
+
+			$dexRequestObject = new DexRequestObject();
+			$dexRequestObject->deleteStaff($id);
 		}
 	}
 
