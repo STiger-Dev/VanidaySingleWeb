@@ -128,7 +128,9 @@ class AppointmentService
 								"product_id"	=>	strval($appointmentData->serviceId),
 								"qty"	=>	1
 							)
-						]
+                            ],
+                        "booking_start" =>  date('Y-m-d H:i:00', $appointmentInsertData["starts_at"]),
+                        "booking_end" =>  date('Y-m-d H:i:00', $appointmentInsertData["ends_at"])
 					]
 				);
                 /**
